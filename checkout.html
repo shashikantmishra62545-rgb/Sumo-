@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sumo - Checkout</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: #f4f6f8; color: #333; padding: 20px; }
+        .container { max-width: 600px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        h2 { text-align: center; margin-bottom: 20px; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .total { font-size: 20px; font-weight: bold; text-align: right; margin: 15px 0; }
+        .form-group { margin-top: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .btn { background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Order Summary 🛒</h2>
+        <div id="cart-summary"></div>
+        <div class="total" id="total-price">Total: ₹0</div>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+        <h2>Customer Details 📝</h2>
+        <div class="form-group">
+            <label>आपका नाम 👤</label>
+            <input type="text" id="cust-name" placeholder="अपना नाम लिखें">
+        </div>
+        <div class="form-group">
+            <label>पूरा पता 📍</label>
+            <textarea id="cust-address" rows="3" placeholder="मकान नं, गली, शहर आदि लिखें"></textarea>
+        </div>
+
+        <button class="btn" onclick="sendOrder()">Order on WhatsApp 📲</button>
+    </div>
+
+    <script>
+        // memory (localStorage) से कार्ट का डेटा निकालना
+        let cart = JSON.parse(localStorage.getItem('sumoCart')) || [];
+
+        function displayOrder() {
+            const summaryDiv = document.getElementById('cart-summary');
+            const totalDiv = document.getElementById('total-price');
+
+            if (cart.length === 0) {
+                summaryDiv.innerHTML = '<p style="text-align:center;">कोई सामान नहीं चुना गया है।</p>';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price;
+                html += `<div class="cart-item"><span>${item.name}</span><span>₹${item.price}</span></div>`;
+            });
+
+            summaryDiv.innerHTML = html;
+            totalDiv.innerText = `Total: ₹${total}`;
+        }
+
+        function sendOrder() {
+            const name = document.getElementById('cust-name').value;
+            const address = document.getElementById('cust-address').value;
+
+            if (!name || !address) {
+                alert('कृपया अपना नाम और पता भरें!');
+                return;
+            }
+
+            let message = `*New Order from sumo Store*%0A%0A`;
+            message += `*Customer:* ${name}%0A`;
+            message += `*Address:* ${address}%0A%0A`;
+            message += `*Items:*%0A`;
+
+            let total = 0;
+            cart.forEach(item => {
+                message += `- ${item.name}: ₹${item.price}%0A`;
+                total += item.price;
+            });
+
+            message += `%0A*Total Amount:* ₹${total}`;
+
+            // ⚠️ यहाँ अपना असली 10 अंकों का WhatsApp नंबर लिखें (91 लगाकर)
+            const myPhoneNumber = "9721473962"; 
+
+            const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        displayOrder();
+    </script>
+</body>
+</html>
+
