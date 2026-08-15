@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sumo - Official Store</title>
-    <!-- PapaParse Library for Google Sheet CSV -->
+    <!-- Google Sheet CSV पढ़ने के लिए लाइब्रेरी -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
@@ -17,7 +17,7 @@
         .product-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; }
         .product-title { font-size: 18px; margin: 10px 0 5px; font-weight: 600; }
         .product-price { font-size: 20px; color: #e63946; font-weight: bold; margin-bottom: 10px; }
-        .size-select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .size-select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #fff; }
         .btn { background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 15px; }
         .btn:hover { background: #333; }
         .cart-section { background: #fff; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
@@ -49,7 +49,6 @@
     </div>
 
     <script>
-        // आपका Google Sheet CSV Link यहाँ सेट है:
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
 
         let cart = [];
@@ -98,7 +97,7 @@
                 selectedSize = sizeElement.value;
             }
 
-            const itemTitle = selectedSize ? `${name} (Size: ${selectedSize})` : name;
+            const itemTitle = selectedSize ? `${name} (${selectedSize})` : name;
             cart.push({ name: itemTitle, price: Number(price) });
             updateCart();
         }
