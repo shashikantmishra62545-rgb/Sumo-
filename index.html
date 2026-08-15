@@ -10,7 +10,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
         body { background-color: #fcfcfc; color: #111; padding-bottom: 90px; }
 
-        .announcement { background: #111; color: #fff; text-align: center; padding: 7px 10px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+        .announcement { background: #e63946; color: #fff; text-align: center; padding: 7px 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
         /* Navbar Header */
         header { background: #fff; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; }
@@ -35,7 +35,7 @@
         .close-sidebar { font-size: 24px; border: none; background: none; cursor: pointer; }
         .menu-list { list-style: none; }
         .menu-list li { border-bottom: 1px solid #f5f5f5; }
-        .menu-list a { display: block; padding: 14px 0; color: #222; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; }
+        .menu-list a { display: block; padding: 14px 0; color: #222; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; cursor: pointer; }
 
         /* Container & Grid */
         .container { max-width: 1100px; margin: 15px auto; padding: 0 10px; }
@@ -47,37 +47,67 @@
         }
 
         /* Product Card */
-        .product-card { background: #fff; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid #eee; }
+        .product-card { background: #fff; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid #eee; cursor: pointer; }
         .wishlist-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.85); border: none; font-size: 16px; padding: 4px 6px; border-radius: 50%; cursor: pointer; z-index: 2; }
         .wishlist-btn.active { color: red; }
 
-        .img-container { width: 100%; height: 200px; background: #f9f9f9; overflow: hidden; }
-        .main-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+        .img-container { width: 100%; height: 210px; background: #f9f9f9; overflow: hidden; }
+        .main-img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-body { padding: 10px; text-align: left; }
         .rating-box { font-size: 11px; color: #ffa41c; font-weight: bold; margin-bottom: 4px; }
         .review-count { color: #777; font-weight: normal; font-size: 10px; }
         .product-title { font-size: 12px; font-weight: 600; color: #222; text-transform: uppercase; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
-        .product-price { font-size: 14px; font-weight: 800; color: #111; margin-bottom: 8px; }
+        .product-price { font-size: 14px; font-weight: 800; color: #111; }
 
-        .size-box { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
-        .size-btn { border: 1px solid #ccc; background: #fff; font-size: 10px; padding: 3px 6px; font-weight: 600; cursor: pointer; border-radius: 2px; }
-        .size-btn.selected { background: #111; color: #fff; border-color: #111; }
+        /* -------------------------------------------------------------------------------- */
+        /* FULL PRODUCT DETAILS PAGE (The Souled Store Style) */
+        /* -------------------------------------------------------------------------------- */
+        .pdp-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 80px; }
+        .pdp-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
+        .pdp-back { font-size: 22px; border: none; background: none; cursor: pointer; }
 
-        .add-btn { background: #111; color: #fff; border: none; width: 100%; padding: 8px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+        .pdp-container { max-width: 800px; margin: 0 auto; padding: 15px; }
+        .pdp-main-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; }
+        .pdp-thumbs { display: flex; gap: 8px; justify-content: center; margin: 10px 0 15px; }
+        .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
+        
+        .pdp-title { font-size: 18px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+        .pdp-price { font-size: 22px; font-weight: 800; color: #111; margin-bottom: 15px; }
+
+        .pdp-section-label { font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 15px 0 8px; color: #333; }
+        .pdp-sizes { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .pdp-size-btn { border: 1px solid #ccc; background: #fff; font-size: 13px; padding: 8px 14px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+        .pdp-size-btn.selected { background: #111; color: #fff; border-color: #111; }
+
+        .pdp-pincode-box { display: flex; gap: 8px; margin-bottom: 20px; }
+        .pdp-pincode-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none; }
+        .pdp-pincode-box button { background: #111; color: white; border: none; padding: 10px 16px; font-weight: bold; font-size: 12px; border-radius: 4px; cursor: pointer; }
+
+        .pdp-info-card { background: #f9f9f9; border-radius: 6px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.6; }
+        .pdp-info-card h4 { font-weight: 700; margin-bottom: 6px; text-transform: uppercase; font-size: 12px; }
+
+        /* REAL REVIEWS SECTION */
+        .reviews-section { border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; }
+        .add-review-box { background: #f5f5f5; padding: 15px; border-radius: 6px; margin-top: 15px; }
+        .star-select { font-size: 20px; color: #ccc; cursor: pointer; margin-bottom: 10px; }
+        .star-select span.selected { color: #ffa41c; }
+        .review-input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; margin-bottom: 8px; outline: none; }
+        .submit-review-btn { background: #111; color: #fff; border: none; padding: 8px 14px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+
+        .pdp-bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 12px; z-index: 10; display: flex; justify-content: center; }
+        .pdp-add-bag-btn { background: #25D366; color: #fff; border: none; width: 90%; max-width: 500px; padding: 14px; font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; cursor: pointer; text-align: center; }
 
         /* Cart Section */
         .cart-section { background: #fff; border-top: 2px solid #111; padding: 15px; margin-top: 30px; }
         .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: 700; font-size: 14px; text-align: center; text-decoration: none; padding: 12px; border-radius: 4px; border: none; width: 100%; cursor: pointer; display: block; }
 
-        /* Modal Popups (Login / Zoom) */
+        /* Modal Popups */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; }
         .login-box { background: #fff; width: 100%; max-width: 350px; padding: 20px; border-radius: 8px; text-align: center; position: relative; }
         .login-box input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
         .login-box button { width: 100%; padding: 10px; background: #111; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; border: none; background: none; cursor: pointer; }
-
-        .modal-content { max-width: 90%; max-height: 80vh; object-fit: contain; }
         
         .loading-box { text-align: center; grid-column: 1/-1; padding: 40px 0; }
         .spinner { border: 3px solid #eee; border-top: 3px solid #111; border-radius: 50%; width: 35px; height: 35px; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
@@ -115,16 +145,17 @@
             <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
         </div>
         <ul class="menu-list">
-            <li><a href="#" onclick="openLoginModal()">ACCOUNT / LOGIN</a></li>
-            <li><a href="#" onclick="toggleSidebar()">SHOP ALL</a></li>
-            <li><a href="#" onclick="toggleSidebar()">TOPWEAR</a></li>
-            <li><a href="#" onclick="toggleSidebar()">BOTTOMWEAR</a></li>
+            <li><a onclick="filterByCategory('all')">SHOP ALL</a></li>
+            <li><a onclick="filterByCategory('shirt')">TOPWEAR / SHIRTS</a></li>
+            <li><a onclick="filterByCategory('pant')">BOTTOMWEAR / PANTS</a></li>
+            <li><a onclick="filterByCategory('access')">ACCESSORIES</a></li>
+            <li><a onclick="openLoginModal()">ACCOUNT / LOGIN</a></li>
         </ul>
     </div>
 
     <!-- Main Content Grid -->
     <div class="container">
-        <div class="section-title">ALL PRODUCTS</div>
+        <div class="section-title" id="categoryHeader">ALL PRODUCTS</div>
         
         <div class="products-grid" id="products-container">
             <div class="loading-box">
@@ -142,6 +173,67 @@
         </div>
     </div>
 
+    <!-- -------------------------------------------------------------------------------- -->
+    <!-- PRODUCT DETAILS PAGE MODAL (THE SOULED STORE DESIGN) -->
+    <!-- -------------------------------------------------------------------------------- -->
+    <div id="pdpPage" class="pdp-page">
+        <div class="pdp-header">
+            <button class="pdp-back" onclick="closePdp()">←</button>
+            <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px;">SUMO PRODUCT</span>
+            <button class="icon-btn" onclick="closePdp(); scrollToCart();">🛒</button>
+        </div>
+
+        <div class="pdp-container">
+            <img id="pdpMainImg" class="pdp-main-img" src="">
+            <div id="pdpThumbs" class="pdp-thumbs"></div>
+
+            <div id="pdpTitle" class="pdp-title">Product Name</div>
+            <div id="pdpPrice" class="pdp-price">₹0</div>
+
+            <div class="pdp-section-label">SELECT SIZE</div>
+            <div id="pdpSizes" class="pdp-sizes"></div>
+
+            <div class="pdp-section-label">DELIVERY DETAILS</div>
+            <div class="pdp-pincode-box">
+                <input type="number" placeholder="Enter Pincode">
+                <button onclick="alert('Delivery Available in your area!')">CHECK</button>
+            </div>
+
+            <div class="pdp-info-card">
+                <h4>Product Details</h4>
+                <p><strong>Material & Care:</strong> 100% Premium Cotton | Machine Wash</p>
+                <p><strong>Country of Origin:</strong> India 🇮🇳</p>
+                <p><strong>Policy:</strong> 30-Day Easy Exchange / Return Available</p>
+            </div>
+
+            <!-- REAL REVIEWS & RATINGS SECTION -->
+            <div class="reviews-section">
+                <h3 style="font-size: 15px; font-weight: 800;">CUSTOMER REVIEWS & RATINGS ⭐</h3>
+                <div id="reviewsList" style="margin: 10px 0; font-size: 13px;">
+                    <p style="color: #666;">Be the first to rate this product!</p>
+                </div>
+
+                <div class="add-review-box">
+                    <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 6px;">WRITE A REVIEW:</h4>
+                    <div class="star-select" id="starSelector">
+                        <span onclick="setRating(1)">★</span>
+                        <span onclick="setRating(2)">★</span>
+                        <span onclick="setRating(3)">★</span>
+                        <span onclick="setRating(4)">★</span>
+                        <span onclick="setRating(5)">★</span>
+                    </div>
+                    <input type="text" id="reviewerName" class="review-input" placeholder="Your Name">
+                    <input type="text" id="reviewerComment" class="review-input" placeholder="Write your review here...">
+                    <button class="submit-review-btn" onclick="submitReview()">SUBMIT REVIEW</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pdp-bottom-bar">
+            <button class="pdp-add-bag-btn" onclick="addCurrentPdpToBag()">ADD TO BAG 🛒</button>
+        </div>
+    </div>
+
     <!-- Login Popup Modal -->
     <div id="loginModal" class="modal">
         <div class="login-box">
@@ -154,18 +246,16 @@
         </div>
     </div>
 
-    <!-- Image Zoom Lightbox -->
-    <div id="imageModal" class="modal" onclick="closeZoomModal()">
-        <img class="modal-content" id="zoomedImg">
-    </div>
-
     <script>
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
 
         let allProductsData = [];
         let cart = [];
         let wishlist = [];
-        let selectedSizes = {};
+        let currentPdpProduct = null;
+        let currentSelectedSize = '';
+        let selectedStarRating = 5;
+        let productReviewsData = {}; // Stores real reviews per product
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -194,43 +284,31 @@
                 const name = product.Name || product.name || product.NAME;
                 const price = product.Price || product.price || product.PRICE;
                 const imageStr = product.Image || product.image || product.IMAGE;
-                const size = product.Size || product.size || product.SIZE;
 
                 if (name && price && imageStr) {
                     count++;
                     const images = imageStr.split(',').map(img => img.trim());
                     const mainImgUrl = images[0];
 
-                    let sizeHtml = '';
-                    if (size && size.trim() !== '') {
-                        const sizes = size.split(',');
-                        sizeHtml = '<div class="size-box">';
-                        sizes.forEach((s, sIndex) => {
-                            const sz = s.trim();
-                            sizeHtml += `<button class="size-btn ${sIndex === 0 ? 'selected' : ''}" onclick="selectSize(${index}, '${sz}', this)">${sz}</button>`;
-                        });
-                        sizeHtml += '</div>';
-                        selectedSizes[index] = sizes[0].trim();
+                    const reviews = productReviewsData[name] || [];
+                    let avgRatingStr = 'No Ratings Yet';
+                    if (reviews.length > 0) {
+                        const sum = reviews.reduce((acc, r) => acc + r.stars, 0);
+                        avgRatingStr = `★ ${(sum / reviews.length).toFixed(1)} (${reviews.length})`;
                     }
-
-                    // फ़ेक स्टार रेटिंग ऑटो-जनरेट (4.2★ - 4.9★)
-                    const rating = (4 + (index % 8) / 10).toFixed(1);
-                    const reviewCount = 25 + (index * 7);
 
                     const isWishlisted = wishlist.includes(name);
 
                     const card = `
-                        <div class="product-card">
-                            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${name}', this)">♥</button>
+                        <div class="product-card" onclick="openPdp(${index})">
+                            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${name}', this)">♥</button>
                             <div class="img-container">
-                                <img src="${mainImgUrl}" class="main-img" alt="${name}" onclick="openZoomModal('${mainImgUrl}')">
+                                <img src="${mainImgUrl}" class="main-img" alt="${name}">
                             </div>
                             <div class="card-body">
-                                <div class="rating-box">★ ${rating} <span class="review-count">(${reviewCount})</span></div>
+                                <div class="rating-box">${avgRatingStr}</div>
                                 <div class="product-title">${name}</div>
                                 <div class="product-price">₹${price}</div>
-                                ${sizeHtml}
-                                <button class="add-btn" onclick="addToCart('${name}', ${price}, ${index})">ADD TO BAG 🛒</button>
                             </div>
                         </div>
                     `;
@@ -243,7 +321,147 @@
             }
         }
 
-        /* Search Filter Function */
+        /* -------------------------------------------------------------------------------- */
+        /* OPEN THE SOULED STORE STYLE PRODUCT DETAIL PAGE */
+        /* -------------------------------------------------------------------------------- */
+        function openPdp(index) {
+            const product = allProductsData[index];
+            currentPdpProduct = product;
+
+            const name = product.Name || product.name || product.NAME;
+            const price = product.Price || product.price || product.PRICE;
+            const imageStr = product.Image || product.image || product.IMAGE;
+            const sizeStr = product.Size || product.size || product.SIZE;
+
+            const images = imageStr.split(',').map(img => img.trim());
+
+            document.getElementById('pdpMainImg').src = images[0];
+            document.getElementById('pdpTitle').innerText = name;
+            document.getElementById('pdpPrice').innerText = `₹${price}`;
+
+            // Thumbs
+            const thumbsContainer = document.getElementById('pdpThumbs');
+            thumbsContainer.innerHTML = '';
+            if (images.length > 1) {
+                images.forEach(img => {
+                    thumbsContainer.innerHTML += `<img src="${img}" class="pdp-thumb-img" onclick="document.getElementById('pdpMainImg').src='${img}'">`;
+                });
+            }
+
+            // Sizes
+            const sizesContainer = document.getElementById('pdpSizes');
+            sizesContainer.innerHTML = '';
+            if (sizeStr && sizeStr.trim() !== '') {
+                const sizes = sizeStr.split(',');
+                currentSelectedSize = sizes[0].trim();
+                sizes.forEach((s, sIdx) => {
+                    const sz = s.trim();
+                    sizesContainer.innerHTML += `<button class="pdp-size-btn ${sIdx === 0 ? 'selected' : ''}" onclick="selectPdpSize('${sz}', this)">${sz}</button>`;
+                });
+            } else {
+                currentSelectedSize = '';
+            }
+
+            renderReviews(name);
+            document.getElementById('pdpPage').style.display = 'block';
+        }
+
+        function closePdp() {
+            document.getElementById('pdpPage').style.display = 'none';
+        }
+
+        function selectPdpSize(sz, btn) {
+            currentSelectedSize = sz;
+            document.querySelectorAll('.pdp-size-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function addCurrentPdpToBag() {
+            if (!currentPdpProduct) return;
+            const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
+            const price = currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE;
+
+            const itemTitle = currentSelectedSize ? `${name} (Size: ${currentSelectedSize})` : name;
+            cart.push({ name: itemTitle, price: Number(price) });
+            updateCart();
+            closePdp();
+            scrollToCart();
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* REAL RATINGS & REVIEWS LOGIC */
+        /* -------------------------------------------------------------------------------- */
+        function setRating(stars) {
+            selectedStarRating = stars;
+            const spans = document.querySelectorAll('#starSelector span');
+            spans.forEach((span, idx) => {
+                if (idx < stars) span.classList.add('selected');
+                else span.classList.remove('selected');
+            });
+        }
+
+        function submitReview() {
+            if (!currentPdpProduct) return;
+            const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
+            const reviewer = document.getElementById('reviewerName').value.trim() || 'Anonymous Customer';
+            const comment = document.getElementById('reviewerComment').value.trim();
+
+            if (!comment) {
+                alert('कृपया अपना रिव्यू लिखें!');
+                return;
+            }
+
+            if (!productReviewsData[name]) productReviewsData[name] = [];
+            productReviewsData[name].push({ stars: selectedStarRating, user: reviewer, text: comment });
+
+            document.getElementById('reviewerComment').value = '';
+            renderReviews(name);
+            renderProducts(allProductsData);
+            alert('रिव्यू सबमिट करने के लिए धन्यवाद!');
+        }
+
+        function renderReviews(productName) {
+            const listDiv = document.getElementById('reviewsList');
+            const reviews = productReviewsData[productName] || [];
+
+            if (reviews.length === 0) {
+                listDiv.innerHTML = '<p style="color: #666;">अभी तक कोई रिव्यू नहीं है। पहले समीक्षक बनें!</p>';
+                return;
+            }
+
+            let html = '';
+            reviews.forEach(r => {
+                let starsStr = '★'.repeat(r.stars);
+                html += `
+                    <div style="background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 4px; margin-bottom: 8px;">
+                        <div style="font-weight: bold; font-size: 12px;">${r.user} <span style="color: #ffa41c;">${starsStr}</span></div>
+                        <div style="font-size: 12px; color: #444; margin-top: 3px;">"${r.text}"</div>
+                    </div>
+                `;
+            });
+            listDiv.innerHTML = html;
+        }
+
+        /* -------------------------------------------------------------------------------- */
+        /* SIDEBAR CATEGORY FILTERING LOGIC */
+        /* -------------------------------------------------------------------------------- */
+        function filterByCategory(categoryKey) {
+            toggleSidebar();
+            if (categoryKey === 'all') {
+                document.getElementById('categoryHeader').innerText = 'ALL PRODUCTS';
+                renderProducts(allProductsData);
+                return;
+            }
+
+            const filtered = allProductsData.filter(p => {
+                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
+                return name.includes(categoryKey);
+            });
+
+            document.getElementById('categoryHeader').innerText = `${categoryKey.toUpperCase()} PRODUCTS`;
+            renderProducts(filtered);
+        }
+
         function filterProducts() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allProductsData.filter(p => {
@@ -253,7 +471,6 @@
             renderProducts(filtered);
         }
 
-        /* Wishlist Toggle */
         function toggleWishlist(name, btn) {
             if (wishlist.includes(name)) {
                 wishlist = wishlist.filter(item => item !== name);
@@ -263,27 +480,6 @@
                 btn.classList.add('active');
             }
             document.getElementById('wishlist-count').innerText = wishlist.length;
-        }
-
-        function selectSize(cardIndex, sizeValue, btnElement) {
-            selectedSizes[cardIndex] = sizeValue;
-            const parent = btnElement.parentElement;
-            parent.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-            btnElement.classList.add('selected');
-        }
-
-        function openZoomModal(src) {
-            document.getElementById('imageModal').style.display = 'flex';
-            document.getElementById('zoomedImg').src = src;
-        }
-
-        function closeZoomModal() { document.getElementById('imageModal').style.display = 'none'; }
-
-        function addToCart(name, price, index) {
-            const chosenSize = selectedSizes[index];
-            const itemTitle = chosenSize ? `${name} (Size: ${chosenSize})` : name;
-            cart.push({ name: itemTitle, price: Number(price) });
-            updateCart();
         }
 
         function updateCart() {
