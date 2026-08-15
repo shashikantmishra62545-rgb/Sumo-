@@ -9,51 +9,26 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         body { background-color: #f4f6f8; color: #333; padding-bottom: 80px; }
-        header { background: #111; color: #fff; text-align: center; padding: 18px; font-size: 24px; font-weight: bold; }
-        .hero { background: #222; color: #fff; text-align: center; padding: 25px 15px; }
-        .hero h1 { font-size: 24px; }
-        .hero p { font-size: 14px; opacity: 0.9; }
-        .container { max-width: 1000px; margin: 20px auto; padding: 0 12px; }
-
-        /* मोबाइल में 2 कॉलम (लेफ्ट और राइट) वाला ग्रिड */
-        .products-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 12px; 
-        }
-
-        /* बड़ी स्क्रीन / कंप्यूटर के लिए 3-4 कॉलम */
-        @media (min-width: 600px) {
-            .products-grid {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-                gap: 20px;
-            }
-        }
-
-        .product-card { 
-            background: #fff; 
-            border-radius: 10px; 
-            padding: 10px; 
-            text-align: center; 
-            box-shadow: 0 3px 8px rgba(0,0,0,0.06); 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: space-between; 
-        }
+        header { background: #111; color: #fff; text-align: center; padding: 20px; font-size: 28px; font-weight: bold; }
+        .hero { background: #222; color: #fff; text-align: center; padding: 30px 20px; }
+        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .product-card { background: #fff; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* इमेज साइज एडजस्टमेंट */
-        .main-img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; cursor: pointer; }
-        
-        .thumbs-container { display: flex; gap: 4px; justify-content: center; margin: 6px 0; }
-        .thumb-img { width: 35px; height: 35px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; }
+        /* मुख्य इमेज स्टाइल */
+        .main-img { width: 100%; height: 230px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
+        .main-img:hover { opacity: 0.9; }
 
-        .product-title { font-size: 14px; margin: 8px 0 4px; font-weight: 600; text-transform: capitalize; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
-        .product-price { font-size: 16px; color: #e63946; font-weight: bold; margin-bottom: 8px; }
-        .size-select { width: 100%; padding: 6px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; background: #fff; }
-        .btn { background: #111; color: #fff; border: none; padding: 8px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 13px; font-weight: 600; }
+        .thumbs-container { display: flex; gap: 6px; justify-content: center; margin: 8px 0; }
+        .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; }
+        .thumb-img:hover { border-color: #111; }
+
+        .product-title { font-size: 18px; margin: 10px 0 5px; font-weight: 600; text-transform: capitalize; }
+        .product-price { font-size: 20px; color: #e63946; font-weight: bold; margin-bottom: 10px; }
+        .size-select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #fff; }
+        .btn { background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 15px; font-weight: 600; }
         .btn:hover { background: #333; }
-        
-        .cart-section { background: #fff; border-radius: 12px; padding: 18px; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .cart-section { background: #fff; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: bold; font-size: 16px; display: block; text-align: center; text-decoration: none; padding: 12px; border-radius: 6px; border: none; width: 100%; cursor: pointer; }
 
         /* Loader Animation */
@@ -62,9 +37,9 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Full Screen Zoom Popup */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { max-width: 95%; max-height: 85vh; border-radius: 8px; }
-        .close-modal { position: absolute; top: 15px; right: 20px; color: #fff; font-size: 35px; font-weight: bold; cursor: pointer; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { max-width: 90%; max-height: 85vh; border-radius: 8px; }
+        .close-modal { position: absolute; top: 20px; right: 25px; color: #fff; font-size: 35px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -77,7 +52,7 @@
     </div>
 
     <div class="container">
-        <h2 style="text-align:center; margin-bottom:15px; font-size: 20px;">Our Products 👕👖🕶️</h2>
+        <h2 style="text-align:center; margin-bottom:20px;">Our Products 👕👖🕶️</h2>
         
         <div class="products-grid" id="products-container">
             <div class="loading-box">
@@ -152,7 +127,7 @@
                                         <img src="${mainImgUrl}" id="main-img-${index}" class="main-img" alt="${name}" onclick="openZoomModal(this.src)">
                                         ${thumbsHtml}
                                     </div>
-                                    <div class="product-title" title="${name}">${name}</div>
+                                    <div class="product-title">${name}</div>
                                     <div class="product-price">₹${price}</div>
                                     ${sizeOptions}
                                     <button class="btn" onclick="addToCart('${name}', ${price}, ${index})">Add to Cart 🛒</button>
