@@ -12,9 +12,15 @@
         header { background: #111; color: #fff; text-align: center; padding: 20px; font-size: 28px; font-weight: bold; }
         .hero { background: #222; color: #fff; text-align: center; padding: 30px 20px; }
         .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
         .product-card { background: #fff; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; }
+        
+        /* इमेज गैलरी स्टाइल */
+        .main-img { width: 100%; height: 230px; object-fit: cover; border-radius: 8px; }
+        .thumbs-container { display: flex; gap: 6px; justify-content: center; margin: 8px 0; }
+        .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; }
+        .thumb-img:hover { border-color: #111; }
+
         .product-title { font-size: 18px; margin: 10px 0 5px; font-weight: 600; text-transform: capitalize; }
         .product-price { font-size: 20px; color: #e63946; font-weight: bold; margin-bottom: 10px; }
         .size-select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #fff; }
@@ -49,7 +55,6 @@
     </div>
 
     <script>
-        // आपका नया CSV लिंक यहाँ जुड़ चुका है:
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
 
         let cart = [];
@@ -66,14 +71,28 @@
 
                     let count = 0;
                     products.forEach((product, index) => {
-                        // छोटे-बड़े अक्षरों (Capital/Small) की समस्या से बचने के लिए
                         const name = product.Name || product.name || product.NAME;
                         const price = product.Price || product.price || product.PRICE;
-                        const image = product.Image || product.image || product.IMAGE;
+                        const imageStr = product.Image || product.image || product.IMAGE;
                         const size = product.Size || product.size || product.SIZE;
 
-                        if (name && price && image) {
+                        if (name && price && imageStr) {
                             count++;
+                            
+                            // multiple images हैंडल करना (कॉमा के ज़रिए)
+                            const images = imageStr.split(',').map(img => img.trim());
+                            const mainImgUrl = images[0];
+
+                            let thumbsHtml = '';
+                            if (images.length > 1) {
+                                thumbsHtml = '<div class="thumbs-container">';
+                                images.forEach(img => {
+                                    thumbsHtml += `<img src="${img}" class="thumb-img" onclick="changeImage(${index}, '${img}')">`;
+                                });
+                                thumbsHtml += '</div>';
+                            }
+
+                            // साइज ऑप्शन बनाना
                             let sizeOptions = '';
                             if (size && size.trim() !== '') {
                                 const sizes = size.split(',');
@@ -86,7 +105,10 @@
 
                             const card = `
                                 <div class="product-card">
-                                    <img src="${image.trim()}" alt="${name}">
+                                    <div>
+                                        <img src="${mainImgUrl}" id="main-img-${index}" class="main-img" alt="${name}">
+                                        ${thumbsHtml}
+                                    </div>
                                     <div class="product-title">${name}</div>
                                     <div class="product-price">₹${price}</div>
                                     ${sizeOptions}
@@ -102,6 +124,11 @@
                     }
                 }
             });
+        }
+
+        // इमेज बदलने का फ़ंक्शन
+        function changeImage(cardIndex, newSrc) {
+            document.getElementById(`main-img-${cardIndex}`).src = newSrc;
         }
 
         function addToCart(name, price, index) {
