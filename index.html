@@ -3,99 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sumo - Official Store</title>
+    <title>sumo - Checkout</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: #f4f6f8; color: #333; padding-bottom: 80px; }
-        header { background: #111; color: #fff; text-align: center; padding: 20px; font-size: 28px; font-weight: bold; }
-        .hero { background: #222; color: #fff; text-align: center; padding: 30px 20px; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        .product-card { background: #fff; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-        .product-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; }
-        .product-title { font-size: 18px; margin: 10px 0; font-weight: 600; }
-        .product-price { font-size: 20px; color: #e63946; font-weight: bold; margin-bottom: 10px; }
-        .btn { background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 15px; }
-        .cart-section { background: #fff; border-radius: 12px; padding: 20px; margin-top: 30px; }
-        .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: bold; font-size: 16px; display: block; text-align: center; text-decoration: none; padding: 12px; border-radius: 6px; }
+        body { background-color: #f4f6f8; color: #333; padding: 20px; }
+        .container { max-width: 600px; margin: 20px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        h2 { text-align: center; margin-bottom: 20px; }
+        .cart-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .total { font-size: 20px; font-weight: bold; text-align: right; margin: 15px 0; }
+        .form-group { margin-top: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+        .btn { background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <header>sumo 🛍️</header>
-
-    <div class="hero">
-        <h1>Welcome to sumo Store</h1>
-        <p>Best Quality Shirt, Pant & Sunglasses!</p>
-    </div>
-
     <div class="container">
-        <h2 style="text-align:center; margin-bottom:20px;">Our Products 👕👖🕶️</h2>
-        <div class="products-grid">
-            <div class="product-card">
-                <img src="https://i.ibb.co/Pv4fSPr6/jpg.jpg" alt="Shirt">
-                <div class="product-title">Shirt</div>
-                <div class="product-price">₹450</div>
-                <button class="btn" onclick="addToCart('Shirt', 450)">Add to Cart 🛒</button>
-            </div>
-            <div class="product-card">
-                <img src="https://i.ibb.co/tT4jfx9Z/camera-jpg.jpg" alt="Pant">
-                <div class="product-title">sunglasse</div>
-                <div class="product-price">₹250</div>
-                <button class="btn" onclick="addToCart('sunglasses', 250)">Add to Cart 🛒</button>
-            </div>
-            <div class="product-card">
-                <img src="https://i.ibb.co/yBWDwhFb/camerajpg.jpg" alt="Sunglasses">
-                <div class="product-title">pant</div>
-                <div class="product-price">₹650</div>
-                <button class="btn" onclick="addToCart('pant', 650)">Add to Cart 🛒</button>
-            </div>
+        <h2>Order Summary 🛒</h2>
+        <div id="cart-summary"></div>
+        <div class="total" id="total-price">Total: ₹0</div>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #eee;">
+
+        <h2>Customer Details 📝</h2>
+        <div class="form-group">
+            <label>आपका नाम 👤</label>
+            <input type="text" id="cust-name" placeholder="अपना पूरा नाम लिखें">
+        </div>
+        <div class="form-group">
+            <label>मोबाइल नंबर 📱</label>
+            <input type="tel" id="cust-phone" placeholder="10 अंकों का मोबाइल नंबर">
+        </div>
+        <div class="form-group">
+            <label>पिन कोड 📍</label>
+            <input type="text" id="cust-pincode" placeholder="Area Pin Code (जैसे 110001)">
+        </div>
+        <div class="form-group">
+            <label>पूरा पता 🏠</label>
+            <textarea id="cust-address" rows="3" placeholder="मकान नंबर, गली, लैंडमार्क, शहर"></textarea>
         </div>
 
-        <div class="cart-section">
-            <h2>Your Cart 🛒</h2>
-            <div id="cart-items" style="margin: 15px 0;"><p>कार्ट खाली है।</p></div>
-            <div id="cart-total" style="font-weight:bold; font-size:18px;">Total: ₹0</div>
-            <button class="checkout-btn" onclick="goToCheckout()">Proceed to Order ➡️</button>
-        </div>
+        <button class="btn" onclick="sendOrder()">Order on WhatsApp 📲</button>
     </div>
 
     <script>
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('sumoCart')) || [];
 
-        function addToCart(name, price) {
-            cart.push({ name, price });
-            updateCart();
-        }
+        function displayOrder() {
+            const summaryDiv = document.getElementById('cart-summary');
+            const totalDiv = document.getElementById('total-price');
 
-        function updateCart() {
-            const cartItemsDiv = document.getElementById('cart-items');
-            const cartTotalDiv = document.getElementById('cart-total');
             if (cart.length === 0) {
-                cartItemsDiv.innerHTML = '<p>कार्ट खाली है।</p>';
-                cartTotalDiv.innerText = 'Total: ₹0';
+                summaryDiv.innerHTML = '<p style="text-align:center;">कोई सामान नहीं चुना गया है।</p>';
                 return;
             }
+
             let html = '';
             let total = 0;
             cart.forEach(item => {
                 total += item.price;
-                html += `<div style="display:flex; justify-content:space-between; padding:5px 0;"><span>${item.name}</span><span>₹${item.price}</span></div>`;
+                html += `<div class="cart-item"><span>${item.name}</span><span>₹${item.price}</span></div>`;
             });
-            cartItemsDiv.innerHTML = html;
-            cartTotalDiv.innerText = `Total: ₹${total}`;
+
+            summaryDiv.innerHTML = html;
+            totalDiv.innerText = `Total: ₹${total}`;
         }
 
-        function goToCheckout() {
-            if (cart.length === 0) {
-                alert('कृपया पहले कोई प्रोडक्ट चुनें!');
+        function sendOrder() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const pincode = document.getElementById('cust-pincode').value;
+            const address = document.getElementById('cust-address').value;
+
+            if (!name || !phone || !pincode || !address) {
+                alert('कृपया सभी फ़ील्ड (नाम, मोबाइल नंबर, पिन कोड, पता) भरें!');
                 return;
             }
-            // कार्ट के सामान को ब्राऊज़र की मेमोरी में सेव करना
-            localStorage.setItem('sumoCart', JSON.stringify(cart));
-            // दूसरे पेज पर जाना
-            window.location.href = 'checkout.html';
+
+            let message = `*New Order from sumo Store*%0A%0A`;
+            message += `*Customer:* ${name}%0A`;
+            message += `*Phone:* ${phone}%0A`;
+            message += `*Pin Code:* ${pincode}%0A`;
+            message += `*Address:* ${address}%0A%0A`;
+            message += `*Items:*%0A`;
+
+            let total = 0;
+            cart.forEach(item => {
+                message += `- ${item.name}: ₹${item.price}%0A`;
+                total += item.price;
+            });
+
+            message += `%0A*Total Amount:* ₹${total}`;
+
+            // ⚠️ यहाँ अपना 10 अंकों का WhatsApp नंबर डालें (बिना + के)
+            const myPhoneNumber = "919876543210"; 
+
+            const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
         }
+
+        displayOrder();
     </script>
 </body>
 </html>
