@@ -56,13 +56,10 @@
 
         .card-body { padding: 10px; text-align: left; }
         .rating-box { font-size: 11px; color: #ffa41c; font-weight: bold; margin-bottom: 4px; }
-        .review-count { color: #777; font-weight: normal; font-size: 10px; }
         .product-title { font-size: 12px; font-weight: 600; color: #222; text-transform: uppercase; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
         .product-price { font-size: 14px; font-weight: 800; color: #111; }
 
-        /* -------------------------------------------------------------------------------- */
-        /* FULL PRODUCT DETAILS PAGE (The Souled Store Style) */
-        /* -------------------------------------------------------------------------------- */
+        /* FULL PRODUCT DETAILS PAGE */
         .pdp-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 80px; }
         .pdp-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
         .pdp-back { font-size: 22px; border: none; background: none; cursor: pointer; }
@@ -73,12 +70,16 @@
         .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
         
         .pdp-title { font-size: 18px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
-        .pdp-price { font-size: 22px; font-weight: 800; color: #111; margin-bottom: 15px; }
+        .pdp-price-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .pdp-price { font-size: 22px; font-weight: 800; color: #111; }
+        .delivery-tag { background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
 
         .pdp-section-label { font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 15px 0 8px; color: #333; }
-        .pdp-sizes { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .pdp-size-btn { border: 1px solid #ccc; background: #fff; font-size: 13px; padding: 8px 14px; font-weight: 700; cursor: pointer; border-radius: 4px; }
-        .pdp-size-btn.selected { background: #111; color: #fff; border-color: #111; }
+        
+        /* Size & Color Selectors */
+        .pdp-options { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .pdp-opt-btn { border: 1px solid #ccc; background: #fff; font-size: 13px; padding: 8px 14px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+        .pdp-opt-btn.selected { background: #111; color: #fff; border-color: #111; }
 
         .pdp-pincode-box { display: flex; gap: 8px; margin-bottom: 20px; }
         .pdp-pincode-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none; }
@@ -173,9 +174,7 @@
         </div>
     </div>
 
-    <!-- -------------------------------------------------------------------------------- -->
-    <!-- PRODUCT DETAILS PAGE MODAL (THE SOULED STORE DESIGN) -->
-    <!-- -------------------------------------------------------------------------------- -->
+    <!-- PRODUCT DETAILS PAGE MODAL -->
     <div id="pdpPage" class="pdp-page">
         <div class="pdp-header">
             <button class="pdp-back" onclick="closePdp()">←</button>
@@ -188,10 +187,17 @@
             <div id="pdpThumbs" class="pdp-thumbs"></div>
 
             <div id="pdpTitle" class="pdp-title">Product Name</div>
-            <div id="pdpPrice" class="pdp-price">₹0</div>
+            
+            <div class="pdp-price-row">
+                <div id="pdpPrice" class="pdp-price">₹0</div>
+                <div id="pdpDeliveryTag" class="delivery-tag"></div>
+            </div>
 
             <div class="pdp-section-label">SELECT SIZE</div>
-            <div id="pdpSizes" class="pdp-sizes"></div>
+            <div id="pdpSizes" class="pdp-options"></div>
+
+            <div id="pdpColorLabel" class="pdp-section-label">SELECT COLOR</div>
+            <div id="pdpColors" class="pdp-options"></div>
 
             <div class="pdp-section-label">DELIVERY DETAILS</div>
             <div class="pdp-pincode-box">
@@ -201,9 +207,9 @@
 
             <div class="pdp-info-card">
                 <h4>Product Details</h4>
-                <p><strong>Material & Care:</strong> 100% Premium Cotton | Machine Wash</p>
-                <p><strong>Country of Origin:</strong> India 🇮🇳</p>
-                <p><strong>Policy:</strong> 30-Day Easy Exchange / Return Available</p>
+                <p id="pdpDetailsText">100% Premium Cotton | Machine Wash</p>
+                <p style="margin-top: 4px;"><strong>Country of Origin:</strong> India 🇮🇳</p>
+                <p><strong>Policy:</strong> 7-Day Easy Exchange / Return Available</p>
             </div>
 
             <!-- REAL REVIEWS & RATINGS SECTION -->
@@ -254,8 +260,9 @@
         let wishlist = [];
         let currentPdpProduct = null;
         let currentSelectedSize = '';
+        let currentSelectedColor = '';
         let selectedStarRating = 5;
-        let productReviewsData = {}; // Stores real reviews per product
+        let productReviewsData = {};
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
         function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
@@ -291,7 +298,7 @@
                     const mainImgUrl = images[0];
 
                     const reviews = productReviewsData[name] || [];
-                    let avgRatingStr = 'No Ratings Yet';
+                    let avgRatingStr = '★ 4.5 (12)';
                     if (reviews.length > 0) {
                         const sum = reviews.reduce((acc, r) => acc + r.stars, 0);
                         avgRatingStr = `★ ${(sum / reviews.length).toFixed(1)} (${reviews.length})`;
@@ -321,9 +328,6 @@
             }
         }
 
-        /* -------------------------------------------------------------------------------- */
-        /* OPEN THE SOULED STORE STYLE PRODUCT DETAIL PAGE */
-        /* -------------------------------------------------------------------------------- */
         function openPdp(index) {
             const product = allProductsData[index];
             currentPdpProduct = product;
@@ -332,12 +336,19 @@
             const price = product.Price || product.price || product.PRICE;
             const imageStr = product.Image || product.image || product.IMAGE;
             const sizeStr = product.Size || product.size || product.SIZE;
+            const colorStr = product.Color || product.color || product.COLOR;
+            const details = product.Details || product.details || product.DETAILS || '100% Premium Quality Fabric | Comfortable Fit';
+            const delivery = product.Delivery || product.delivery || product.DELIVERY || 'Free Delivery';
 
             const images = imageStr.split(',').map(img => img.trim());
 
             document.getElementById('pdpMainImg').src = images[0];
             document.getElementById('pdpTitle').innerText = name;
             document.getElementById('pdpPrice').innerText = `₹${price}`;
+            document.getElementById('pdpDetailsText').innerText = details;
+
+            const deliveryTag = document.getElementById('pdpDeliveryTag');
+            deliveryTag.innerText = delivery;
 
             // Thumbs
             const thumbsContainer = document.getElementById('pdpThumbs');
@@ -356,23 +367,46 @@
                 currentSelectedSize = sizes[0].trim();
                 sizes.forEach((s, sIdx) => {
                     const sz = s.trim();
-                    sizesContainer.innerHTML += `<button class="pdp-size-btn ${sIdx === 0 ? 'selected' : ''}" onclick="selectPdpSize('${sz}', this)">${sz}</button>`;
+                    sizesContainer.innerHTML += `<button class="pdp-opt-btn ${sIdx === 0 ? 'selected' : ''}" onclick="selectPdpSize('${sz}', this)">${sz}</button>`;
                 });
             } else {
                 currentSelectedSize = '';
+            }
+
+            // Colors
+            const colorsContainer = document.getElementById('pdpColors');
+            const colorLabel = document.getElementById('pdpColorLabel');
+            colorsContainer.innerHTML = '';
+            if (colorStr && colorStr.trim() !== '') {
+                colorLabel.style.display = 'block';
+                colorsContainer.style.display = 'flex';
+                const colors = colorStr.split(',');
+                currentSelectedColor = colors[0].trim();
+                colors.forEach((c, cIdx) => {
+                    const clr = c.trim();
+                    colorsContainer.innerHTML += `<button class="pdp-opt-btn ${cIdx === 0 ? 'selected' : ''}" onclick="selectPdpColor('${clr}', this)">${clr}</button>`;
+                });
+            } else {
+                colorLabel.style.display = 'none';
+                colorsContainer.style.display = 'none';
+                currentSelectedColor = '';
             }
 
             renderReviews(name);
             document.getElementById('pdpPage').style.display = 'block';
         }
 
-        function closePdp() {
-            document.getElementById('pdpPage').style.display = 'none';
-        }
+        function closePdp() { document.getElementById('pdpPage').style.display = 'none'; }
 
         function selectPdpSize(sz, btn) {
             currentSelectedSize = sz;
-            document.querySelectorAll('.pdp-size-btn').forEach(b => b.classList.remove('selected'));
+            document.querySelectorAll('#pdpSizes .pdp-opt-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function selectPdpColor(clr, btn) {
+            currentSelectedColor = clr;
+            document.querySelectorAll('#pdpColors .pdp-opt-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
         }
 
@@ -381,16 +415,17 @@
             const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
             const price = currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE;
 
-            const itemTitle = currentSelectedSize ? `${name} (Size: ${currentSelectedSize})` : name;
-            cart.push({ name: itemTitle, price: Number(price) });
+            let variantInfo = [];
+            if (currentSelectedSize) variantInfo.push(`Size: ${currentSelectedSize}`);
+            if (currentSelectedColor) variantInfo.push(`Color: ${currentSelectedColor}`);
+
+            const fullTitle = variantInfo.length > 0 ? `${name} (${variantInfo.join(', ')})` : name;
+            cart.push({ name: fullTitle, price: Number(price) });
             updateCart();
             closePdp();
             scrollToCart();
         }
 
-        /* -------------------------------------------------------------------------------- */
-        /* REAL RATINGS & REVIEWS LOGIC */
-        /* -------------------------------------------------------------------------------- */
         function setRating(stars) {
             selectedStarRating = stars;
             const spans = document.querySelectorAll('#starSelector span');
@@ -442,9 +477,6 @@
             listDiv.innerHTML = html;
         }
 
-        /* -------------------------------------------------------------------------------- */
-        /* SIDEBAR CATEGORY FILTERING LOGIC */
-        /* -------------------------------------------------------------------------------- */
         function filterByCategory(categoryKey) {
             toggleSidebar();
             if (categoryKey === 'all') {
