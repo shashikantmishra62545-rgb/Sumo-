@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>sumo - Official Store</title>
-    <!-- Google Sheet CSV पढ़ने के लिए लाइब्रेरी -->
+    <!-- Google Sheet CSV पढ़ने के लिए PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
@@ -15,7 +15,7 @@
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
         .product-card { background: #fff; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
         .product-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; }
-        .product-title { font-size: 18px; margin: 10px 0 5px; font-weight: 600; }
+        .product-title { font-size: 18px; margin: 10px 0 5px; font-weight: 600; text-transform: capitalize; }
         .product-price { font-size: 20px; color: #e63946; font-weight: bold; margin-bottom: 10px; }
         .size-select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #fff; }
         .btn { background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 15px; }
@@ -49,6 +49,7 @@
     </div>
 
     <script>
+        // आपका नया CSV लिंक यहाँ जुड़ चुका है:
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
 
         let cart = [];
@@ -57,16 +58,25 @@
             Papa.parse(sheetCsvUrl, {
                 download: true,
                 header: true,
+                skipEmptyLines: true,
                 complete: function(results) {
                     const products = results.data;
                     const container = document.getElementById('products-container');
                     container.innerHTML = '';
 
+                    let count = 0;
                     products.forEach((product, index) => {
-                        if (product.Name && product.Price && product.Image) {
+                        // छोटे-बड़े अक्षरों (Capital/Small) की समस्या से बचने के लिए
+                        const name = product.Name || product.name || product.NAME;
+                        const price = product.Price || product.price || product.PRICE;
+                        const image = product.Image || product.image || product.IMAGE;
+                        const size = product.Size || product.size || product.SIZE;
+
+                        if (name && price && image) {
+                            count++;
                             let sizeOptions = '';
-                            if (product.Size && product.Size.trim() !== '') {
-                                const sizes = product.Size.split(',');
+                            if (size && size.trim() !== '') {
+                                const sizes = size.split(',');
                                 sizeOptions = `<select id="size-${index}" class="size-select">`;
                                 sizes.forEach(s => {
                                     sizeOptions += `<option value="${s.trim()}">Size: ${s.trim()}</option>`;
@@ -76,16 +86,20 @@
 
                             const card = `
                                 <div class="product-card">
-                                    <img src="${product.Image.trim()}" alt="${product.Name}">
-                                    <div class="product-title">${product.Name}</div>
-                                    <div class="product-price">₹${product.Price}</div>
+                                    <img src="${image.trim()}" alt="${name}">
+                                    <div class="product-title">${name}</div>
+                                    <div class="product-price">₹${price}</div>
                                     ${sizeOptions}
-                                    <button class="btn" onclick="addToCart('${product.Name}', ${product.Price}, ${index})">Add to Cart 🛒</button>
+                                    <button class="btn" onclick="addToCart('${name}', ${price}, ${index})">Add to Cart 🛒</button>
                                 </div>
                             `;
                             container.innerHTML += card;
                         }
                     });
+
+                    if (count === 0) {
+                        container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">कोई प्रोडक्ट नहीं मिला। कृपया Google Sheet चेक करें।</p>';
+                    }
                 }
             });
         }
@@ -97,7 +111,7 @@
                 selectedSize = sizeElement.value;
             }
 
-            const itemTitle = selectedSize ? `${name} (${selectedSize})` : name;
+            const itemTitle = selectedSize ? `${name} (Size: ${selectedSize})` : name;
             cart.push({ name: itemTitle, price: Number(price) });
             updateCart();
         }
