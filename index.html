@@ -15,8 +15,10 @@
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
         .product-card { background: #fff; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
         
-        /* इमेज गैलरी स्टाइल */
-        .main-img { width: 100%; height: 230px; object-fit: cover; border-radius: 8px; }
+        /* मुख्य इमेज स्टाइल (कर्सर पॉइंटर) */
+        .main-img { width: 100%; height: 230px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
+        .main-img:hover { opacity: 0.9; }
+
         .thumbs-container { display: flex; gap: 6px; justify-content: center; margin: 8px 0; }
         .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; }
         .thumb-img:hover { border-color: #111; }
@@ -28,6 +30,11 @@
         .btn:hover { background: #333; }
         .cart-section { background: #fff; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
         .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: bold; font-size: 16px; display: block; text-align: center; text-decoration: none; padding: 12px; border-radius: 6px; border: none; width: 100%; cursor: pointer; }
+
+        /* Full Screen Zoom Popup (Modal) */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { max-width: 90%; max-height: 85vh; border-radius: 8px; box-shadow: 0 5px 15px rgba(255,255,255,0.2); }
+        .close-modal { position: absolute; top: 20px; right: 25px; color: #fff; font-size: 35px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -52,6 +59,12 @@
             <div id="cart-total" style="font-weight:bold; font-size:18px;">Total: ₹0</div>
             <button class="checkout-btn" onclick="goToCheckout()">Proceed to Order ➡️</button>
         </div>
+    </div>
+
+    <!-- फोटो ज़ूम देखने का Pop-up डिब्बा -->
+    <div id="imageModal" class="modal" onclick="closeZoomModal()">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="zoomedImg">
     </div>
 
     <script>
@@ -79,7 +92,6 @@
                         if (name && price && imageStr) {
                             count++;
                             
-                            // multiple images हैंडल करना (कॉमा के ज़रिए)
                             const images = imageStr.split(',').map(img => img.trim());
                             const mainImgUrl = images[0];
 
@@ -92,7 +104,6 @@
                                 thumbsHtml += '</div>';
                             }
 
-                            // साइज ऑप्शन बनाना
                             let sizeOptions = '';
                             if (size && size.trim() !== '') {
                                 const sizes = size.split(',');
@@ -106,7 +117,8 @@
                             const card = `
                                 <div class="product-card">
                                     <div>
-                                        <img src="${mainImgUrl}" id="main-img-${index}" class="main-img" alt="${name}">
+                                        <!-- फोटो पर टैप करने से बड़ी फोटो खुलेगी -->
+                                        <img src="${mainImgUrl}" id="main-img-${index}" class="main-img" alt="${name}" onclick="openZoomModal(this.src)">
                                         ${thumbsHtml}
                                     </div>
                                     <div class="product-title">${name}</div>
@@ -126,9 +138,21 @@
             });
         }
 
-        // इमेज बदलने का फ़ंक्शन
         function changeImage(cardIndex, newSrc) {
             document.getElementById(`main-img-${cardIndex}`).src = newSrc;
+        }
+
+        // फोटो बड़ी (Zoom) करने का फ़ंक्शन
+        function openZoomModal(src) {
+            const modal = document.getElementById('imageModal');
+            const zoomedImg = document.getElementById('zoomedImg');
+            modal.style.display = 'flex';
+            zoomedImg.src = src;
+        }
+
+        // Zoom बंद करने का फ़ंक्शन
+        function closeZoomModal() {
+            document.getElementById('imageModal').style.display = 'none';
         }
 
         function addToCart(name, price, index) {
