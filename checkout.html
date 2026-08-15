@@ -13,7 +13,7 @@
         .total { font-size: 20px; font-weight: bold; text-align: right; margin: 15px 0; }
         .form-group { margin-top: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
         .btn { background: #25D366; color: white; border: none; padding: 12px; border-radius: 6px; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
@@ -29,18 +29,25 @@
         <h2>Customer Details 📝</h2>
         <div class="form-group">
             <label>आपका नाम 👤</label>
-            <input type="text" id="cust-name" placeholder="अपना नाम लिखें">
+            <input type="text" id="cust-name" placeholder="अपना पूरा नाम लिखें">
         </div>
         <div class="form-group">
-            <label>पूरा पता 📍</label>
-            <textarea id="cust-address" rows="3" placeholder="मकान नं, गली, शहर आदि लिखें"></textarea>
+            <label>मोबाइल नंबर 📱</label>
+            <input type="tel" id="cust-phone" placeholder="10 अंकों का मोबाइल नंबर">
+        </div>
+        <div class="form-group">
+            <label>पिन कोड 📍</label>
+            <input type="text" id="cust-pincode" placeholder="Area Pin Code (जैसे 110001)">
+        </div>
+        <div class="form-group">
+            <label>पूरा पता 🏠</label>
+            <textarea id="cust-address" rows="3" placeholder="मकान नंबर, गली, लैंडमार्क, शहर"></textarea>
         </div>
 
         <button class="btn" onclick="sendOrder()">Order on WhatsApp 📲</button>
     </div>
 
     <script>
-        // memory (localStorage) से कार्ट का डेटा निकालना
         let cart = JSON.parse(localStorage.getItem('sumoCart')) || [];
 
         function displayOrder() {
@@ -65,15 +72,19 @@
 
         function sendOrder() {
             const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const pincode = document.getElementById('cust-pincode').value;
             const address = document.getElementById('cust-address').value;
 
-            if (!name || !address) {
-                alert('कृपया अपना नाम और पता भरें!');
+            if (!name || !phone || !pincode || !address) {
+                alert('कृपया सभी फ़ील्ड (नाम, मोबाइल नंबर, पिन कोड, पता) भरें!');
                 return;
             }
 
             let message = `*New Order from sumo Store*%0A%0A`;
             message += `*Customer:* ${name}%0A`;
+            message += `*Phone:* ${phone}%0A`;
+            message += `*Pin Code:* ${pincode}%0A`;
             message += `*Address:* ${address}%0A%0A`;
             message += `*Items:*%0A`;
 
@@ -85,7 +96,7 @@
 
             message += `%0A*Total Amount:* ₹${total}`;
 
-            // ⚠️ यहाँ अपना असली 10 अंकों का WhatsApp नंबर लिखें (91 लगाकर)
+            // ⚠️ यहाँ अपना 10 अंकों का WhatsApp नंबर डालें (बिना + के)
             const myPhoneNumber = "9721473962"; 
 
             const whatsappUrl = `https://wa.me/${myPhoneNumber}?text=${message}`;
@@ -96,4 +107,3 @@
     </script>
 </body>
 </html>
-
