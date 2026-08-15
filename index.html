@@ -3,74 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sumo - Official Store</title>
+    <title>SUMO — Official Store</title>
     <!-- Google Sheet CSV पढ़ने के लिए PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #f4f6f8; color: #333; padding-bottom: 80px; }
-        header { background: #111; color: #fff; text-align: center; padding: 20px; font-size: 28px; font-weight: bold; }
-        .hero { background: #222; color: #fff; text-align: center; padding: 30px 20px; }
-        .container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-        .product-card { background: #fff; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; justify-content: space-between; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #fcfcfc; color: #111; padding-bottom: 90px; }
+
+        /* Announcement Bar */
+        .announcement { background: #111; color: #fff; text-align: center; padding: 7px 10px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* Navbar Header */
+        header { background: #fff; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; }
+        .menu-btn { font-size: 22px; cursor: pointer; background: none; border: none; }
+        .logo { font-size: 22px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #111; text-decoration: none; }
+        .cart-icon-btn { font-size: 20px; cursor: pointer; background: none; border: none; position: relative; }
+        .cart-count { position: absolute; top: -6px; right: -10px; background: #e63946; color: white; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; }
+
+        /* Slide-out Sidebar Menu */
+        .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #fff; z-index: 1000; transition: 0.3s ease; box-shadow: 4px 0 15px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; }
+        .sidebar.active { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .sidebar-title { font-weight: 800; letter-spacing: 1px; }
+        .close-sidebar { font-size: 24px; border: none; background: none; cursor: pointer; }
+        .menu-list { list-style: none; }
+        .menu-list li { border-bottom: 1px solid #f5f5f5; }
+        .menu-list a { display: block; padding: 14px 0; color: #222; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; }
+
+        /* Banner Offer */
+        .hero-banner { background: #f4f4f4; text-align: center; padding: 25px 15px; border-bottom: 1px solid #eee; }
+        .hero-banner h2 { font-size: 20px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .hero-banner p { font-size: 12px; color: #666; margin-top: 5px; letter-spacing: 0.5px; }
+
+        /* Container Layout */
+        .container { max-width: 1100px; margin: 20px auto; padding: 0 10px; }
+        .section-title { font-size: 14px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 15px; padding-left: 5px; color: #444; }
+
+        /* 2 Column Mobile Grid */
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        @media (min-width: 768px) {
+            .products-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+            .container { padding: 0 20px; }
+        }
+
+        /* Product Cards */
+        .product-card { background: #fff; border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid #f0f0f0; }
+        .badge { position: absolute; top: 8px; left: 8px; background: #111; color: #fff; font-size: 9px; font-weight: 700; padding: 3px 6px; letter-spacing: 0.5px; text-transform: uppercase; z-index: 2; }
+        .img-container { width: 100%; height: 210px; background: #f9f9f9; overflow: hidden; position: relative; }
+        .main-img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: transform 0.3s ease; }
+        .main-img:hover { transform: scale(1.03); }
+
+        .card-body { padding: 10px; text-align: left; }
+        .product-title { font-size: 12px; font-weight: 600; color: #222; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+        .price-box { margin-bottom: 8px; }
+        .product-price { font-size: 14px; font-weight: 800; color: #111; }
         
-        /* मुख्य इमेज स्टाइल */
-        .main-img { width: 100%; height: 230px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
-        .main-img:hover { opacity: 0.9; }
+        .size-box { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+        .size-btn { border: 1px solid #ccc; background: #fff; font-size: 10px; padding: 4px 6px; font-weight: 600; cursor: pointer; border-radius: 2px; }
+        .size-btn.selected { background: #111; color: #fff; border-color: #111; }
 
-        .thumbs-container { display: flex; gap: 6px; justify-content: center; margin: 8px 0; }
-        .thumb-img { width: 45px; height: 45px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: pointer; }
-        .thumb-img:hover { border-color: #111; }
+        .add-btn { background: #111; color: #fff; border: none; width: 100%; padding: 8px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+        .add-btn:hover { background: #333; }
 
-        .product-title { font-size: 18px; margin: 10px 0 5px; font-weight: 600; text-transform: capitalize; }
-        .product-price { font-size: 20px; color: #e63946; font-weight: bold; margin-bottom: 10px; }
-        .size-select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; background: #fff; }
-        .btn { background: #111; color: #fff; border: none; padding: 10px; border-radius: 6px; cursor: pointer; width: 100%; font-size: 15px; font-weight: 600; }
-        .btn:hover { background: #333; }
-        .cart-section { background: #fff; border-radius: 12px; padding: 20px; margin-top: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-        .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: bold; font-size: 16px; display: block; text-align: center; text-decoration: none; padding: 12px; border-radius: 6px; border: none; width: 100%; cursor: pointer; }
+        /* Cart Section Drawer/Bottom */
+        .cart-section { background: #fff; border-top: 2px solid #111; padding: 20px; margin-top: 40px; }
+        .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: 700; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; text-align: center; text-decoration: none; padding: 12px; border-radius: 4px; border: none; width: 100%; cursor: pointer; display: block; }
 
-        /* Loader Animation */
-        .loading-box { text-align: center; grid-column: 1/-1; padding: 40px 0; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #111; border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; margin: 0 auto 15px; }
+        /* Loader */
+        .loading-box { text-align: center; grid-column: 1/-1; padding: 50px 0; }
+        .spinner { border: 3px solid #eee; border-top: 3px solid #111; border-radius: 50%; width: 35px; height: 35px; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Full Screen Zoom Popup */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { max-width: 90%; max-height: 85vh; border-radius: 8px; }
-        .close-modal { position: absolute; top: 20px; right: 25px; color: #fff; font-size: 35px; font-weight: bold; cursor: pointer; }
+        /* Modal Image Zoom */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; }
+        .modal-content { max-width: 90%; max-height: 80vh; object-fit: contain; }
     </style>
 </head>
 <body>
 
-    <header>sumo 🛍️</header>
+    <div class="announcement">🚚 FREE SHIPPING ON ORDERS ABOVE ₹999 | CASH ON DELIVERY AVAILABLE</div>
 
-    <div class="hero">
-        <h1>Welcome to sumo Store</h1>
-        <p>Best Quality Products at Affordable Prices!</p>
+    <!-- Header Navigation -->
+    <header>
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <a href="#" class="logo">SUMO</a>
+        <button class="cart-icon-btn" onclick="scrollToCart()">🛒 <span class="cart-count" id="cart-count">0</span></button>
+    </header>
+
+    <!-- Slide-out Sidebar Drawer -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">SUMO STORE</span>
+            <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+        </div>
+        <ul class="menu-list">
+            <li><a href="#" onclick="toggleSidebar()">SHOP ALL</a></li>
+            <li><a href="#" onclick="toggleSidebar()">NEW ARRIVALS</a></li>
+            <li><a href="#" onclick="toggleSidebar()">BESTSELLERS</a></li>
+            <li><a href="#" onclick="toggleSidebar()">TOPWEAR</a></li>
+            <li><a href="#" onclick="toggleSidebar()">BOTTOMWEAR</a></li>
+        </ul>
     </div>
 
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+        <h2>NEW COLLECTION 2026</h2>
+        <p>Elevate Your Daily Style With Best Quality Essentials</p>
+    </div>
+
+    <!-- Main Content -->
     <div class="container">
-        <h2 style="text-align:center; margin-bottom:20px;">Our Products 👕👖🕶️</h2>
+        <div class="section-title">ALL PRODUCTS</div>
         
         <div class="products-grid" id="products-container">
             <div class="loading-box">
                 <div class="spinner"></div>
-                <p style="font-weight: 600; color: #555;">प्रोडक्ट्स लोड हो रहे हैं...</p>
+                <p style="font-size: 12px; letter-spacing: 1px; font-weight:600;">LOADING PRODUCTS...</p>
             </div>
         </div>
 
-        <div class="cart-section">
-            <h2>Your Cart 🛒</h2>
-            <div id="cart-items" style="margin: 15px 0;"><p>कार्ट खाली है।</p></div>
-            <div id="cart-total" style="font-weight:bold; font-size:18px;">Total: ₹0</div>
-            <button class="checkout-btn" onclick="goToCheckout()">Proceed to Order ➡️</button>
+        <!-- Cart Section -->
+        <div class="cart-section" id="cart-section">
+            <h3 style="font-size: 16px; letter-spacing: 1px; font-weight:800; text-transform:uppercase;">YOUR SHOPPING BAG 🛒</h3>
+            <div id="cart-items" style="margin: 15px 0; font-size: 13px;"><p>आपकी कार्ट अभी खाली है।</p></div>
+            <div id="cart-total" style="font-weight:800; font-size:16px;">TOTAL: ₹0</div>
+            <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO ORDER ➡️</button>
         </div>
     </div>
 
+    <!-- Zoom Lightbox -->
     <div id="imageModal" class="modal" onclick="closeZoomModal()">
-        <span class="close-modal">&times;</span>
         <img class="modal-content" id="zoomedImg">
     </div>
 
@@ -78,6 +140,15 @@
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
 
         let cart = [];
+        let selectedSizes = {};
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function scrollToCart() {
+            document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
+        }
 
         function loadProductsFromSheet() {
             Papa.parse(sheetCsvUrl, {
@@ -98,39 +169,35 @@
 
                         if (name && price && imageStr) {
                             count++;
-                            
                             const images = imageStr.split(',').map(img => img.trim());
                             const mainImgUrl = images[0];
 
-                            let thumbsHtml = '';
-                            if (images.length > 1) {
-                                thumbsHtml = '<div class="thumbs-container">';
-                                images.forEach(img => {
-                                    thumbsHtml += `<img src="${img}" class="thumb-img" onclick="changeImage(${index}, '${img}')">`;
-                                });
-                                thumbsHtml += '</div>';
-                            }
-
-                            let sizeOptions = '';
+                            let sizeHtml = '';
                             if (size && size.trim() !== '') {
                                 const sizes = size.split(',');
-                                sizeOptions = `<select id="size-${index}" class="size-select">`;
-                                sizes.forEach(s => {
-                                    sizeOptions += `<option value="${s.trim()}">Size: ${s.trim()}</option>`;
+                                sizeHtml = '<div class="size-box">';
+                                sizes.forEach((s, sIndex) => {
+                                    const sz = s.trim();
+                                    sizeHtml += `<button class="size-btn ${sIndex === 0 ? 'selected' : ''}" onclick="selectSize(${index}, '${sz}', this)">${sz}</button>`;
                                 });
-                                sizeOptions += `</select>`;
+                                sizeHtml += '</div>';
+                                selectedSizes[index] = sizes[0].trim(); // Default selected size
                             }
 
                             const card = `
                                 <div class="product-card">
-                                    <div>
-                                        <img src="${mainImgUrl}" id="main-img-${index}" class="main-img" alt="${name}" onclick="openZoomModal(this.src)">
-                                        ${thumbsHtml}
+                                    <span class="badge">BESTSELLER</span>
+                                    <div class="img-container">
+                                        <img src="${mainImgUrl}" class="main-img" alt="${name}" onclick="openZoomModal('${mainImgUrl}')">
                                     </div>
-                                    <div class="product-title">${name}</div>
-                                    <div class="product-price">₹${price}</div>
-                                    ${sizeOptions}
-                                    <button class="btn" onclick="addToCart('${name}', ${price}, ${index})">Add to Cart 🛒</button>
+                                    <div class="card-body">
+                                        <div class="product-title">${name}</div>
+                                        <div class="price-box">
+                                            <span class="product-price">₹${price}</span>
+                                        </div>
+                                        ${sizeHtml}
+                                        <button class="add-btn" onclick="addToCart('${name}', ${price}, ${index})">ADD TO BAG 🛒</button>
+                                    </div>
                                 </div>
                             `;
                             container.innerHTML += card;
@@ -144,15 +211,17 @@
             });
         }
 
-        function changeImage(cardIndex, newSrc) {
-            document.getElementById(`main-img-${cardIndex}`).src = newSrc;
+        function selectSize(cardIndex, sizeValue, btnElement) {
+            selectedSizes[cardIndex] = sizeValue;
+            const parent = btnElement.parentElement;
+            const buttons = parent.querySelectorAll('.size-btn');
+            buttons.forEach(b => b.classList.remove('selected'));
+            btnElement.classList.add('selected');
         }
 
         function openZoomModal(src) {
-            const modal = document.getElementById('imageModal');
-            const zoomedImg = document.getElementById('zoomedImg');
-            modal.style.display = 'flex';
-            zoomedImg.src = src;
+            document.getElementById('imageModal').style.display = 'flex';
+            document.getElementById('zoomedImg').src = src;
         }
 
         function closeZoomModal() {
@@ -160,13 +229,8 @@
         }
 
         function addToCart(name, price, index) {
-            let selectedSize = '';
-            const sizeElement = document.getElementById(`size-${index}`);
-            if (sizeElement) {
-                selectedSize = sizeElement.value;
-            }
-
-            const itemTitle = selectedSize ? `${name} (Size: ${selectedSize})` : name;
+            const chosenSize = selectedSizes[index];
+            const itemTitle = chosenSize ? `${name} (Size: ${chosenSize})` : name;
             cart.push({ name: itemTitle, price: Number(price) });
             updateCart();
         }
@@ -174,19 +238,23 @@
         function updateCart() {
             const cartItemsDiv = document.getElementById('cart-items');
             const cartTotalDiv = document.getElementById('cart-total');
+            const cartCountSpan = document.getElementById('cart-count');
+
+            cartCountSpan.innerText = cart.length;
+
             if (cart.length === 0) {
-                cartItemsDiv.innerHTML = '<p>कार्ट खाली है।</p>';
-                cartTotalDiv.innerText = 'Total: ₹0';
+                cartItemsDiv.innerHTML = '<p>आपकी कार्ट अभी खाली है।</p>';
+                cartTotalDiv.innerText = 'TOTAL: ₹0';
                 return;
             }
             let html = '';
             let total = 0;
             cart.forEach(item => {
                 total += item.price;
-                html += `<div style="display:flex; justify-content:space-between; padding:5px 0;"><span>${item.name}</span><span>₹${item.price}</span></div>`;
+                html += `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #eee;"><span>${item.name}</span><span>₹${item.price}</span></div>`;
             });
             cartItemsDiv.innerHTML = html;
-            cartTotalDiv.innerText = `Total: ₹${total}`;
+            cartTotalDiv.innerText = `TOTAL: ₹${total}`;
         }
 
         function goToCheckout() {
