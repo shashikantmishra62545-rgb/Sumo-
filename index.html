@@ -596,7 +596,7 @@
             filterByCategory(key);
         }
 
-        function filterByCategory(categoryKey) {
+      function filterByCategory(categoryKey) {
   if (document.getElementById('sidebar').classList.contains('active')) {
     toggleSidebar();
   }
@@ -608,7 +608,6 @@
     return;
   }
 
-  // Filter products by category
   const filteredData = allProductsData.filter(p => {
     const cat = (p.category || p.Category || '').toLowerCase();
     return cat.includes(categoryKey.toLowerCase());
@@ -617,18 +616,9 @@
   document.getElementById('categoryHeader').innerText = categoryKey.toUpperCase() + ' COLLECTION';
   renderProducts(filteredData);
 }
-            }
 
-            const filtered = allProductsData.filter(p => {
-                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
-                return name.includes(categoryKey.toLowerCase());
-            });
-
-            document.getElementById('categoryHeader').innerText = `${categoryKey.toUpperCase()} COLLECTION`;
-            renderProducts(filtered);
-        }
-
-        function filterProducts() {
+    
+            function filterProducts() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             const filtered = allProductsData.filter(p => {
                 const name = (p.Name || p.name || p.NAME || '').toLowerCase();
