@@ -2,7 +2,7 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
     <title>SUMO — Official Store</title>
     <!-- Google Sheet CSV पढ़ने के लिए PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
@@ -66,10 +66,8 @@
 
         .pdp-container { max-width: 800px; margin: 0 auto; padding: 15px; }
         
-        /* IMAGE ZOOM CONTAINER (ONLY IMAGE ZOOMS) */
-        .pdp-img-zoom-wrapper { width: 100%; max-height: 400px; overflow: hidden; border-radius: 8px; position: relative; cursor: zoom-in; }
-        .pdp-main-img { width: 100%; height: 100%; max-height: 400px; object-fit: cover; transition: transform 0.3s ease; }
-        .pdp-img-zoom-wrapper:hover .pdp-main-img, .pdp-img-zoom-wrapper:active .pdp-main-img { transform: scale(1.6); }
+        .pdp-img-wrapper { width: 100%; max-height: 400px; overflow: hidden; border-radius: 8px; position: relative; cursor: pointer; }
+        .pdp-main-img { width: 100%; height: 100%; max-height: 400px; object-fit: cover; }
 
         .pdp-thumbs { display: flex; gap: 8px; justify-content: center; margin: 10px 0 15px; }
         .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
@@ -123,6 +121,11 @@
 
         .footer-bottom { text-align: center; margin-top: 30px; font-size: 11px; color: #64748b; border-top: 1px solid #1e293b; padding-top: 20px; }
 
+        /* FULLSCREEN LIGHTBOX IMAGE MODAL */
+        .fullscreen-lightbox { display: none; position: fixed; z-index: 2500; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; overflow: hidden; }
+        .fullscreen-lightbox img { max-width: 95%; max-height: 90vh; object-fit: contain; }
+        .close-lightbox { position: absolute; top: 20px; right: 25px; color: #fff; font-size: 32px; font-weight: bold; cursor: pointer; z-index: 2600; background: none; border: none; }
+
         /* Modals & Popups */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; }
         .info-popup-box { background: #fff; width: 100%; max-width: 450px; padding: 25px; border-radius: 8px; text-align: left; position: relative; max-height: 80vh; overflow-y: auto; }
@@ -150,6 +153,12 @@
     <div id="smsPopup" class="sms-popup">
         <div class="sms-title">💬 SUMO STORE OFFICIAL <span style="font-size:10px; color:#aaa;">Just now</span></div>
         <div class="sms-body" id="smsBody">Your OTP code is: 4829</div>
+    </div>
+
+    <!-- Fullscreen Lightbox Image Modal -->
+    <div id="fullscreenLightbox" class="fullscreen-lightbox">
+        <button class="close-lightbox" onclick="closeFullscreenImage()">✕</button>
+        <img id="lightboxImg" src="" alt="Full Product Image">
     </div>
 
     <div class="announcement">🚚 FREE SHIPPING ON ORDERS ABOVE ₹999 | CASH ON DELIVERY AVAILABLE</div>
@@ -263,8 +272,7 @@
         </div>
 
         <div class="pdp-container">
-            <!-- IMAGE ZOOM CONTAINER (ONLY IMAGE ZOOMS) -->
-            <div class="pdp-img-zoom-wrapper" onmousemove="zoomImg(event)" onmouseleave="resetZoom()">
+            <div class="pdp-img-wrapper" onclick="openFullscreenImage()">
                 <img id="pdpMainImg" class="pdp-main-img" src="">
             </div>
             <div id="pdpThumbs" class="pdp-thumbs"></div>
@@ -323,7 +331,7 @@
         </div>
     </div>
 
-    <!-- OTP LOGIN MODAL WITH NAME & ADDRESS -->
+    <!-- OTP LOGIN MODAL WITH EMAIL ALERT -->
     <div id="loginModal" class="modal">
         <div class="login-box">
             <button class="close-modal" onclick="closeLoginModal()">✕</button>
@@ -372,18 +380,22 @@
         let selectedStarRating = 5;
         let generatedOtp = '';
 
-        // Load Saved State on Startup
         updateCart();
         updateWishlistBadge();
         checkUserLoginStatus();
 
-        // Browser Back Button Support (Prevents app exit)
         window.onpopstate = function() {
+            if (document.getElementById('fullscreenLightbox').style.display === 'flex') {
+                closeFullscreenImage();
+                return;
+            }
             if (document.getElementById('pdpPage').style.display === 'block') {
                 document.getElementById('pdpPage').style.display = 'none';
+                return;
             }
             if (document.getElementById('loginModal').style.display === 'flex') {
                 closeLoginModal();
+                return;
             }
         };
 
@@ -397,7 +409,17 @@
         function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
         function scrollToCart() { document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' }); }
 
-        /* REAL WORKING OTP SYSTEM */
+        function openFullscreenImage() {
+            history.pushState({ lightbox: true }, "");
+            const currentImgSrc = document.getElementById('pdpMainImg').src;
+            document.getElementById('lightboxImg').src = currentImgSrc;
+            document.getElementById('fullscreenLightbox').style.display = 'flex';
+        }
+
+        function closeFullscreenImage() {
+            document.getElementById('fullscreenLightbox').style.display = 'none';
+        }
+
         function sendOTP() {
             const name = document.getElementById('userName').value.trim();
             const mobile = document.getElementById('userMobile').value.trim();
@@ -408,10 +430,8 @@
                 return;
             }
 
-            // Generate Random 4-Digit OTP
             generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
 
-            // Show SMS Notification Banner
             const smsPopup = document.getElementById('smsPopup');
             document.getElementById('smsBody').innerText = `SUMO STORE: Your Login verification OTP code is ${generatedOtp}. Do not share with anyone.`;
             smsPopup.style.display = 'block';
@@ -422,6 +442,7 @@
             document.getElementById('otpStep').style.display = 'block';
         }
 
+        /* VERIFY OTP & SEND GMAIL ALERT TO BRANDSUMO34@GMAIL.COM */
         function verifyOTP() {
             const inputOtp = document.getElementById('userOtp').value.trim();
             if (inputOtp === generatedOtp) {
@@ -432,11 +453,25 @@
                 const userData = { name: name, mobile: mobile, address: address };
                 localStorage.setItem('sumoUserData', JSON.stringify(userData));
 
+                // Send Email Alert to Brandsumo34@gmail.com
+                fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        access_key: 'ee56d6f9-7f32-4b20-94d7-e070d64db2a8',
+                        subject: '🔔 NEW USER LOGIN ALERT - SUMO STORE',
+                        name: name,
+                        phone: mobile,
+                        address: address,
+                        message: `New Login on SUMO Store!\n\nName: ${name}\nMobile: ${mobile}\nAddress: ${address}`
+                    })
+                });
+
                 alert(`अभिनंदन ${name}! आपका अकाउंट SUMO STORE पर सेव हो गया है।`);
                 checkUserLoginStatus();
                 closeLoginModal();
             } else {
-                alert('गलत OTP! कृपया ऊपर आए नोटिफिकेशन मैसेज में देखकर सही OTP डालें।');
+                alert('गलत OTP! कृपया ऊपर आए मैसेज में देखकर सही OTP डालें।');
             }
         }
 
@@ -450,23 +485,6 @@
             }
         }
 
-        /* IMAGE ZOOM FUNCTION */
-        function zoomImg(e) {
-            const img = document.getElementById('pdpMainImg');
-            const rect = e.currentTarget.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            const y = ((e.clientY - rect.top) / rect.height) * 100;
-            img.style.transformOrigin = `${x}% ${y}%`;
-            img.style.transform = "scale(2)";
-        }
-
-        function resetZoom() {
-            const img = document.getElementById('pdpMainImg');
-            img.style.transform = "scale(1)";
-            img.style.transformOrigin = "center center";
-        }
-
-        /* FETCH PRODUCTS FROM SHEET */
         function loadProductsFromSheet() {
             Papa.parse(sheetCsvUrl, {
                 download: true,
@@ -548,7 +566,6 @@
             const deliveryTag = document.getElementById('pdpDeliveryTag');
             deliveryTag.innerText = delivery;
 
-            // Thumbs
             const thumbsContainer = document.getElementById('pdpThumbs');
             thumbsContainer.innerHTML = '';
             if (images.length > 1) {
@@ -557,7 +574,6 @@
                 });
             }
 
-            // Sizes
             const sizesContainer = document.getElementById('pdpSizes');
             sizesContainer.innerHTML = '';
             if (sizeStr && sizeStr.trim() !== '') {
@@ -569,7 +585,6 @@
                 });
             } else { currentSelectedSize = ''; }
 
-            // Colors
             const colorsContainer = document.getElementById('pdpColors');
             const colorLabel = document.getElementById('pdpColorLabel');
             colorsContainer.innerHTML = '';
@@ -634,7 +649,6 @@
             });
         }
 
-        /* REAL PERSISTENT REVIEWS SYSTEM */
         function submitReview() {
             if (!currentPdpProduct) return;
             const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
@@ -649,7 +663,6 @@
             if (!productReviewsData[name]) productReviewsData[name] = [];
             productReviewsData[name].push({ stars: selectedStarRating, user: reviewer, text: comment });
 
-            // Save Permanently in LocalStorage
             localStorage.setItem('sumoReviews', JSON.stringify(productReviewsData));
 
             document.getElementById('reviewerComment').value = '';
