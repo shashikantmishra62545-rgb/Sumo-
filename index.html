@@ -1008,38 +1008,66 @@
 </body>
     <!-- Footer Links & Popups -->
 <footer style="background-color: #1a1a1a; color: #ffffff; padding: 35px 15px; text-align: center; margin-top: 50px;">
-  <div style="margin-bottom: 15px;">
+  <div style="margin-bottom: 15px;"> <a href="javascript:void(0)" onclick="openModal('blogModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Fashion Blog</a> |
+    <a href="javascript:void(0)" onclick="openModal('blogModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Fashion Blog</a> |  
     <a href="javascript:void(0)" onclick="openModal('privacyModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Privacy Policy</a> |
     <a href="javascript:void(0)" onclick="openModal('termsModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Terms & Conditions</a> |
     <a href="javascript:void(0)" onclick="openModal('contactModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Contact Us</a>
   </div>
   <p style="font-size: 13px; color: #888888;">© 2026 SUMO STORE. All Rights Reserved.</p>
 </footer>
+    <!-- Blog Modal -->
+<div id="blogModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; overflow:auto;">
+  <div style="background:#fff; color:#333; margin:4% auto; padding:25px; width:92%; max-width:800px; border-radius:8px; line-height:1.7;">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;">
+      <h2 style="margin:0;">SUMO STORE - Style & Fashion Guide</h2>
+      <button onclick="closeModal('blogModal')" style="background:#ff4d4d; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; font-weight:bold;">✕ Close</button>
+    </div>
+    
+    <article style="margin-bottom:30px; border-bottom:1px solid #ddd; padding-bottom:20px;">
+      <h3 style="color:#2c3e50; margin-bottom:8px;">1. Perfect Oversized T-Shirt Styling Tips for Men & Women</h3>
+      <p style="color:#666; font-size:14px;"><i>Published on SUMO Blog | Category: Fashion & Trends</i></p>
+      <p>Oversized t-shirts have become a staple in modern streetwear culture. Pair your oversized tee with fitted jeans or cargo trousers to balance the silhouette. Tuck it slightly into high-waisted denim for an effortless everyday vibe.</p>
+    </article>
 
+    <article style="margin-bottom:30px; border-bottom:1px solid #ddd; padding-bottom:20px;">
+      <h3 style="color:#2c3e50; margin-bottom:8px;">2. How to Care for 100% Cotton Printed T-Shirts</h3>
+      <p style="color:#666; font-size:14px;"><i>Published on SUMO Blog | Category: Fabric Care</i></p>
+      <p>Always wash your printed cotton t-shirts inside-out with cold water to avoid print cracking. Avoid high-heat machine drying and air-dry in shade. Never iron directly on graphic prints.</p>
+    </article>
+
+    <article style="margin-bottom:10px; padding-bottom:10px;">
+      <h3 style="color:#2c3e50; margin-bottom:8px;">3. Building a Capsule Wardrobe with Essential Basics</h3>
+      <p style="color:#666; font-size:14px;"><i>Published on SUMO Blog | Category: Wardrobe Essentials</i></p>
+      <p>A capsule wardrobe consists of timeless clothing items that mix and match effortlessly. Focus on neutral-colored plain t-shirts and classic denim jeans to look stylish with minimal effort.</p>
+    </article>
+
+    <div style="text-align:center; margin-top:20px;">
+      <button onclick="closeModal('blogModal')" style="background:#556ee6; color:#fff; border:none; padding:10px 25px; cursor:pointer; border-radius:4px; font-weight:bold;">Close Blog</button>
+    </div>
+  </div>
+</div>
 <div id="privacyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; overflow:auto;">
-  <div style="background:#fff; color:#333; margin:8% auto; padding:25px; width:90%; max-width:600px; border-radius:8px;">
+  <div style="background:#fff; color:#333; margin:5% auto; padding:25px; width:90%; max-width:650px; border-radius:8px; line-height:1.6;">
     <h2>Privacy Policy</h2>
-    <p>Welcome to SUMO STORE. Your privacy and data security are extremely important to us.</p>
-    <ul>
-      <li><b>Information Collection:</b> We collect essential customer details required for processing orders and customer support.</li>
-      <li><b>Cookies & Ads:</b> We use third-party vendors (like Google AdSense) that use cookies to serve ads based on user visits.</li>
-      <li><b>Data Protection:</b> Your data is kept secure and will never be sold to unauthorized third parties.</li>
-    </ul>
+    <p>At SUMO STORE (accessible from sumocompany.shop), one of our main priorities is the privacy of our visitors.</p>
+    
+    <h3>1. Information We Collect</h3>
+    <p>We collect essential information such as name, contact details, shipping address, and order history strictly for processing transactions and providing customer service.</p>
+    
+    <h3>2. Log Files & Analytics</h3>
+    <p>SUMO STORE follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date/time stamp, and referring/exit pages.</p>
+    
+    <h3>3. Google DoubleClick DART Cookie & Third-Party Ads</h3>
+    <p>Google is one of the third-party vendors on our site. It also uses cookies, known as DART cookies, to serve ads to our site visitors based upon their visit to our site and other sites on the internet. Visitors may choose to decline the use of DART cookies by visiting the Google Ad and Content Network Privacy Policy.</p>
+    
+    <h3>4. Third Party Privacy Policies</h3>
+    <p>SUMO STORE's Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information.</p>
+    
     <button onclick="closeModal('privacyModal')" style="background:#556ee6; color:#fff; border:none; padding:10px 20px; cursor:pointer; border-radius:4px; margin-top:15px;">Close</button>
   </div>
 </div>
-
-<div id="termsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; overflow:auto;">
-  <div style="background:#fff; color:#333; margin:8% auto; padding:25px; width:90%; max-width:600px; border-radius:8px;">
-    <h2>Terms & Conditions</h2>
-    <p>By using SUMO STORE, you agree to comply with the following terms:</p>
-    <ul>
-      <li><b>Product & Pricing:</b> All products are subject to stock availability. Prices may change without prior notice.</li>
-      <li><b>Orders:</b> Orders are processed and delivered via courier partners to the provided address.</li>
-    </ul>
-    <button onclick="closeModal('termsModal')" style="background:#556ee6; color:#fff; border:none; padding:10px 20px; cursor:pointer; border-radius:4px; margin-top:15px;">Close</button>
-  </div>
-</div>
+    
 
 <div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; overflow:auto;">
   <div style="background:#fff; color:#333; margin:8% auto; padding:25px; width:90%; max-width:600px; border-radius:8px;">
