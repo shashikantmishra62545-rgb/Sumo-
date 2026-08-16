@@ -23,9 +23,15 @@
         .badge-count { position: absolute; top: -6px; right: -8px; background: #e63946; color: white; font-size: 9px; font-weight: bold; padding: 2px 5px; border-radius: 10px; }
 
         /* Search Bar Section */
-        .search-container { padding: 10px 15px; background: #fff; border-bottom: 1px solid #eee; }
+        .search-container { padding: 10px 15px 5px; background: #fff; border-bottom: 1px solid #eee; }
         .search-box { display: flex; align-items: center; background: #f2f2f2; border-radius: 6px; padding: 8px 12px; }
         .search-box input { border: none; background: transparent; width: 100%; font-size: 13px; outline: none; margin-left: 8px; }
+
+        /* Category Filter Chips Below Search Bar */
+        .category-chips { display: flex; gap: 8px; padding: 10px 15px; background: #fff; overflow-x: auto; border-bottom: 1px solid #eee; scrollbar-width: none; }
+        .category-chips::-webkit-scrollbar { display: none; }
+        .chip-btn { background: #f0f0f0; color: #333; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: 0.2s; }
+        .chip-btn.active { background: #111; color: #fff; border-color: #111; }
 
         /* Sidebar Drawer */
         .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #fff; z-index: 1000; transition: 0.3s ease; box-shadow: 4px 0 15px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; }
@@ -101,9 +107,20 @@
         .pdp-bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 12px; z-index: 1600; display: flex; justify-content: center; }
         .pdp-add-bag-btn { background: #25D366; color: #fff; border: none; width: 90%; max-width: 500px; padding: 14px; font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; cursor: pointer; text-align: center; }
 
-        /* Cart Section */
-        .cart-section { background: #fff; border-top: 2px solid #111; padding: 15px; margin-top: 30px; }
-        .checkout-btn { background: #25D366; color: white; margin-top: 15px; font-weight: 700; font-size: 14px; text-align: center; text-decoration: none; padding: 12px; border-radius: 4px; border: none; width: 100%; cursor: pointer; display: block; }
+        /* DEDICATED CART PAGE MODAL */
+        .cart-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 70px; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
+        .cart-back { font-size: 22px; border: none; background: none; cursor: pointer; }
+        .cart-container { max-width: 800px; margin: 0 auto; padding: 15px; }
+        
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+        .cart-item-title { font-weight: 700; color: #222; text-transform: uppercase; }
+        .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+        .qty-btn { background: #eee; border: none; width: 24px; height: 24px; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        .cart-item-price { font-weight: 800; font-size: 14px; }
+        .delete-btn { color: #e63946; border: none; background: none; font-size: 16px; cursor: pointer; margin-left: 10px; }
+
+        .checkout-btn { background: #25D366; color: white; margin-top: 20px; font-weight: 800; font-size: 15px; text-align: center; text-decoration: none; padding: 14px; border-radius: 6px; border: none; width: 100%; cursor: pointer; display: block; text-transform: uppercase; letter-spacing: 1px; }
 
         /* BRAND FOOTER STYLE */
         footer { background: #0b1325; color: #ffffff; padding: 40px 20px 20px; margin-top: 40px; }
@@ -171,8 +188,7 @@
         </div>
         <div class="nav-right">
             <button class="icon-btn" onclick="openLoginModal()" title="Login" id="userIconBtn">👤</button>
-            <button class="icon-btn" onclick="scrollToCart()" title="Wishlist">❤️ <span class="badge-count" id="wishlist-count">0</span></button>
-            <button class="icon-btn" onclick="scrollToCart()" title="Cart">🛒 <span class="badge-count" id="cart-count">0</span></button>
+            <button class="icon-btn" onclick="openCartPage()" title="Cart">🛒 <span class="badge-count" id="cart-count">0</span></button>
         </div>
     </header>
 
@@ -183,6 +199,17 @@
         </div>
     </div>
 
+    <!-- Category Chips Below Search Bar -->
+    <div class="category-chips">
+        <button class="chip-btn active" onclick="filterByChip('all', this)">ALL</button>
+        <button class="chip-btn" onclick="filterByChip('men', this)">MEN</button>
+        <button class="chip-btn" onclick="filterByChip('women', this)">WOMEN</button>
+        <button class="chip-btn" onclick="filterByChip('shirt', this)">SHIRTS</button>
+        <button class="chip-btn" onclick="filterByChip('pant', this)">PANTS</button>
+        <button class="chip-btn" onclick="filterByChip('saree', this)">SAREE</button>
+        <button class="chip-btn" onclick="filterByChip('access', this)">ACCESSORIES</button>
+    </div>
+
     <!-- Sidebar Drawer -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -191,9 +218,11 @@
         </div>
         <ul class="menu-list">
             <li><a onclick="filterByCategory('all')">SHOP ALL</a></li>
-            <li><a onclick="filterByCategory('shirt')">TOPWEAR / SHIRTS</a></li>
-            <li><a onclick="filterByCategory('pant')">BOTTOMWEAR / PANTS</a></li>
-            <li><a onclick="filterByCategory('access')">ACCESSORIES</a></li>
+            <li><a onclick="filterByCategory('men')">MEN'S COLLECTION</a></li>
+            <li><a onclick="filterByCategory('women')">WOMEN'S COLLECTION</a></li>
+            <li><a onclick="filterByCategory('shirt')">SHIRTS & TOPWEAR</a></li>
+            <li><a onclick="filterByCategory('pant')">PANTS & JEANS</a></li>
+            <li><a onclick="filterByCategory('saree')">SAREES</a></li>
             <li><a onclick="openLoginModal()">ACCOUNT / LOGIN</a></li>
         </ul>
     </div>
@@ -208,14 +237,6 @@
                 <p style="font-size: 12px; font-weight:600;">LOADING PRODUCTS...</p>
             </div>
         </div>
-
-        <!-- Cart Section -->
-        <div class="cart-section" id="cart-section">
-            <h3 style="font-size: 15px; font-weight:800; text-transform:uppercase;">YOUR SHOPPING BAG 🛒</h3>
-            <div id="cart-items" style="margin: 15px 0; font-size: 13px;"><p>आपकी कार्ट अभी खाली है।</p></div>
-            <div id="cart-total" style="font-weight:800; font-size:16px;">TOTAL: ₹0</div>
-            <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO ORDER ➡️</button>
-        </div>
     </div>
 
     <!-- MAIN HOME FOOTER -->
@@ -225,9 +246,10 @@
         <div class="footer-section">
             <div class="footer-title">Categories <span>+</span></div>
             <ul class="footer-links">
-                <li><a onclick="filterByCategory('shirt')">Men's Topwear</a></li>
-                <li><a onclick="filterByCategory('pant')">Men's Bottomwear</a></li>
-                <li><a onclick="filterByCategory('access')">Accessories & Sunglasses</a></li>
+                <li><a onclick="filterByCategory('men')">Men's Collection</a></li>
+                <li><a onclick="filterByCategory('women')">Women's Collection</a></li>
+                <li><a onclick="filterByCategory('shirt')">Shirts & Topwear</a></li>
+                <li><a onclick="filterByCategory('pant')">Pants & Bottomwear</a></li>
             </ul>
         </div>
 
@@ -263,12 +285,36 @@
         </div>
     </footer>
 
+    <!-- DEDICATED CART PAGE MODAL -->
+    <div id="cartPage" class="cart-page">
+        <div class="cart-header">
+            <button class="cart-back" onclick="closeCartPage()">←</button>
+            <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px;">YOUR CART 🛒</span>
+            <span></span>
+        </div>
+
+        <div class="cart-container">
+            <div id="cartPageItems"><p style="text-align:center; padding:30px 0; color:#666;">आपकी कार्ट अभी खाली है।</p></div>
+            <div id="cartPageTotal" style="font-weight:800; font-size:18px; margin-top:20px; text-align:right;">TOTAL: ₹0</div>
+            <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO CHECKOUT ➡️</button>
+        </div>
+
+        <!-- CART PAGE FOOTER -->
+        <footer>
+            <a href="#" class="footer-logo">SUMO</a>
+            <div class="footer-bottom">
+                <p>Email: support@sumostore.com</p>
+                <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
+            </div>
+        </footer>
+    </div>
+
     <!-- PRODUCT DETAILS PAGE MODAL -->
     <div id="pdpPage" class="pdp-page">
         <div class="pdp-header">
             <button class="pdp-back" onclick="closePdp()">←</button>
             <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px;">SUMO PRODUCT</span>
-            <button class="icon-btn" onclick="closePdp(); scrollToCart();">🛒</button>
+            <button class="icon-btn" onclick="closePdp(); openCartPage();">🛒</button>
         </div>
 
         <div class="pdp-container">
@@ -326,6 +372,15 @@
             </div>
         </div>
 
+        <!-- PRODUCT DETAILS PAGE FOOTER -->
+        <footer>
+            <a href="#" class="footer-logo">SUMO</a>
+            <div class="footer-bottom">
+                <p>Email: support@sumostore.com</p>
+                <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
+            </div>
+        </footer>
+
         <div class="pdp-bottom-bar">
             <button class="pdp-add-bag-btn" onclick="addCurrentPdpToBag()">ADD TO BAG 🛒</button>
         </div>
@@ -380,8 +435,7 @@
         let selectedStarRating = 5;
         let generatedOtp = '';
 
-        updateCart();
-        updateWishlistBadge();
+        updateCartUI();
         checkUserLoginStatus();
 
         window.onpopstate = function() {
@@ -389,8 +443,12 @@
                 closeFullscreenImage();
                 return;
             }
+            if (document.getElementById('cartPage').style.display === 'block') {
+                closeCartPage();
+                return;
+            }
             if (document.getElementById('pdpPage').style.display === 'block') {
-                document.getElementById('pdpPage').style.display = 'none';
+                closePdp();
                 return;
             }
             if (document.getElementById('loginModal').style.display === 'flex') {
@@ -400,14 +458,113 @@
         };
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        
-        function openLoginModal() { 
-            history.pushState({ modal: true }, "");
-            document.getElementById('loginModal').style.display = 'flex'; 
-        }
-        
+        function openLoginModal() { history.pushState({ modal: true }, ""); document.getElementById('loginModal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-        function scrollToCart() { document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' }); }
+
+        /* DEDICATED CART PAGE LOGIC */
+        function openCartPage() {
+            history.pushState({ cart: true }, "");
+            renderCartPage();
+            document.getElementById('cartPage').style.display = 'block';
+        }
+
+        function closeCartPage() { document.getElementById('cartPage').style.display = 'none'; }
+
+        function renderCartPage() {
+            const itemsDiv = document.getElementById('cartPageItems');
+            const totalDiv = document.getElementById('cartPageTotal');
+
+            if (cart.length === 0) {
+                itemsDiv.innerHTML = '<p style="text-align:center; padding:40px 0; color:#666;">आपकी कार्ट अभी खाली है।</p>';
+                totalDiv.innerText = 'TOTAL: ₹0';
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price * (item.qty || 1);
+                html += `
+                    <div class="cart-item-row">
+                        <div>
+                            <div class="cart-item-title">${item.name}</div>
+                            <div class="cart-item-qty">
+                                Quantity: 
+                                <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+                                <span>${item.qty || 1}</span>
+                                <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <span class="cart-item-price">₹${item.price * (item.qty || 1)}</span>
+                            <button class="delete-btn" onclick="removeCartItem(${index})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            itemsDiv.innerHTML = html;
+            totalDiv.innerText = `TOTAL: ₹${total}`;
+        }
+
+        function changeQty(index, delta) {
+            if (!cart[index].qty) cart[index].qty = 1;
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            localStorage.setItem('sumoCart', JSON.stringify(cart));
+            updateCartUI();
+            renderCartPage();
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('sumoCart', JSON.stringify(cart));
+            updateCartUI();
+            renderCartPage();
+        }
+
+        function updateCartUI() {
+            let totalCount = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
+            document.getElementById('cart-count').innerText = totalCount;
+        }
+
+        /* CATEGORY FILTER CHIPS BELOW SEARCH */
+        function filterByChip(key, btn) {
+            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filterByCategory(key);
+        }
+
+        function filterByCategory(categoryKey) {
+            if (document.getElementById('sidebar').classList.contains('active')) {
+                toggleSidebar();
+            }
+            window.scrollTo({ top: 100, behavior: 'smooth' });
+
+            if (categoryKey === 'all') {
+                document.getElementById('categoryHeader').innerText = 'ALL PRODUCTS';
+                renderProducts(allProductsData);
+                return;
+            }
+
+            const filtered = allProductsData.filter(p => {
+                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
+                return name.includes(categoryKey.toLowerCase());
+            });
+
+            document.getElementById('categoryHeader').innerText = `${categoryKey.toUpperCase()} COLLECTION`;
+            renderProducts(filtered);
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allProductsData.filter(p => {
+                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
+                return name.includes(query);
+            });
+            renderProducts(filtered);
+        }
 
         function openFullscreenImage() {
             history.pushState({ lightbox: true }, "");
@@ -442,7 +599,6 @@
             document.getElementById('otpStep').style.display = 'block';
         }
 
-        /* VERIFY OTP & SEND GMAIL ALERT TO BRANDSUMO34@GMAIL.COM */
         function verifyOTP() {
             const inputOtp = document.getElementById('userOtp').value.trim();
             if (inputOtp === generatedOtp) {
@@ -453,7 +609,6 @@
                 const userData = { name: name, mobile: mobile, address: address };
                 localStorage.setItem('sumoUserData', JSON.stringify(userData));
 
-                // Send Email Alert to Brandsumo34@gmail.com
                 fetch('https://api.web3forms.com/submit', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -519,11 +674,8 @@
                         avgRatingStr = `★ ${(sum / reviews.length).toFixed(1)} (${reviews.length})`;
                     }
 
-                    const isWishlisted = wishlist.includes(name);
-
                     const card = `
                         <div class="product-card" onclick="openPdp(${index})">
-                            <button class="wishlist-btn ${isWishlisted ? 'active' : ''}" onclick="event.stopPropagation(); toggleWishlist('${name}', this)">♥</button>
                             <div class="img-container">
                                 <img src="${mainImgUrl}" class="main-img" alt="${name}">
                             </div>
@@ -539,7 +691,7 @@
             });
 
             if (count === 0) {
-                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">कोई प्रोडक्ट नहीं मिला।</p>';
+                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding:40px 0;">कोई प्रोडक्ट नहीं मिला।</p>';
             }
         }
 
@@ -632,12 +784,18 @@
             if (currentSelectedColor) variantInfo.push(`Color: ${currentSelectedColor}`);
 
             const fullTitle = variantInfo.length > 0 ? `${name} (${variantInfo.join(', ')})` : name;
-            cart.push({ name: fullTitle, price: Number(price) });
             
+            const existingIndex = cart.findIndex(item => item.name === fullTitle);
+            if (existingIndex > -1) {
+                cart[existingIndex].qty = (cart[existingIndex].qty || 1) + 1;
+            } else {
+                cart.push({ name: fullTitle, price: Number(price), qty: 1 });
+            }
+
             localStorage.setItem('sumoCart', JSON.stringify(cart));
-            updateCart();
+            updateCartUI();
             closePdp();
-            scrollToCart();
+            openCartPage();
         }
 
         function setRating(stars) {
@@ -693,40 +851,37 @@
             listDiv.innerHTML = html;
         }
 
-        function toggleWishlist(name, btn) {
-            if (wishlist.includes(name)) {
-                wishlist = wishlist.filter(item => item !== name);
-                btn.classList.remove('active');
-            } else {
-                wishlist.push(name);
-                btn.classList.add('active');
+        function openPolicyModal(type) {
+            const modal = document.getElementById('policyModal');
+            const title = document.getElementById('policyTitle');
+            const content = document.getElementById('policyContent');
+
+            if (type === 'return') {
+                title.innerText = 'Returns & Exchange Policy';
+                content.innerHTML = '<p>हम 7 दिनों की आसान रिटर्न और एक्सचेंज पॉलिसी देते हैं। अगर कपड़ा सही साइज़ का नहीं आता या डैमेज है, तो आप 7 दिनों के अंदर एक्सचेंज कर सकते हैं।</p>';
+            } else if (type === 'shipping') {
+                title.innerText = 'Shipping & Delivery';
+                content.innerHTML = '<p>सभी ऑर्डर्स 3 से 6 दिनों के भीतर डिलीवर कर दिए जाते हैं। ₹999 से ऊपर के ऑर्डर्स पर मुफ़्त डिलीवरी उपलब्ध है।</p>';
+            } else if (type === 'about') {
+                title.innerText = 'About SUMO Store';
+                content.innerHTML = '<p>SUMO Store आपका अपना भरोसेमंद ऑनलाइन फैशन स्टोर है, जहाँ बेहतरीन क्वालिटी के ट्रेंडिंग कपड़े सबसे किफायती दामों में मिलते हैं।</p>';
+            } else if (type === 'terms') {
+                title.innerText = 'Terms & Conditions';
+                content.innerHTML = '<p>SUMO Store पर Cash on Delivery (COD) उपलब्ध है। ऑर्डर कन्फर्म होने के बाद डिलीवरी बॉय आपको कॉल करके सामान दे जाएगा।</p>';
             }
-            localStorage.setItem('sumoWishlist', JSON.stringify(wishlist));
-            updateWishlistBadge();
+            modal.style.display = 'flex';
         }
 
-        function updateWishlistBadge() {
-            document.getElementById('wishlist-count').innerText = wishlist.length;
-        }
+        function closePolicyModal() { document.getElementById('policyModal').style.display = 'none'; }
 
-        function updateCart() {
-            const cartItemsDiv = document.getElementById('cart-items');
-            const cartTotalDiv = document.getElementById('cart-total');
-            document.getElementById('cart-count').innerText = cart.length;
-
-            if (cart.length === 0) {
-                cartItemsDiv.innerHTML = '<p>आपकी कार्ट अभी खाली है।</p>';
-                cartTotalDiv.innerText = 'TOTAL: ₹0';
-                return;
+        function openSocial(platform) {
+            if (platform === 'whatsapp') {
+                window.open('https://api.whatsapp.com/send?phone=910000000000&text=Hi%20SUMO%20Store,%20I%20have%20a%20query', '_blank');
+            } else if (platform === 'instagram') {
+                window.open('https://instagram.com', '_blank');
+            } else if (platform === 'facebook') {
+                window.open('https://facebook.com', '_blank');
             }
-            let html = '';
-            let total = 0;
-            cart.forEach(item => {
-                total += item.price;
-                html += `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid #eee;"><span>${item.name}</span><span>₹${item.price}</span></div>`;
-            });
-            cartItemsDiv.innerHTML = html;
-            cartTotalDiv.innerText = `TOTAL: ₹${total}`;
         }
 
         function goToCheckout() {
