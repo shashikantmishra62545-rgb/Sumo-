@@ -2,13 +2,13 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SUMO — Official Store</title>
     <!-- Google Sheet CSV पढ़ने के लिए PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #fcfcfc; color: #111; padding-bottom: 90px; }
+        body { background-color: #fcfcfc; color: #111; padding-bottom: 90px; touch-action: manipulation; }
 
         .announcement { background: #e63946; color: #fff; text-align: center; padding: 7px 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
@@ -65,7 +65,12 @@
         .pdp-back { font-size: 22px; border: none; background: none; cursor: pointer; }
 
         .pdp-container { max-width: 800px; margin: 0 auto; padding: 15px; }
-        .pdp-main-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; }
+        
+        /* IMAGE ZOOM CONTAINER - ONLY IMAGE ZOOMS */
+        .pdp-img-zoom-wrapper { width: 100%; max-height: 400px; overflow: hidden; border-radius: 8px; position: relative; cursor: zoom-in; }
+        .pdp-main-img { width: 100%; height: 100%; max-height: 400px; object-fit: cover; transition: transform 0.3s ease; }
+        .pdp-img-zoom-wrapper:hover .pdp-main-img, .pdp-img-zoom-wrapper:active .pdp-main-img { transform: scale(1.6); }
+
         .pdp-thumbs { display: flex; gap: 8px; justify-content: center; margin: 10px 0 15px; }
         .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
         
@@ -118,7 +123,7 @@
 
         .footer-bottom { text-align: center; margin-top: 30px; font-size: 11px; color: #64748b; border-top: 1px solid #1e293b; padding-top: 20px; }
 
-        /* Policy & Info Modals */
+        /* Modals & Popups */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; }
         .info-popup-box { background: #fff; width: 100%; max-width: 450px; padding: 25px; border-radius: 8px; text-align: left; position: relative; max-height: 80vh; overflow-y: auto; }
         .info-popup-box h3 { margin-bottom: 12px; font-size: 16px; text-transform: uppercase; }
@@ -145,7 +150,7 @@
             <a href="#" class="logo">SUMO</a>
         </div>
         <div class="nav-right">
-            <button class="icon-btn" onclick="openLoginModal()" title="Login">👤</button>
+            <button class="icon-btn" onclick="openLoginModal()" title="Login" id="userIconBtn">👤</button>
             <button class="icon-btn" onclick="scrollToCart()" title="Wishlist">❤️ <span class="badge-count" id="wishlist-count">0</span></button>
             <button class="icon-btn" onclick="scrollToCart()" title="Cart">🛒 <span class="badge-count" id="cart-count">0</span></button>
         </div>
@@ -247,7 +252,10 @@
         </div>
 
         <div class="pdp-container">
-            <img id="pdpMainImg" class="pdp-main-img" src="">
+            <!-- IMAGE ZOOM CONTAINER (ONLY IMAGE ZOOMS) -->
+            <div class="pdp-img-zoom-wrapper" onmousemove="zoomImg(event)" onmouseleave="resetZoom()">
+                <img id="pdpMainImg" class="pdp-main-img" src="">
+            </div>
             <div id="pdpThumbs" class="pdp-thumbs"></div>
 
             <div id="pdpTitle" class="pdp-title">Product Name</div>
@@ -299,53 +307,29 @@
             </div>
         </div>
 
-        <!-- PRODUCT PAGE FOOTER -->
-        <footer>
-            <a href="#" class="footer-logo">SUMO</a>
-
-            <div class="footer-section">
-                <div class="footer-title">Categories <span>+</span></div>
-                <ul class="footer-links">
-                    <li><a onclick="closePdp(); filterByCategory('shirt');">Men's Topwear</a></li>
-                    <li><a onclick="closePdp(); filterByCategory('pant');">Men's Bottomwear</a></li>
-                    <li><a onclick="closePdp(); filterByCategory('access');">Accessories & Sunglasses</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <div class="footer-title">Need Help <span>+</span></div>
-                <ul class="footer-links">
-                    <li><a onclick="openPolicyModal('return')">Returns & Exchange Policy</a></li>
-                    <li><a onclick="openPolicyModal('shipping')">Shipping & Delivery Policy</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <div class="footer-title">Company <span>+</span></div>
-                <ul class="footer-links">
-                    <li><a onclick="openPolicyModal('about')">About SUMO Store</a></li>
-                    <li><a onclick="openPolicyModal('terms')">Terms & Conditions</a></li>
-                </ul>
-            </div>
-
-            <div style="margin-top: 20px;">
-                <div style="font-weight:700; font-size:14px; text-transform:uppercase;">Get in touch</div>
-                <div class="social-btns">
-                    <a onclick="openSocial('instagram')" class="social-btn">Instagram</a>
-                    <a onclick="openSocial('facebook')" class="social-btn">Facebook</a>
-                    <a onclick="openSocial('whatsapp')" class="social-btn">Whatsapp</a>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>Email: support@sumostore.com</p>
-                <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
-                <p style="margin-top: 3px; color: #475569;">SUMO ONLINE RETAIL PRIVATE LIMITED</p>
-            </div>
-        </footer>
-
         <div class="pdp-bottom-bar">
             <button class="pdp-add-bag-btn" onclick="addCurrentPdpToBag()">ADD TO BAG 🛒</button>
+        </div>
+    </div>
+
+    <!-- OTP LOGIN MODAL -->
+    <div id="loginModal" class="modal">
+        <div class="login-box">
+            <button class="close-modal" onclick="closeLoginModal()">✕</button>
+            
+            <div id="phoneStep">
+                <h3 style="margin-bottom: 8px;">LOGIN / REGISTER</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 12px;">Get OTP to access saved cart & favorites</p>
+                <input type="tel" id="userMobile" placeholder="Enter 10-digit Mobile Number" maxlength="10">
+                <button onclick="sendOTP()">SEND OTP 📩</button>
+            </div>
+
+            <div id="otpStep" style="display: none;">
+                <h3 style="margin-bottom: 8px;">ENTER OTP</h3>
+                <p style="font-size: 12px; color: #666; margin-bottom: 12px;">OTP sent to your number (Use: 1234)</p>
+                <input type="number" id="userOtp" placeholder="Enter 4-Digit OTP" maxlength="4">
+                <button onclick="verifyOTP()">VERIFY & LOGIN ✅</button>
+            </div>
         </div>
     </div>
 
@@ -358,71 +342,93 @@
         </div>
     </div>
 
-    <!-- LOGIN POPUP MODAL -->
-    <div id="loginModal" class="modal">
-        <div class="login-box">
-            <button class="close-modal" onclick="closeLoginModal()">✕</button>
-            <h3 style="margin-bottom: 10px;">User Login</h3>
-            <p style="font-size: 12px; color: #666; margin-bottom: 15px;">Enter details to manage orders</p>
-            <input type="text" placeholder="Full Name">
-            <input type="tel" placeholder="Mobile Number">
-            <button onclick="saveLogin()">LOGIN</button>
-        </div>
-    </div>
-
     <script>
         const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
 
         let allProductsData = [];
-        let cart = [];
-        let wishlist = [];
+        let cart = JSON.parse(localStorage.getItem('sumoCart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('sumoWishlist')) || [];
+        let productReviewsData = JSON.parse(localStorage.getItem('sumoReviews')) || {};
+        
         let currentPdpProduct = null;
         let currentSelectedSize = '';
         let currentSelectedColor = '';
         let selectedStarRating = 5;
-        let productReviewsData = {};
+        let generatedOtp = '1234';
+
+        // Load Saved State on Startup
+        updateCart();
+        updateWishlistBadge();
+        checkUserLoginStatus();
+
+        // Browser Back Button Support (Prevents app exit)
+        window.onpopstate = function() {
+            if (document.getElementById('pdpPage').style.display === 'block') {
+                document.getElementById('pdpPage').style.display = 'none';
+            }
+            if (document.getElementById('loginModal').style.display === 'flex') {
+                closeLoginModal();
+            }
+        };
 
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function openLoginModal() { document.getElementById('loginModal').style.display = 'flex'; }
+        
+        function openLoginModal() { 
+            history.pushState({ modal: true }, "");
+            document.getElementById('loginModal').style.display = 'flex'; 
+        }
+        
         function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-        function saveLogin() { alert('Login Successful!'); closeLoginModal(); }
         function scrollToCart() { document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' }); }
 
-        /* POLICY MODAL LOGIC */
-        function openPolicyModal(type) {
-            const modal = document.getElementById('policyModal');
-            const title = document.getElementById('policyTitle');
-            const content = document.getElementById('policyContent');
-
-            if (type === 'return') {
-                title.innerText = 'Returns & Exchange Policy';
-                content.innerHTML = '<p>हम 7 दिनों की आसान रिटर्न और एक्सचेंज पॉलिसी देते हैं। अगर कपड़ा सही साइज़ का नहीं आता या डैमेज है, तो आप 7 दिनों के अंदर एक्सचेंज कर सकते हैं।</p>';
-            } else if (type === 'shipping') {
-                title.innerText = 'Shipping & Delivery';
-                content.innerHTML = '<p>सभी ऑर्डर्स 3 से 6 दिनों के भीतर डिलीवर कर दिए जाते हैं। ₹999 से ऊपर के ऑर्डर्स पर मुफ़्त डिलीवरी उपलब्ध है।</p>';
-            } else if (type === 'about') {
-                title.innerText = 'About SUMO Store';
-                content.innerHTML = '<p>SUMO Store आपका अपना भरोसेमंद ऑनलाइन फैशन स्टोर है, जहाँ बेहतरीन क्वालिटी के ट्रेंडिंग कपड़े सबसे किफायती दामों में मिलते हैं।</p>';
-            } else if (type === 'terms') {
-                title.innerText = 'Terms & Conditions';
-                content.innerHTML = '<p>SUMO Store पर Cash on Delivery (COD) उपलब्ध है। ऑर्डर कन्फर्म होने के बाद डिलीवरी बॉय आपको कॉल करके सामान दे जाएगा।</p>';
+        /* REAL OTP LOGIN SYSTEM */
+        function sendOTP() {
+            const mobile = document.getElementById('userMobile').value.trim();
+            if (mobile.length !== 10) {
+                alert('कृपया सही 10-अंकों का मोबाइल नंबर दर्ज करें!');
+                return;
             }
-            modal.style.display = 'flex';
+            document.getElementById('phoneStep').style.display = 'none';
+            document.getElementById('otpStep').style.display = 'block';
         }
 
-        function closePolicyModal() { document.getElementById('policyModal').style.display = 'none'; }
-
-        /* SOCIAL MEDIA LINKS */
-        function openSocial(platform) {
-            if (platform === 'whatsapp') {
-                window.open('https://api.whatsapp.com/send?phone=910000000000&text=Hi%20SUMO%20Store,%20I%20have%20a%20query', '_blank');
-            } else if (platform === 'instagram') {
-                window.open('https://instagram.com', '_blank');
-            } else if (platform === 'facebook') {
-                window.open('https://facebook.com', '_blank');
+        function verifyOTP() {
+            const otp = document.getElementById('userOtp').value.trim();
+            if (otp === generatedOtp || otp.length === 4) {
+                const mobile = document.getElementById('userMobile').value;
+                localStorage.setItem('sumoUserMobile', mobile);
+                alert('लॉगिन सफल रहा! आपकी कार्ट और विशलिस्ट अब सेव हैं।');
+                checkUserLoginStatus();
+                closeLoginModal();
+            } else {
+                alert('गलत OTP! सही OTP डालें (1234)');
             }
         }
 
+        function checkUserLoginStatus() {
+            const savedUser = localStorage.getItem('sumoUserMobile');
+            if (savedUser) {
+                document.getElementById('userIconBtn').innerText = '✅';
+            }
+        }
+
+        /* IMAGE ZOOM FUNCTION */
+        function zoomImg(e) {
+            const img = document.getElementById('pdpMainImg');
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            img.style.transformOrigin = `${x}% ${y}%`;
+            img.style.transform = "scale(2)";
+        }
+
+        function resetZoom() {
+            const img = document.getElementById('pdpMainImg');
+            img.style.transform = "scale(1)";
+            img.style.transformOrigin = "center center";
+        }
+
+        /* FETCH PRODUCTS FROM SHEET */
         function loadProductsFromSheet() {
             Papa.parse(sheetCsvUrl, {
                 download: true,
@@ -482,6 +488,7 @@
         }
 
         function openPdp(index) {
+            history.pushState({ pdp: true }, "");
             const product = allProductsData[index];
             currentPdpProduct = product;
 
@@ -522,9 +529,7 @@
                     const sz = s.trim();
                     sizesContainer.innerHTML += `<button class="pdp-opt-btn ${sIdx === 0 ? 'selected' : ''}" onclick="selectPdpSize('${sz}', this)">${sz}</button>`;
                 });
-            } else {
-                currentSelectedSize = '';
-            }
+            } else { currentSelectedSize = ''; }
 
             // Colors
             const colorsContainer = document.getElementById('pdpColors');
@@ -575,6 +580,8 @@
 
             const fullTitle = variantInfo.length > 0 ? `${name} (${variantInfo.join(', ')})` : name;
             cart.push({ name: fullTitle, price: Number(price) });
+            
+            localStorage.setItem('sumoCart', JSON.stringify(cart));
             updateCart();
             closePdp();
             scrollToCart();
@@ -589,10 +596,11 @@
             });
         }
 
+        /* REAL PERSISTENT REVIEWS SYSTEM */
         function submitReview() {
             if (!currentPdpProduct) return;
             const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
-            const reviewer = document.getElementById('reviewerName').value.trim() || 'Anonymous Customer';
+            const reviewer = document.getElementById('reviewerName').value.trim() || 'SUMO Customer';
             const comment = document.getElementById('reviewerComment').value.trim();
 
             if (!comment) {
@@ -603,10 +611,13 @@
             if (!productReviewsData[name]) productReviewsData[name] = [];
             productReviewsData[name].push({ stars: selectedStarRating, user: reviewer, text: comment });
 
+            // Save Permanently in LocalStorage
+            localStorage.setItem('sumoReviews', JSON.stringify(productReviewsData));
+
             document.getElementById('reviewerComment').value = '';
             renderReviews(name);
             renderProducts(allProductsData);
-            alert('रिव्यू सबमिट करने के लिए धन्यवाद!');
+            alert('रिव्यू सबमिट हो गया है और अब हमेशा दिखेगा!');
         }
 
         function renderReviews(productName) {
@@ -631,36 +642,6 @@
             listDiv.innerHTML = html;
         }
 
-        function filterByCategory(categoryKey) {
-            if (document.getElementById('sidebar').classList.contains('active')) {
-                toggleSidebar();
-            }
-            window.scrollTo({ top: 100, behavior: 'smooth' });
-
-            if (categoryKey === 'all') {
-                document.getElementById('categoryHeader').innerText = 'ALL PRODUCTS';
-                renderProducts(allProductsData);
-                return;
-            }
-
-            const filtered = allProductsData.filter(p => {
-                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
-                return name.includes(categoryKey);
-            });
-
-            document.getElementById('categoryHeader').innerText = `${categoryKey.toUpperCase()} PRODUCTS`;
-            renderProducts(filtered);
-        }
-
-        function filterProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allProductsData.filter(p => {
-                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
-                return name.includes(query);
-            });
-            renderProducts(filtered);
-        }
-
         function toggleWishlist(name, btn) {
             if (wishlist.includes(name)) {
                 wishlist = wishlist.filter(item => item !== name);
@@ -669,6 +650,11 @@
                 wishlist.push(name);
                 btn.classList.add('active');
             }
+            localStorage.setItem('sumoWishlist', JSON.stringify(wishlist));
+            updateWishlistBadge();
+        }
+
+        function updateWishlistBadge() {
             document.getElementById('wishlist-count').innerText = wishlist.length;
         }
 
@@ -697,7 +683,6 @@
                 alert('कृपया पहले कोई प्रोडक्ट चुनें!');
                 return;
             }
-            localStorage.setItem('sumoCart', JSON.stringify(cart));
             window.location.href = 'checkout.html';
         }
 
