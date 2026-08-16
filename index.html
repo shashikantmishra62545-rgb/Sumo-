@@ -3,67 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
-    <title>SUMO — Official Store</title>
+    <title>SUMO — Premium Fashion Store</title>
     <!-- Google Sheet CSV पढ़ने के लिए PapaParse Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #fcfcfc; color: #111; padding-bottom: 90px; touch-action: manipulation; }
+        body { background-color: #f8f9fa; color: #111; padding-bottom: 90px; touch-action: manipulation; }
 
-        .announcement { background: #e63946; color: #fff; text-align: center; padding: 7px 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .announcement { background: linear-gradient(90deg, #e63946, #b01424); color: #fff; text-align: center; padding: 8px 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 
         /* Navbar Header */
-        header { background: #fff; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; }
-        .nav-left { display: flex; align-items: center; gap: 12px; }
+        header { background: #fff; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .nav-left { display: flex; align-items: center; gap: 14px; }
         .menu-btn { font-size: 22px; cursor: pointer; background: none; border: none; }
-        .logo { font-size: 20px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #111; text-decoration: none; }
+        .logo { font-size: 22px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: #111; text-decoration: none; }
         
-        .nav-right { display: flex; align-items: center; gap: 15px; }
-        .icon-btn { font-size: 18px; cursor: pointer; background: none; border: none; position: relative; }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .icon-btn { font-size: 19px; cursor: pointer; background: none; border: none; position: relative; }
         .badge-count { position: absolute; top: -6px; right: -8px; background: #e63946; color: white; font-size: 9px; font-weight: bold; padding: 2px 5px; border-radius: 10px; }
 
         /* Search Bar Section */
-        .search-container { padding: 10px 15px 5px; background: #fff; border-bottom: 1px solid #eee; }
-        .search-box { display: flex; align-items: center; background: #f2f2f2; border-radius: 6px; padding: 8px 12px; }
-        .search-box input { border: none; background: transparent; width: 100%; font-size: 13px; outline: none; margin-left: 8px; }
+        .search-container { padding: 12px 15px 5px; background: #fff; border-bottom: 1px solid #eee; }
+        .search-box { display: flex; align-items: center; background: #f1f3f5; border-radius: 8px; padding: 9px 14px; border: 1px solid #e9ecef; }
+        .search-box input { border: none; background: transparent; width: 100%; font-size: 13px; outline: none; margin-left: 8px; font-weight: 500; }
 
         /* Category Filter Chips Below Search Bar */
-        .category-chips { display: flex; gap: 8px; padding: 10px 15px; background: #fff; overflow-x: auto; border-bottom: 1px solid #eee; scrollbar-width: none; }
+        .category-chips { display: flex; gap: 8px; padding: 12px 15px; background: #fff; overflow-x: auto; border-bottom: 1px solid #eee; scrollbar-width: none; }
         .category-chips::-webkit-scrollbar { display: none; }
-        .chip-btn { background: #f0f0f0; color: #333; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: 0.2s; }
-        .chip-btn.active { background: #111; color: #fff; border-color: #111; }
+        .chip-btn { background: #f1f3f5; color: #495057; border: 1px solid #dee2e6; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: 0.2s ease; }
+        .chip-btn.active { background: #111; color: #fff; border-color: #111; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
 
         /* Sidebar Drawer */
         .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #fff; z-index: 1000; transition: 0.3s ease; box-shadow: 4px 0 15px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; }
         .sidebar.active { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .sidebar-title { font-weight: 800; letter-spacing: 1px; }
+        .sidebar-title { font-weight: 900; letter-spacing: 2px; }
         .close-sidebar { font-size: 24px; border: none; background: none; cursor: pointer; }
         .menu-list { list-style: none; }
-        .menu-list li { border-bottom: 1px solid #f5f5f5; }
+        .menu-list li { border-bottom: 1px solid #f8f9fa; }
         .menu-list a { display: block; padding: 14px 0; color: #222; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; cursor: pointer; }
 
         /* Container & Grid */
         .container { max-width: 1100px; margin: 15px auto; padding: 0 10px; }
-        .section-title { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; padding-left: 4px; color: #444; }
+        .section-title { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; padding-left: 4px; color: #212529; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         @media (min-width: 768px) {
-            .products-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; }
+            .products-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
         }
 
-        /* Product Card */
-        .product-card { background: #fff; border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid #eee; cursor: pointer; }
-        .wishlist-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.85); border: none; font-size: 16px; padding: 4px 6px; border-radius: 50%; cursor: pointer; z-index: 2; }
-        .wishlist-btn.active { color: red; }
+        /* PREMIUM PRODUCT CARD */
+        .product-card { background: #fff; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid #eaeaea; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+        
+        .card-actions { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
+        .action-circle-btn { background: rgba(255,255,255,0.95); border: 1px solid #eee; font-size: 13px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 
-        .img-container { width: 100%; height: 210px; background: #f9f9f9; overflow: hidden; }
+        .img-container { width: 100%; height: 220px; background: #f8f9fa; overflow: hidden; position: relative; }
         .main-img { width: 100%; height: 100%; object-fit: cover; }
 
-        .card-body { padding: 10px; text-align: left; }
-        .rating-box { font-size: 11px; color: #ffa41c; font-weight: bold; margin-bottom: 4px; }
-        .product-title { font-size: 12px; font-weight: 600; color: #222; text-transform: uppercase; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
-        .product-price { font-size: 14px; font-weight: 800; color: #111; }
+        .card-body { padding: 12px; text-align: left; }
+        .rating-box { font-size: 10px; color: #ffa41c; font-weight: bold; margin-bottom: 5px; background: #fff8e1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
+        .product-title { font-size: 12px; font-weight: 700; color: #212529; text-transform: uppercase; margin-bottom: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+        
+        .price-badge-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+        .product-price { font-size: 15px; font-weight: 900; color: #111; }
+        .delivery-charge-tag { font-size: 10px; font-weight: 700; color: #2b8a3e; background: #e6fcf5; padding: 2px 6px; border-radius: 4px; border: 1px solid #b2f2bb; }
+        .delivery-charge-tag.paid { color: #d9480f; background: #fff0f6; border-color: #ffdeeb; }
 
         /* FULL PRODUCT DETAILS PAGE */
         .pdp-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 70px; }
@@ -72,40 +78,43 @@
 
         .pdp-container { max-width: 800px; margin: 0 auto; padding: 15px; }
         
-        .pdp-img-wrapper { width: 100%; max-height: 400px; overflow: hidden; border-radius: 8px; position: relative; cursor: pointer; }
-        .pdp-main-img { width: 100%; height: 100%; max-height: 400px; object-fit: cover; }
+        .pdp-img-wrapper { width: 100%; max-height: 420px; overflow: hidden; border-radius: 10px; position: relative; cursor: pointer; border: 1px solid #eee; }
+        .pdp-main-img { width: 100%; height: 100%; max-height: 420px; object-fit: cover; }
 
-        .pdp-thumbs { display: flex; gap: 8px; justify-content: center; margin: 10px 0 15px; }
-        .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; cursor: pointer; }
+        .pdp-thumbs { display: flex; gap: 8px; justify-content: center; margin: 12px 0 15px; }
+        .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; }
         
-        .pdp-title { font-size: 18px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
-        .pdp-price-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        .pdp-price { font-size: 22px; font-weight: 800; color: #111; }
-        .delivery-tag { background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; }
+        .pdp-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+        .pdp-title { font-size: 19px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
+        .share-pdp-btn { background: #25D366; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(37,211,102,0.3); }
 
-        .pdp-section-label { font-size: 13px; font-weight: 700; text-transform: uppercase; margin: 15px 0 8px; color: #333; }
+        .pdp-price-card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
+        .pdp-price { font-size: 24px; font-weight: 900; color: #111; }
+        .pdp-delivery-breakdown { font-size: 12px; color: #495057; margin-top: 6px; font-weight: 600; display: flex; gap: 12px; }
+
+        .pdp-section-label { font-size: 12px; font-weight: 800; text-transform: uppercase; margin: 16px 0 8px; color: #495057; letter-spacing: 1px; }
         
         .pdp-options { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .pdp-opt-btn { border: 1px solid #ccc; background: #fff; font-size: 13px; padding: 8px 14px; font-weight: 700; cursor: pointer; border-radius: 4px; }
+        .pdp-opt-btn { border: 1px solid #ced4da; background: #fff; font-size: 13px; padding: 9px 16px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.2s; }
         .pdp-opt-btn.selected { background: #111; color: #fff; border-color: #111; }
 
         .pdp-pincode-box { display: flex; gap: 8px; margin-bottom: 20px; }
-        .pdp-pincode-box input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none; }
-        .pdp-pincode-box button { background: #111; color: white; border: none; padding: 10px 16px; font-weight: bold; font-size: 12px; border-radius: 4px; cursor: pointer; }
+        .pdp-pincode-box input { flex: 1; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 13px; outline: none; }
+        .pdp-pincode-box button { background: #111; color: white; border: none; padding: 10px 18px; font-weight: bold; font-size: 12px; border-radius: 6px; cursor: pointer; }
 
-        .pdp-info-card { background: #f9f9f9; border-radius: 6px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.6; }
-        .pdp-info-card h4 { font-weight: 700; margin-bottom: 6px; text-transform: uppercase; font-size: 12px; }
+        .pdp-info-card { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.6; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .pdp-info-card h4 { font-weight: 800; margin-bottom: 6px; text-transform: uppercase; font-size: 12px; }
 
         /* REAL REVIEWS SECTION */
         .reviews-section { border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; margin-bottom: 30px; }
-        .add-review-box { background: #f5f5f5; padding: 15px; border-radius: 6px; margin-top: 15px; }
+        .add-review-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #e9ecef; }
         .star-select { font-size: 20px; color: #ccc; cursor: pointer; margin-bottom: 10px; }
         .star-select span.selected { color: #ffa41c; }
-        .review-input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 12px; margin-bottom: 8px; outline: none; }
-        .submit-review-btn { background: #111; color: #fff; border: none; padding: 8px 14px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .review-input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 12px; margin-bottom: 8px; outline: none; }
+        .submit-review-btn { background: #111; color: #fff; border: none; padding: 10px 16px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
 
         .pdp-bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 12px; z-index: 1600; display: flex; justify-content: center; }
-        .pdp-add-bag-btn { background: #25D366; color: #fff; border: none; width: 90%; max-width: 500px; padding: 14px; font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; border-radius: 6px; cursor: pointer; text-align: center; }
+        .pdp-add-bag-btn { background: #25D366; color: #fff; border: none; width: 90%; max-width: 500px; padding: 14px; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
 
         /* DEDICATED CART PAGE MODAL */
         .cart-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 70px; }
@@ -113,28 +122,32 @@
         .cart-back { font-size: 22px; border: none; background: none; cursor: pointer; }
         .cart-container { max-width: 800px; margin: 0 auto; padding: 15px; }
         
-        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px; }
-        .cart-item-title { font-weight: 700; color: #222; text-transform: uppercase; }
-        .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-        .qty-btn { background: #eee; border: none; width: 24px; height: 24px; font-weight: bold; cursor: pointer; border-radius: 4px; }
-        .cart-item-price { font-weight: 800; font-size: 14px; }
-        .delete-btn { color: #e63946; border: none; background: none; font-size: 16px; cursor: pointer; margin-left: 10px; }
+        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #eee; font-size: 13px; }
+        .cart-item-title { font-weight: 800; color: #212529; text-transform: uppercase; margin-bottom: 4px; }
+        .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+        .qty-btn { background: #e9ecef; border: none; width: 26px; height: 26px; font-weight: bold; cursor: pointer; border-radius: 4px; font-size: 14px; }
+        .cart-item-price { font-weight: 900; font-size: 15px; text-align: right; }
+        .delete-btn { color: #e63946; border: none; background: none; font-size: 17px; cursor: pointer; margin-left: 12px; }
 
-        .checkout-btn { background: #25D366; color: white; margin-top: 20px; font-weight: 800; font-size: 15px; text-align: center; text-decoration: none; padding: 14px; border-radius: 6px; border: none; width: 100%; cursor: pointer; display: block; text-transform: uppercase; letter-spacing: 1px; }
+        .cart-bill-summary { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-top: 20px; font-size: 13px; }
+        .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #495057; font-weight: 600; }
+        .bill-row.total-row { font-size: 16px; font-weight: 900; color: #111; border-top: 1px dashed #ced4da; padding-top: 10px; margin-top: 10px; margin-bottom: 0; }
+
+        .checkout-btn { background: #25D366; color: white; margin-top: 20px; font-weight: 900; font-size: 15px; text-align: center; text-decoration: none; padding: 15px; border-radius: 8px; border: none; width: 100%; cursor: pointer; display: block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
 
         /* BRAND FOOTER STYLE */
         footer { background: #0b1325; color: #ffffff; padding: 40px 20px 20px; margin-top: 40px; }
         .footer-logo { font-size: 28px; font-weight: 900; letter-spacing: 4px; border: 2px solid #e63946; padding: 10px 18px; display: inline-block; margin-bottom: 30px; color: #fff; text-decoration: none; text-transform: uppercase; }
         
         .footer-section { margin-bottom: 25px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
-        .footer-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 1px; }
         .footer-links { list-style: none; }
         .footer-links li { margin-bottom: 8px; }
         .footer-links a { color: #94a3b8; text-decoration: none; font-size: 13px; transition: 0.2s; cursor: pointer; }
         .footer-links a:hover { color: #fff; }
 
         .social-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .social-btn { border: 1px solid #334155; color: #fff; padding: 10px 16px; font-size: 12px; font-weight: 600; text-decoration: none; border-radius: 4px; background: #1e293b; cursor: pointer; }
+        .social-btn { border: 1px solid #334155; color: #fff; padding: 10px 16px; font-size: 12px; font-weight: 600; text-decoration: none; border-radius: 6px; background: #1e293b; cursor: pointer; }
 
         .footer-bottom { text-align: center; margin-top: 30px; font-size: 11px; color: #64748b; border-top: 1px solid #1e293b; padding-top: 20px; }
 
@@ -145,14 +158,14 @@
 
         /* Modals & Popups */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; }
-        .info-popup-box { background: #fff; width: 100%; max-width: 450px; padding: 25px; border-radius: 8px; text-align: left; position: relative; max-height: 80vh; overflow-y: auto; }
-        .info-popup-box h3 { margin-bottom: 12px; font-size: 16px; text-transform: uppercase; }
+        .info-popup-box { background: #fff; width: 100%; max-width: 450px; padding: 25px; border-radius: 10px; text-align: left; position: relative; max-height: 80vh; overflow-y: auto; }
+        .info-popup-box h3 { margin-bottom: 12px; font-size: 16px; text-transform: uppercase; font-weight: 800; }
         .info-popup-box p { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 10px; }
         
-        .login-box { background: #fff; width: 100%; max-width: 380px; padding: 22px; border-radius: 8px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .login-box input, .login-box textarea { width: 100%; padding: 11px; margin: 6px 0 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; outline: none; }
-        .login-box button { width: 100%; padding: 12px; background: #111; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 13px; letter-spacing: 0.5px; }
-        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; border: none; background: none; cursor: pointer; }
+        .login-box { background: #fff; width: 100%; max-width: 380px; padding: 24px; border-radius: 10px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .login-box input, .login-box textarea { width: 100%; padding: 11px; margin: 6px 0 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 13px; outline: none; }
+        .login-box button { width: 100%; padding: 13px; background: #111; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 13px; letter-spacing: 0.5px; }
+        .close-modal { position: absolute; top: 12px; right: 16px; font-size: 20px; border: none; background: none; cursor: pointer; }
         
         /* OTP SMS NOTIFICATION POPUP */
         .sms-popup { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #0b1325; color: #fff; padding: 14px 18px; border-radius: 8px; z-index: 3000; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-left: 4px solid #e63946; }
@@ -168,7 +181,7 @@
 
     <!-- SMS Notification Popup -->
     <div id="smsPopup" class="sms-popup">
-        <div class="sms-title">💬 SUMO COMPANY STORE OFFICIAL <span style="font-size:10px; color:#aaa;">Just now</span></div>
+        <div class="sms-title">💬 SUMO STORE OFFICIAL <span style="font-size:10px; color:#aaa;">Just now</span></div>
         <div class="sms-body" id="smsBody">Your OTP code is: 4829</div>
     </div>
 
@@ -184,7 +197,7 @@
     <header>
         <div class="nav-left">
             <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-            <a href="#" class="logo">SUMO COMPANY </a>
+            <a href="#" class="logo">SUMO</a>
         </div>
         <div class="nav-right">
             <button class="icon-btn" onclick="openLoginModal()" title="Login" id="userIconBtn">👤</button>
@@ -279,7 +292,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>Email: brandsumo34@gamil.com</p>
+            <p>Email: support@sumostore.com</p>
             <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
             <p style="margin-top: 3px; color: #475569;">SUMO ONLINE RETAIL PRIVATE LIMITED</p>
         </div>
@@ -295,15 +308,20 @@
 
         <div class="cart-container">
             <div id="cartPageItems"><p style="text-align:center; padding:30px 0; color:#666;">आपकी कार्ट अभी खाली है।</p></div>
-            <div id="cartPageTotal" style="font-weight:800; font-size:18px; margin-top:20px; text-align:right;">TOTAL: ₹0</div>
+            
+            <div id="cartBillSummary" class="cart-bill-summary" style="display:none;">
+                <div class="bill-row"><span>Items Subtotal:</span><span id="billSubtotal">₹0</span></div>
+                <div class="bill-row"><span>Delivery Charges:</span><span id="billDelivery" style="color:#2b8a3e; font-weight:bold;">₹0</span></div>
+                <div class="bill-row total-row"><span>Grand Total:</span><span id="billGrandTotal">₹0</span></div>
+            </div>
+
             <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO CHECKOUT ➡️</button>
         </div>
 
-        <!-- CART PAGE FOOTER -->
         <footer>
-            <a href="#" class="footer-logo">SUMO COMPANY</a>
+            <a href="#" class="footer-logo">SUMO</a>
             <div class="footer-bottom">
-                <p>Email: brandsumo34@gmail.com</p>
+                <p>Email: support@sumostore.com</p>
                 <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
             </div>
         </footer>
@@ -323,11 +341,17 @@
             </div>
             <div id="pdpThumbs" class="pdp-thumbs"></div>
 
-            <div id="pdpTitle" class="pdp-title">Product Name</div>
+            <div class="pdp-title-row">
+                <div id="pdpTitle" class="pdp-title">Product Name</div>
+                <button class="share-pdp-btn" id="pdpShareBtn" onclick="shareCurrentProduct()">📲 SHARE</button>
+            </div>
             
-            <div class="pdp-price-row">
+            <div class="pdp-price-card">
                 <div id="pdpPrice" class="pdp-price">₹0</div>
-                <div id="pdpDeliveryTag" class="delivery-tag"></div>
+                <div class="pdp-delivery-breakdown">
+                    <span id="pdpDeliveryStatus">🚚 Free Delivery</span>
+                    <span>• Cash On Delivery Available</span>
+                </div>
             </div>
 
             <div class="pdp-section-label">SELECT SIZE</div>
@@ -372,11 +396,10 @@
             </div>
         </div>
 
-        <!-- PRODUCT DETAILS PAGE FOOTER -->
         <footer>
-            <a href="#" class="footer-logo">SUMO COMPANY </a>
+            <a href="#" class="footer-logo">SUMO</a>
             <div class="footer-bottom">
-                <p>Email: brandsumo34@gmail.com</p>
+                <p>Email: support@sumostore.com</p>
                 <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
             </div>
         </footer>
@@ -404,7 +427,7 @@
 
             <div id="otpStep" style="display: none;">
                 <h3 style="margin-bottom: 4px; font-weight: 800;">ENTER OTP CODE</h3>
-                <p style="font-size: 12px; color: #666; margin-bottom: 14px;">SUMO COMPANY STORE notification sent above 👆</p>
+                <p style="font-size: 12px; color: #666; margin-bottom: 14px;">SUMO STORE notification sent above 👆</p>
                 
                 <input type="number" id="userOtp" placeholder="Enter 4-Digit OTP" maxlength="4">
                 <button onclick="verifyOTP()">VERIFY & SAVE ACCOUNT ✅</button>
@@ -461,6 +484,28 @@
         function openLoginModal() { history.pushState({ modal: true }, ""); document.getElementById('loginModal').style.display = 'flex'; }
         function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
 
+        /* PRODUCT SHARE FUNCTION (WHATSAPP SHARE) */
+        function shareProduct(index, event) {
+            if (event) event.stopPropagation();
+            const product = allProductsData[index];
+            const name = product.Name || product.name || product.NAME;
+            const price = product.Price || product.price || product.PRICE;
+            const siteUrl = window.location.href.split('#')[0];
+
+            const text = `🔥 *Check out this product on SUMO STORE!* 🔥\n\n🛍️ *Product:* ${name}\n💰 *Price:* ₹${price}\n\n👉 *Order Now:* ${siteUrl}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        function shareCurrentProduct() {
+            if (!currentPdpProduct) return;
+            const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
+            const price = currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE;
+            const siteUrl = window.location.href.split('#')[0];
+
+            const text = `🔥 *Check out this product on SUMO STORE!* 🔥\n\n🛍️ *Product:* ${name}\n💰 *Price:* ₹${price}\n\n👉 *Order Now:* ${siteUrl}`;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
         /* DEDICATED CART PAGE LOGIC */
         function openCartPage() {
             history.pushState({ cart: true }, "");
@@ -472,18 +517,19 @@
 
         function renderCartPage() {
             const itemsDiv = document.getElementById('cartPageItems');
-            const totalDiv = document.getElementById('cartPageTotal');
+            const summaryDiv = document.getElementById('cartBillSummary');
 
             if (cart.length === 0) {
                 itemsDiv.innerHTML = '<p style="text-align:center; padding:40px 0; color:#666;">आपकी कार्ट अभी खाली है।</p>';
-                totalDiv.innerText = 'TOTAL: ₹0';
+                summaryDiv.style.display = 'none';
                 return;
             }
 
             let html = '';
-            let total = 0;
+            let subtotal = 0;
             cart.forEach((item, index) => {
-                total += item.price * (item.qty || 1);
+                const itemTotal = item.price * (item.qty || 1);
+                subtotal += itemTotal;
                 html += `
                     <div class="cart-item-row">
                         <div>
@@ -496,14 +542,22 @@
                             </div>
                         </div>
                         <div style="display:flex; align-items:center;">
-                            <span class="cart-item-price">₹${item.price * (item.qty || 1)}</span>
+                            <span class="cart-item-price">₹${itemTotal}</span>
                             <button class="delete-btn" onclick="removeCartItem(${index})">🗑️</button>
                         </div>
                     </div>
                 `;
             });
+
+            // Delivery logic: If subtotal < 999, charge ₹49 delivery
+            const deliveryCharge = subtotal >= 999 ? 0 : 49;
+            const grandTotal = subtotal + deliveryCharge;
+
             itemsDiv.innerHTML = html;
-            totalDiv.innerText = `TOTAL: ₹${total}`;
+            summaryDiv.style.display = 'block';
+            document.getElementById('billSubtotal').innerText = `₹${subtotal}`;
+            document.getElementById('billDelivery').innerText = deliveryCharge === 0 ? 'FREE (₹0)' : `+₹${deliveryCharge}`;
+            document.getElementById('billGrandTotal').innerText = `₹${grandTotal}`;
         }
 
         function changeQty(index, delta) {
@@ -659,7 +713,7 @@
 
             products.forEach((product, index) => {
                 const name = product.Name || product.name || product.NAME;
-                const price = product.Price || product.price || product.PRICE;
+                const price = Number(product.Price || product.price || product.PRICE);
                 const imageStr = product.Image || product.image || product.IMAGE;
 
                 if (name && price && imageStr) {
@@ -674,15 +728,27 @@
                         avgRatingStr = `★ ${(sum / reviews.length).toFixed(1)} (${reviews.length})`;
                     }
 
+                    // Delivery Charge Tag
+                    const isFreeDelivery = price >= 999;
+                    const deliveryTagHtml = isFreeDelivery 
+                        ? `<span class="delivery-charge-tag">FREE DELIVERY</span>` 
+                        : `<span class="delivery-charge-tag paid">+🚚 ₹49 Delivery</span>`;
+
                     const card = `
                         <div class="product-card" onclick="openPdp(${index})">
+                            <div class="card-actions">
+                                <button class="action-circle-btn" title="Share Product" onclick="shareProduct(${index}, event)">🔗</button>
+                            </div>
                             <div class="img-container">
                                 <img src="${mainImgUrl}" class="main-img" alt="${name}">
                             </div>
                             <div class="card-body">
                                 <div class="rating-box">${avgRatingStr}</div>
                                 <div class="product-title">${name}</div>
-                                <div class="product-price">₹${price}</div>
+                                <div class="price-badge-row">
+                                    <span class="product-price">₹${price}</span>
+                                    ${deliveryTagHtml}
+                                </div>
                             </div>
                         </div>
                     `;
@@ -701,12 +767,11 @@
             currentPdpProduct = product;
 
             const name = product.Name || product.name || product.NAME;
-            const price = product.Price || product.price || product.PRICE;
+            const price = Number(product.Price || product.price || product.PRICE);
             const imageStr = product.Image || product.image || product.IMAGE;
             const sizeStr = product.Size || product.size || product.SIZE;
             const colorStr = product.Color || product.color || product.COLOR;
             const details = product.Details || product.details || product.DETAILS || '100% Premium Quality Fabric | Comfortable Fit';
-            const delivery = product.Delivery || product.delivery || product.DELIVERY || 'Free Delivery';
 
             const images = imageStr.split(',').map(img => img.trim());
 
@@ -715,8 +780,15 @@
             document.getElementById('pdpPrice').innerText = `₹${price}`;
             document.getElementById('pdpDetailsText').innerText = details;
 
-            const deliveryTag = document.getElementById('pdpDeliveryTag');
-            deliveryTag.innerText = delivery;
+            // Delivery Status Text
+            const deliveryStatus = document.getElementById('pdpDeliveryStatus');
+            if (price >= 999) {
+                deliveryStatus.innerText = '🚚 FREE Delivery (Orders Above ₹999)';
+                deliveryStatus.style.color = '#2b8a3e';
+            } else {
+                deliveryStatus.innerText = '🚚 Delivery Charge: ₹49 (Extra)';
+                deliveryStatus.style.color = '#d9480f';
+            }
 
             const thumbsContainer = document.getElementById('pdpThumbs');
             thumbsContainer.innerHTML = '';
@@ -777,7 +849,7 @@
         function addCurrentPdpToBag() {
             if (!currentPdpProduct) return;
             const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
-            const price = currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE;
+            const price = Number(currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE);
 
             let variantInfo = [];
             if (currentSelectedSize) variantInfo.push(`Size: ${currentSelectedSize}`);
@@ -842,7 +914,7 @@
             reviews.forEach(r => {
                 let starsStr = '★'.repeat(r.stars);
                 html += `
-                    <div style="background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 4px; margin-bottom: 8px;">
+                    <div style="background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
                         <div style="font-weight: bold; font-size: 12px;">${r.user} <span style="color: #ffa41c;">${starsStr}</span></div>
                         <div style="font-size: 12px; color: #444; margin-top: 3px;">"${r.text}"</div>
                     </div>
@@ -861,7 +933,7 @@
                 content.innerHTML = '<p>हम 7 दिनों की आसान रिटर्न और एक्सचेंज पॉलिसी देते हैं। अगर कपड़ा सही साइज़ का नहीं आता या डैमेज है, तो आप 7 दिनों के अंदर एक्सचेंज कर सकते हैं।</p>';
             } else if (type === 'shipping') {
                 title.innerText = 'Shipping & Delivery';
-                content.innerHTML = '<p>सभी ऑर्डर्स 3 से 6 दिनों के भीतर डिलीवर कर दिए जाते हैं। ₹999 से ऊपर के ऑर्डर्स पर मुफ़्त डिलीवरी उपलब्ध है।</p>';
+                content.innerHTML = '<p>सभी ऑर्डर्स 3 से 6 दिनों के भीतर डिलीवर कर दिए जाते हैं। ₹999 से ऊपर के ऑर्डर्स पर मुफ़्त डिलीवरी उपलब्ध है। उससे कम पर ₹49 डिलीवरी चार्ज लगता है।</p>';
             } else if (type === 'about') {
                 title.innerText = 'About SUMO Store';
                 content.innerHTML = '<p>SUMO Store आपका अपना भरोसेमंद ऑनलाइन फैशन स्टोर है, जहाँ बेहतरीन क्वालिटी के ट्रेंडिंग कपड़े सबसे किफायती दामों में मिलते हैं।</p>';
