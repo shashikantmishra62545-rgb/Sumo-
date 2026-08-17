@@ -96,7 +96,7 @@
         </div>
 
         <div class="products-grid" id="homeProductGrid">
-            <p style="text-align:center; grid-column:1/-1; padding:30px 0;">Loading Products...</p>
+            <p style="text-align:center; grid-column:1/-1; padding:40px 0;">Google Sheet se data load ho raha hai...</p>
         </div>
     </div>
 
@@ -221,63 +221,70 @@
     </div>
 
     <script>
+        // Google Sheet Direct CSV Export Link
         const sheetID = '1bW-4hDYayMTN7v42TKWRM_rnZQJbqI1XVW2l7vfOu0';
-        const csvURL = `https://docs.google.com/spreadsheets/d/${sheetID}/export?format=csv`;
+        const csvURL = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:csv`;
 
         let allProducts = [];
         let cart = [];
         let wishlist = [];
         let currentPdp = null;
         let chosenSize = '';
-        let currentLang = 'hi'; // Default Hindi
+        let currentLang = 'hi';
 
-        // Load Products reliably
         async function fetchProducts() {
             try {
                 const res = await fetch(csvURL);
-                const text = await res.text();
-                Papa.parse(text, {
+                const csvText = await res.text();
+                
+                Papa.parse(csvText, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function(r) {
-                        allProducts = r.data.map((item, idx) => {
-                            // Find keys regardless of case
-                            let titleKey = Object.keys(item).find(k => k.toLowerCase() === 'name' || k.toLowerCase() === 'title') || Object.keys(item)[0];
-                            let priceKey = Object.keys(item).find(k => k.toLowerCase() === 'price') || Object.keys(item)[1];
-                            let imgKey = Object.keys(item).find(k => k.toLowerCase() === 'image' || k.toLowerCase() === 'photo') || Object.keys(item)[2];
+                        if(r.data && r.data.length > 0) {
+                            allProducts = r.data.map((item, idx) => {
+                                // Dynamic column matching (Column A=Name, B=Price, C=Image)
+                                const keys = Object.keys(item);
+                                const titleVal = item['Name'] || item['name'] || item['Title'] || item[keys[0]] || 'Fashion Item';
+                                const priceVal = item['Price'] || item['price'] || item[keys[1]] || '299';
+                                const imgVal = item['Image'] || item['image'] || item[keys[2]] || '';
+                                
+                                let imgs = String(imgVal).split(',').map(s => s.trim()).filter(s => s.length > 5);
+                                let cleanPrice = parseInt(String(priceVal).replace(/[^0-9]/g, '')) || 299;
 
-                            let imgStr = item[imgKey] || '';
-                            let imgs = imgStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                                return {
+                                    id: idx + 1,
+                                    title: titleVal,
+                                    price: cleanPrice,
+                                    image: imgs[0] || 'https://via.placeholder.com/300',
+                                    size: item['Size'] || item['size'] || item[keys[3]] || 'Free Size, S, M, L, XL',
+                                    details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
+                                    category: item['Category'] || item['category'] || ''
+                                };
+                            }).filter(p => p.title && p.title !== '');
                             
-                            return {
-                                id: idx + 1,
-                                title: item[titleKey] || 'Fashion Item',
-                                price: parseInt((item[priceKey] || '299').replace(/[^0-9]/g, '')) || 299,
-                                image: imgs[0] || 'https://via.placeholder.com/300',
-                                size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
-                                details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
-                                category: item['Category'] || item['category'] || ''
-                            };
-                        });
-                        renderGrid('homeProductGrid', allProducts);
-                        renderGrid('catRightGrid', allProducts);
-                        renderGrid('mallGrid', allProducts);
+                            renderGrid('homeProductGrid', allProducts);
+                            renderGrid('catRightGrid', allProducts);
+                            renderGrid('mallGrid', allProducts);
+                        } else {
+                            document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Sheet me koi data nahi mila.</p>';
+                        }
                     }
                 });
             } catch(e) { 
                 console.error(e);
-                document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Error loading products. Check Google Sheet permissions.</p>';
+                document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Data load karne me problem aai. Kripya sheet access check karein.</p>';
             }
         }
 
         function renderGrid(containerId, list) {
             const el = document.getElementById(containerId);
             if(!el) return;
-            if(list.length === 0) { el.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No products found.</p>'; return; }
+            if(list.length === 0) { el.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Koi product nahi milaa.</p>'; return; }
             el.innerHTML = list.map(p => `
                 <div class="p-card" onclick="openPDP(${p.id})">
                     <div class="p-img-box">
-                        <img src="${p.image}">
+                        <img src="${p.image}" onerror="this.src='https://via.placeholder.com/300'">
                         <button class="wish-heart" onclick="event.stopPropagation(); toggleWish(${p.id})">❤️</button>
                     </div>
                     <div class="p-info">
@@ -289,7 +296,6 @@
             `).join('');
         }
 
-        // Navigation Tabs
         function switchTab(screenId, btn) {
             document.querySelectorAll('.tab-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -320,14 +326,13 @@
 
         function toggleWish(id) {
             const item = allProducts.find(p => p.id === id);
-            if(!wishlist.some(w => w.id === id)) wishlist.push(item);
+            if(item && !wishlist.some(w => w.id === id)) wishlist.push(item);
             alert('Item added to Wishlist!');
             renderGrid('wishlistGrid', wishlist);
         }
 
-        // Help Center & Language Functions
         function openHelpCenter() {
-            const adminWhatsApp = '919800000000'; // Apne WhatsApp number se replace karein
+            const adminWhatsApp = '919800000000'; // Apne WhatsApp number se change karein
             const msg = "Namaste SUMO Store, Mujhe help chahiye mera order/product related.";
             window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -358,9 +363,9 @@
             }
         }
 
-        // PDP & Cart
         function openPDP(id) {
             currentPdp = allProducts.find(p => p.id === id);
+            if(!currentPdp) return;
             document.getElementById('pdpImg').src = currentPdp.image;
             document.getElementById('pdpTitle').innerText = currentPdp.title;
             document.getElementById('pdpPrice').innerText = '₹' + currentPdp.price;
@@ -377,6 +382,7 @@
         function closePDP() { document.getElementById('pdpModal').style.display = 'none'; }
 
         function addToCart(isBuyNow) {
+            if(!currentPdp) return;
             cart.push({ ...currentPdp, chosenSize });
             document.getElementById('cartBadge').innerText = cart.length;
             closePDP();
