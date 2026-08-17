@@ -260,8 +260,9 @@
     </div>
 
     <script>
-        // Google Apps Script Deploy URL
-        const jsonAPI = 'https://script.google.com/macros/s/AKfycbynYKCMWIZOCZ5vCKH-jaxRsStl7eoZSBXg5Ajpawz5q63dj4NYqEi6Bp0NALtx_vp0YQ/exec';
+        // AAPKI GOOGLE SHEET PUBLISHED CSV LINK
+        const csvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
+        const proxyURL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(csvURL);
 
         let allProducts = [];
         let cart = [];
@@ -271,46 +272,53 @@
         let currentLang = 'hi';
         let currentUser = null;
 
-        // Fetch products from Apps Script
+        // Fetch products from Google Sheet via Proxy
         async function fetchProducts() {
             try {
-                const res = await fetch(jsonAPI);
-                const data = await res.json();
+                const res = await fetch(proxyURL);
+                if(!res.ok) throw new Error("Network error");
+                const csvText = await res.text();
                 
-                if(data && data.length > 0) {
-                    allProducts = data.map((item, idx) => {
-                        let imgStr = item['Image'] || item['image'] || item['IMAGE'] || '';
-                        let imgs = String(imgStr).split(',').map(s => s.trim()).filter(s => s.length > 5);
-                        let priceVal = parseInt(String(item['Price'] || item['price'] || 299).replace(/[^0-9]/g, '')) || 299;
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(r) {
+                        if(r.data && r.data.length > 0) {
+                            allProducts = r.data.map((item, idx) => {
+                                let imgStr = item['Image'] || item['image'] || item['IMAGE'] || '';
+                                let imgs = String(imgStr).split(',').map(s => s.trim()).filter(s => s.length > 5);
+                                let priceVal = parseInt(String(item['Price'] || item['price'] || 299).replace(/[^0-9]/g, '')) || 299;
 
-                        return {
-                            id: idx + 1,
-                            title: item['Name'] || item['name'] || item['Title'] || 'Fashion Item',
-                            price: priceVal,
-                            image: imgs[0] || 'https://via.placeholder.com/300',
-                            size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
-                            details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
-                            delivery: item['Delivery'] || item['delivery'] || 'FREE Delivery',
-                            category: item['Category'] || item['category'] || ''
-                        };
-                    }).filter(p => p.title && p.title !== '');
+                                return {
+                                    id: idx + 1,
+                                    title: item['Name'] || item['name'] || item['Title'] || 'Fashion Item',
+                                    price: priceVal,
+                                    image: imgs[0] || 'https://via.placeholder.com/300',
+                                    size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
+                                    details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
+                                    delivery: item['Delivery'] || item['delivery'] || 'FREE Delivery',
+                                    category: item['Category'] || item['category'] || ''
+                                };
+                            }).filter(p => p.title && p.title !== '');
 
-                    renderGrid('homeProductGrid', allProducts);
-                    renderGrid('catRightGrid', allProducts);
-                    renderGrid('mallGrid', allProducts);
-                } else {
-                    document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Sheet me koi data nahi milaa.</p>';
-                }
+                            renderGrid('homeProductGrid', allProducts);
+                            renderGrid('catRightGrid', allProducts);
+                            renderGrid('mallGrid', allProducts);
+                        } else {
+                            document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0;">Google Sheet me koi data nahi milaa.</p>';
+                        }
+                    }
+                });
             } catch(e) { 
                 console.error(e);
-                document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Data load karne me problem aai.</p>';
+                document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0; color:red;">Data load karne me problem aai. Kripya page refresh karein.</p>';
             }
         }
 
         function renderGrid(containerId, list) {
             const el = document.getElementById(containerId);
             if(!el) return;
-            if(list.length === 0) { el.innerHTML = '<p style="text-align:center; grid-column:1/-1;">Koi product nahi milaa.</p>'; return; }
+            if(list.length === 0) { el.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0;">Koi product nahi milaa.</p>'; return; }
             el.innerHTML = list.map(p => `
                 <div class="p-card" onclick="openPDP(${p.id})">
                     <div class="p-img-box">
@@ -430,7 +438,7 @@
         }
 
         function openHelpCenter() {
-            const adminWhatsApp = '919800000000'; // Apne 10-digit WhatsApp number se replace karein
+            const adminWhatsApp = '919421473962'; // Aapka Mobile Number 9421473962
             const msg = "Namaste SUMO Store, Mujhe Help Chahiye.";
             window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -499,7 +507,7 @@
                 let total = 0;
                 el.innerHTML = cart.map((c, i) => {
                     total += c.price;
-                    return `<div style="display:flex; justify-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
+                    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
                         <div><b>${c.title}</b><br><small>Size: ${c.chosenSize} | ₹${c.price}</small></div>
                         <button onclick="cart.splice(${i},1); openCart();" style="color:red; border:none; background:none; cursor:pointer;">🗑️</button>
                     </div>`;
@@ -522,7 +530,7 @@
             cart.forEach((c, i) => { total += c.price; msg += `${i+1}. ${c.title} (${c.chosenSize}) - ₹${c.price}\n`; });
             msg += `\nTotal Amount: ₹${total}\nPayment: Cash On Delivery`;
 
-            const adminWhatsApp = '919800000000'; // Apne 10-digit WhatsApp number se replace karein
+            const adminWhatsApp = '919421473962'; // Aapka Phone Number
             window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
