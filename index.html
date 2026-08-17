@@ -10,31 +10,26 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-gray); color: var(--text-dark); padding-bottom: 65px; }
 
-        /* App Header */
         header { background: #fff; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e0e0e0; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 20px; font-weight: 900; color: var(--meesho-pink); letter-spacing: 1px; text-decoration: none; }
         .header-actions { display: flex; gap: 14px; align-items: center; }
         .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; position: relative; }
         .badge { position: absolute; top: -5px; right: -8px; background: var(--meesho-pink); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; padding: 2px 5px; }
 
-        /* Search & Location Bar */
         .search-container { background: #fff; padding: 0 14px 10px; border-bottom: 1px solid #eee; }
         .loc-bar { font-size: 11px; color: #555; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; font-weight: 600; }
         .search-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 6px; padding: 8px 12px; border: 1px solid #e0e0e0; }
         .search-box input { border: none; background: transparent; width: 100%; margin-left: 8px; font-size: 13px; outline: none; }
 
-        /* Screen Sections (Single Page App Tabs) */
         .tab-screen { display: none; }
         .tab-screen.active { display: block; }
 
-        /* Horizontal Category Circles (Meesho Style) */
         .circle-cats { display: flex; gap: 12px; padding: 12px 14px; background: #fff; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #eee; }
         .circle-cats::-webkit-scrollbar { display: none; }
         .cat-item { text-align: center; flex-shrink: 0; width: 60px; cursor: pointer; }
         .cat-img { width: 50px; height: 50px; border-radius: 50%; background: #eee; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 22px; border: 1px solid #ddd; }
         .cat-title { font-size: 10px; font-weight: 600; color: #444; }
 
-        /* Product Grid */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; } }
 
@@ -50,26 +45,22 @@
         .p-off { font-size: 10px; color: #2e7d32; font-weight: bold; }
         .p-rate { background: #238029; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 6px; }
 
-        /* Categories Tab Layout (Left Menu + Right Grid) */
         .cat-layout { display: flex; height: calc(100vh - 120px); background: #fff; }
         .cat-left-sidebar { width: 90px; background: #f8f8f8; border-right: 1px solid #eee; overflow-y: auto; }
         .sidebar-item { padding: 14px 8px; text-align: center; font-size: 11px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; cursor: pointer; }
         .sidebar-item.active { background: #fff; color: var(--meesho-pink); border-left: 3px solid var(--meesho-pink); }
         .cat-right-content { flex: 1; padding: 15px; overflow-y: auto; }
 
-        /* Profile Screen Layout */
         .profile-header { background: #fff; padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; }
         .profile-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--meesho-pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
         .profile-menu { background: #fff; margin-top: 10px; list-style: none; }
         .profile-menu li { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* Bottom Navigation Bar (5 Tabs) */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #777; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-tab.active { color: var(--meesho-pink); }
         .nav-tab-icon { font-size: 18px; margin-bottom: 2px; }
 
-        /* Modals & Slide-ups */
         .modal-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; overflow-y: auto; padding-bottom: 70px; }
         .modal-head { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
         
@@ -80,7 +71,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header>
         <a href="#" class="logo">SUMO</a>
         <div class="header-actions">
@@ -89,19 +79,17 @@
         </div>
     </header>
 
-    <!-- Search & Location -->
     <div class="search-container">
         <div class="loc-bar">📍 Delivering to Utraula - 271306 <span>></span></div>
         <div class="search-box">
-            🔍 <input type="text" id="searchInput" onkeyup="searchFilter()" placeholder="Search by Keyword or Product ID...">
+            🔍 <input type="text" id="searchInput" onkeyup="searchFilter()" placeholder="Search Saree, Kurti, Shirt, Pants...">
         </div>
     </div>
 
-    <!-- ================= TAB 1: HOME ================= -->
     <div id="homeScreen" class="tab-screen active">
         <div class="circle-cats">
-            <div class="cat-item" onclick="filterCategory('all')"><div class="cat-img">🛍️</div><div class="cat-title">All Categories</div></div>
-            <div class="cat-item" onclick="filterCategory('saree')"><div class="cat-img">🥻</div><div class="cat-title">Saree & Kurti</div></div>
+            <div class="cat-item" onclick="filterCategory('all')"><div class="cat-img">🛍️</div><div class="cat-title" id="catAll">All Items</div></div>
+            <div class="cat-item" onclick="filterCategory('saree')"><div class="cat-img">🥻</div><div class="cat-title">Saree</div></div>
             <div class="cat-item" onclick="filterCategory('men')"><div class="cat-img">👕</div><div class="cat-title">Men Wear</div></div>
             <div class="cat-item" onclick="filterCategory('pant')"><div class="cat-img">👖</div><div class="cat-title">Bottomwear</div></div>
             <div class="cat-item" onclick="filterCategory('women')"><div class="cat-img">👗</div><div class="cat-title">Western</div></div>
@@ -112,42 +100,38 @@
         </div>
     </div>
 
-    <!-- ================= TAB 2: CATEGORIES ================= -->
     <div id="categoriesScreen" class="tab-screen">
         <div class="cat-layout">
             <div class="cat-left-sidebar">
                 <div class="sidebar-item active" onclick="selectCatLeft('all', this)">Popular</div>
-                <div class="sidebar-item" onclick="selectCatLeft('saree', this)">Kurti & Saree</div>
-                <div class="sidebar-item" onclick="selectCatLeft('men', this)">Men Fashion</div>
+                <div class="sidebar-item" onclick="selectCatLeft('saree', this)">Saree & Kurti</div>
+                <div class="sidebar-item" onclick="selectCatLeft('men', this)">Men Wear</div>
                 <div class="sidebar-item" onclick="selectCatLeft('pant', this)">Jeans & Pants</div>
             </div>
             <div class="cat-right-content">
-                <h4 style="margin-bottom:10px; font-size:13px;" id="catRightTitle">Popular Items</h4>
+                <h4 style="margin-bottom:10px; font-size:13px;" id="catRightTitle">All Collection</h4>
                 <div class="products-grid" id="catRightGrid" style="padding:0; grid-template-columns: repeat(2, 1fr);"></div>
             </div>
         </div>
     </div>
 
-    <!-- ================= TAB 3: MALL ================= -->
     <div id="mallScreen" class="tab-screen">
         <div style="background:#fff; padding:15px; text-align:center; border-bottom:1px solid #eee;">
             <h3 style="color:var(--meesho-pink);">SUMO MALL 🛍️</h3>
-            <p style="font-size:11px; color:#666;">100% Quality Checked Premium Products</p>
+            <p style="font-size:11px; color:#666;">100% Verified Quality Products</p>
         </div>
         <div class="products-grid" id="mallGrid"></div>
     </div>
 
-    <!-- ================= TAB 4: MY ORDERS ================= -->
     <div id="ordersScreen" class="tab-screen">
         <div style="padding:15px; background:#fff; border-bottom:1px solid #eee;">
-            <h3 style="font-size:15px;">My Orders</h3>
+            <h3 style="font-size:15px;" id="txtMyOrders">My Orders</h3>
         </div>
         <div id="ordersList" style="padding:15px;">
-            <p style="text-align:center; color:#666; padding:30px 0;">No active orders yet.</p>
+            <p style="text-align:center; color:#666; padding:30px 0;" id="txtNoOrders">No active orders yet.</p>
         </div>
     </div>
 
-    <!-- ================= TAB 5: ACCOUNT ================= -->
     <div id="accountScreen" class="tab-screen">
         <div class="profile-header">
             <div class="profile-avatar">SM</div>
@@ -157,16 +141,13 @@
             </div>
         </div>
         <ul class="profile-menu">
-            <li onclick="switchTab('ordersScreen')">📦 My Orders <span>></span></li>
-            <li onclick="switchTab('wishlistScreen')">❤️ Wishlisted Products <span>></span></li>
-            <li>💳 SUMO Pay Later <span>Discount upto ₹120</span></li>
-            <li>🌐 Change Language <span>English / Hindi ></span></li>
-            <li>🎧 Help Centre <span>></span></li>
-            <li>📜 Legal and Policies <span>></span></li>
+            <li onclick="switchTab('ordersScreen')"><span id="lblOrders">📦 My Orders</span> <span>></span></li>
+            <li onclick="switchTab('wishlistScreen')"><span id="lblWish">❤️ Wishlisted Products</span> <span>></span></li>
+            <li onclick="openHelpCenter()">🎧 Help Centre (WhatsApp Customer Support) <span>></span></li>
+            <li onclick="toggleLanguage()">🌐 Change Language / भाषा बदलें <span id="currentLangTag" style="color:var(--meesho-pink); font-weight:bold;">Hindi</span></li>
         </ul>
     </div>
 
-    <!-- ================= WISHLIST SCREEN ================= -->
     <div id="wishlistScreen" class="tab-screen">
         <div style="padding:15px; background:#fff; border-bottom:1px solid #eee;">
             <h3 style="font-size:15px;">My Wishlist ❤️</h3>
@@ -174,7 +155,6 @@
         <div class="products-grid" id="wishlistGrid"></div>
     </div>
 
-    <!-- ================= PRODUCT DETAILS MODAL (PDP) ================= -->
     <div id="pdpModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closePDP()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
@@ -206,7 +186,6 @@
         </div>
     </div>
 
-    <!-- ================= CART MODAL ================= -->
     <div id="cartModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closeCart()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
@@ -233,39 +212,47 @@
         </div>
     </div>
 
-    <!-- ================= BOTTOM NAVIGATION BAR (5 TABS) ================= -->
     <div class="bottom-nav">
-        <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span>Home</button>
-        <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span>Categories</button>
-        <button class="nav-tab" onclick="switchTab('mallScreen', this)"><span class="nav-tab-icon">🛍️</span>Mall</button>
-        <button class="nav-tab" onclick="switchTab('ordersScreen', this)"><span class="nav-tab-icon">📦</span>My Orders</button>
-        <button class="nav-tab" onclick="switchTab('accountScreen', this)"><span class="nav-tab-icon">👤</span>Account</button>
+        <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span><span id="tabHome">Home</span></button>
+        <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span><span id="tabCat">Categories</span></button>
+        <button class="nav-tab" onclick="switchTab('mallScreen', this)"><span class="nav-tab-icon">🛍️</span><span>Mall</span></button>
+        <button class="nav-tab" onclick="switchTab('ordersScreen', this)"><span class="nav-tab-icon">📦</span><span id="tabOrders">Orders</span></button>
+        <button class="nav-tab" onclick="switchTab('accountScreen', this)"><span class="nav-tab-icon">👤</span><span id="tabAcc">Account</span></button>
     </div>
 
     <script>
-        const sheetDirectURL = 'https://docs.google.com/spreadsheets/d/1bW-4hDYayMTN7v42TKWRM_rnZQJbqI1XVW2l7vfOu0/gviz/tq?tqx=out:csv';
+        const sheetID = '1bW-4hDYayMTN7v42TKWRM_rnZQJbqI1XVW2l7vfOu0';
+        const csvURL = `https://docs.google.com/spreadsheets/d/${sheetID}/export?format=csv`;
+
         let allProducts = [];
         let cart = [];
         let wishlist = [];
         let currentPdp = null;
         let chosenSize = '';
+        let currentLang = 'hi'; // Default Hindi
 
-        // Load Products
+        // Load Products reliably
         async function fetchProducts() {
             try {
-                const res = await fetch(sheetDirectURL);
+                const res = await fetch(csvURL);
                 const text = await res.text();
                 Papa.parse(text, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function(r) {
                         allProducts = r.data.map((item, idx) => {
-                            let imgStr = item['Image'] || item['image'] || '';
+                            // Find keys regardless of case
+                            let titleKey = Object.keys(item).find(k => k.toLowerCase() === 'name' || k.toLowerCase() === 'title') || Object.keys(item)[0];
+                            let priceKey = Object.keys(item).find(k => k.toLowerCase() === 'price') || Object.keys(item)[1];
+                            let imgKey = Object.keys(item).find(k => k.toLowerCase() === 'image' || k.toLowerCase() === 'photo') || Object.keys(item)[2];
+
+                            let imgStr = item[imgKey] || '';
                             let imgs = imgStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
+                            
                             return {
                                 id: idx + 1,
-                                title: item['Name'] || item['name'] || 'Item',
-                                price: parseInt(item['Price'] || item['price'] || 299),
+                                title: item[titleKey] || 'Fashion Item',
+                                price: parseInt((item[priceKey] || '299').replace(/[^0-9]/g, '')) || 299,
                                 image: imgs[0] || 'https://via.placeholder.com/300',
                                 size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
                                 details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
@@ -277,11 +264,15 @@
                         renderGrid('mallGrid', allProducts);
                     }
                 });
-            } catch(e) { console.error(e); }
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Error loading products. Check Google Sheet permissions.</p>';
+            }
         }
 
         function renderGrid(containerId, list) {
             const el = document.getElementById(containerId);
+            if(!el) return;
             if(list.length === 0) { el.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No products found.</p>'; return; }
             el.innerHTML = list.map(p => `
                 <div class="p-card" onclick="openPDP(${p.id})">
@@ -330,8 +321,41 @@
         function toggleWish(id) {
             const item = allProducts.find(p => p.id === id);
             if(!wishlist.some(w => w.id === id)) wishlist.push(item);
-            alert('Added to Wishlist!');
+            alert('Item added to Wishlist!');
             renderGrid('wishlistGrid', wishlist);
+        }
+
+        // Help Center & Language Functions
+        function openHelpCenter() {
+            const adminWhatsApp = '919800000000'; // Apne WhatsApp number se replace karein
+            const msg = "Namaste SUMO Store, Mujhe help chahiye mera order/product related.";
+            window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function toggleLanguage() {
+            if(currentLang === 'hi') {
+                currentLang = 'en';
+                document.getElementById('currentLangTag').innerText = 'English';
+                document.getElementById('tabHome').innerText = 'Home';
+                document.getElementById('tabCat').innerText = 'Categories';
+                document.getElementById('tabOrders').innerText = 'Orders';
+                document.getElementById('tabAcc').innerText = 'Account';
+                document.getElementById('lblOrders').innerText = '📦 My Orders';
+                document.getElementById('lblWish').innerText = '❤️ Wishlisted Products';
+                document.getElementById('txtMyOrders').innerText = 'My Orders';
+                document.getElementById('txtNoOrders').innerText = 'No active orders yet.';
+            } else {
+                currentLang = 'hi';
+                document.getElementById('currentLangTag').innerText = 'Hindi';
+                document.getElementById('tabHome').innerText = 'होम';
+                document.getElementById('tabCat').innerText = 'कैटेगरी';
+                document.getElementById('tabOrders').innerText = 'ऑर्डर';
+                document.getElementById('tabAcc').innerText = 'अकाउंट';
+                document.getElementById('lblOrders').innerText = '📦 मेरे ऑर्डर';
+                document.getElementById('lblWish').innerText = '❤️ विशलिस्ट सामान';
+                document.getElementById('txtMyOrders').innerText = 'मेरे ऑर्डर';
+                document.getElementById('txtNoOrders').innerText = 'कोई एक्टिव ऑर्डर नहीं है।';
+            }
         }
 
         // PDP & Cart
@@ -369,9 +393,9 @@
                 let total = 0;
                 el.innerHTML = cart.map((c, i) => {
                     total += c.price;
-                    return `<div style="display:flex; justify-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
+                    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
                         <div><b>${c.title}</b><br><small>Size: ${c.chosenSize} | ₹${c.price}</small></div>
-                        <button onclick="cart.splice(${i},1); openCart();" style="color:red; border:none; background:none;">🗑️</button>
+                        <button onclick="cart.splice(${i},1); openCart();" style="color:red; border:none; background:none; cursor:pointer;">🗑️</button>
                     </div>`;
                 }).join('');
                 document.getElementById('subTotal').innerText = '₹' + total;
@@ -385,14 +409,15 @@
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
             const addr = document.getElementById('custAddr').value;
-            if(!name || !phone || !addr) { alert('Please fill details'); return; }
+            if(!name || !phone || !addr) { alert('Kripya puri details bharen'); return; }
 
             let msg = `*NEW ORDER - SUMO STORE*\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\nItems:\n`;
             let total = 0;
             cart.forEach((c, i) => { total += c.price; msg += `${i+1}. ${c.title} (${c.chosenSize}) - ₹${c.price}\n`; });
             msg += `\nTotal: ₹${total}\nCOD Order`;
 
-            window.open(`https://wa.me/919800000000?text=${encodeURIComponent(msg)}`, '_blank');
+            const adminWhatsApp = '919800000000'; // Apne WhatsApp number se replace karein
+            window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         fetchProducts();
