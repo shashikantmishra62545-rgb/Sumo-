@@ -232,44 +232,37 @@
         let chosenSize = '';
         let currentLang = 'hi';
 
-        async function fetchProducts() {
-            try {
-                const res = await fetch(csvURL);
-                const csvText = await res.text();
-                
-                Papa.parse(csvText, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(r) {
-                        if(r.data && r.data.length > 0) {
-                            allProducts = r.data.map((item, idx) => {
-                                // Dynamic column matching (Column A=Name, B=Price, C=Image)
-                                const keys = Object.keys(item);
-                                const titleVal = item['Name'] || item['name'] || item['Title'] || item[keys[0]] || 'Fashion Item';
-                                const priceVal = item['Price'] || item['price'] || item[keys[1]] || '299';
-                                const imgVal = item['Image'] || item['image'] || item[keys[2]] || '';
-                                
-                                let imgs = String(imgVal).split(',').map(s => s.trim()).filter(s => s.length > 5);
-                                let cleanPrice = parseInt(String(priceVal).replace(/[^0-9]/g, '')) || 299;
+       const jsonAPI = 'https://script.google.com/macros/s/AKfycbynYKCMWIZOCZ5vCKH-jaxRsStl7eoZSBXg5Ajpawz5q63dj4NYqEi6Bp0NALtx_vpOYQ/exec'; 
 
-                                return {
-                                    id: idx + 1,
-                                    title: titleVal,
-                                    price: cleanPrice,
-                                    image: imgs[0] || 'https://via.placeholder.com/300',
-                                    size: item['Size'] || item['size'] || item[keys[3]] || 'Free Size, S, M, L, XL',
-                                    details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
-                                    category: item['Category'] || item['category'] || ''
-                                };
-                            }).filter(p => p.title && p.title !== '');
-                            
-                            renderGrid('homeProductGrid', allProducts);
-                            renderGrid('catRightGrid', allProducts);
-                            renderGrid('mallGrid', allProducts);
-                        } else {
-                            document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">Sheet me koi data nahi mila.</p>';
-                        }
-                    }
+async function fetchProducts() {
+    try {
+        const res = await fetch(jsonAPI);
+        const data = await res.json();
+        
+        allProducts = data.map((item, idx) => {
+            let imgStr = item['Image'] || item['image'] || item['IMAGE'] || '';
+            let imgs = String(imgStr).split(',').map(s => s.trim()).filter(s => s.length > 5);
+            let priceVal = parseInt(String(item['Price'] || item['price'] || 299).replace(/[^0-9]/g, '')) || 299;
+
+            return {
+                id: idx + 1,
+                title: item['Name'] || item['name'] || item['Title'] || 'Fashion Item',
+                price: priceVal,
+                image: imgs[0] || 'https://via.placeholder.com/300',
+                size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
+                details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
+                category: item['Category'] || item['category'] || ''
+            };
+        }).filter(p => p.title && p.title !== '');
+        
+        renderGrid('homeProductGrid', allProducts);
+        renderGrid('catRightGrid', allProducts);
+        renderGrid('mallGrid', allProducts);
+    } catch(e) {
+        console.error(e);
+        document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1;">डेटा लोड करने में समस्या।</p>';
+    }
+}
                 });
             } catch(e) { 
                 console.error(e);
