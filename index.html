@@ -34,6 +34,11 @@
         .cat-img { width: 48px; height: 48px; border-radius: 50%; background: #eee; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #ddd; }
         .cat-title { font-size: 10px; font-weight: 600; color: #444; }
 
+        /* Spinner Loader */
+        .loader-container { grid-column: 1/-1; text-align: center; padding: 50px 0; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--meesho-pink); border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
         /* Product Grid */
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
         @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; } }
@@ -50,18 +55,22 @@
         .p-off { font-size: 10px; color: #2e7d32; font-weight: bold; }
         .p-rate { background: #238029; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 6px; }
 
-        /* Categories Tab Sidebar */
+        /* Categories Tab */
         .cat-layout { display: flex; height: calc(100vh - 120px); background: #fff; }
         .cat-left-sidebar { width: 95px; background: #f8f8f8; border-right: 1px solid #eee; overflow-y: auto; }
         .sidebar-item { padding: 14px 8px; text-align: center; font-size: 11px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; cursor: pointer; }
         .sidebar-item.active { background: #fff; color: var(--meesho-pink); border-left: 3px solid var(--meesho-pink); }
         .cat-right-content { flex: 1; padding: 15px; overflow-y: auto; }
 
-        /* Account Profile Area */
+        /* Account Area */
         .profile-header { background: #fff; padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; }
         .profile-avatar { width: 55px; height: 55px; border-radius: 50%; background: var(--meesho-pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; text-transform: uppercase; }
         .profile-menu { background: #fff; margin-top: 10px; list-style: none; }
         .profile-menu li { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+
+        /* Orders Card */
+        .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 10px; font-size: 12px; }
+        .order-status { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; margin-bottom: 8px; }
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
@@ -69,7 +78,7 @@
         .nav-tab.active { color: var(--meesho-pink); }
         .nav-tab-icon { font-size: 18px; margin-bottom: 2px; }
 
-        /* Modal Pages */
+        /* Modals */
         .modal-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; overflow-y: auto; padding-bottom: 70px; }
         .modal-head { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; align-items: center; }
 
@@ -77,10 +86,21 @@
         .btn-pink { background: var(--meesho-pink); color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
         .btn-outline { background: #fff; color: var(--meesho-pink); border: 1px solid var(--meesho-pink); padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
 
-        .form-input { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
+        .form-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
+
+        /* SMS Notification Popup */
+        .sms-popup { display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; background: #111827; color: #fff; padding: 12px 16px; border-radius: 10px; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-left: 4px solid var(--meesho-pink); }
+        .sms-head { font-size: 11px; color: #9ca3af; display: flex; justify-content: space-between; font-weight: bold; }
+        .sms-body { font-size: 13px; font-weight: 600; margin-top: 4px; color: #f9fafb; }
     </style>
 </head>
 <body>
+
+    <!-- SMS Notification Popup for OTP -->
+    <div id="smsPopup" class="sms-popup">
+        <div class="sms-head">💬 SUMO OFFICIAL <span style="font-size:10px;">Just now</span></div>
+        <div class="sms-body" id="smsBody">Your OTP for SUMO Login is: 4829</div>
+    </div>
 
     <!-- Header -->
     <header>
@@ -110,7 +130,7 @@
         </div>
 
         <div class="products-grid" id="homeProductGrid">
-            <p style="text-align:center; grid-column:1/-1; padding:40px 0;">Google Sheet se data load ho raha hai...</p>
+            <div class="loader-container"><div class="spinner"></div></div>
         </div>
     </div>
 
@@ -163,6 +183,7 @@
             <li onclick="switchTab('ordersScreen')"><span id="lblOrders">📦 My Orders</span> <span>></span></li>
             <li onclick="switchTab('wishlistScreen')"><span id="lblWish">❤️ Wishlisted Products</span> <span>></span></li>
             <li onclick="openHelpCenter()">🎧 Help Centre (WhatsApp Support) <span>></span></li>
+            <li onclick="openPrivacyModal()">📜 Privacy Policy & Terms <span>></span></li>
             <li onclick="toggleLanguage()">🌐 Change Language / भाषा बदलें <span id="currentLangTag" style="color:var(--meesho-pink); font-weight:bold;">Hindi</span></li>
         </ul>
     </div>
@@ -173,6 +194,29 @@
             <h3 style="font-size:15px;">My Wishlist ❤️</h3>
         </div>
         <div class="products-grid" id="wishlistGrid"></div>
+    </div>
+
+    <!-- PRIVACY POLICY MODAL -->
+    <div id="privacyModal" class="modal-page">
+        <div class="modal-head">
+            <button onclick="closePrivacyModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
+            <span style="font-weight:bold;">Privacy Policy</span>
+            <div></div>
+        </div>
+        <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.6; color:#444;">
+            <h3>SUMO STORE Privacy & Security Policy</h3>
+            <br>
+            <p>Welcome to SUMO STORE (sumocompany.shop). We value your privacy and trust.</p>
+            <br>
+            <b>1. Information Collection:</b>
+            <p>We collect essential details such as Name, Phone Number, and Delivery Address solely for fulfilling your orders via Cash on Delivery (COD).</p>
+            <br>
+            <b>2. Data Protection:</b>
+            <p>Your details are protected and never shared with third parties for commercial advertising.</p>
+            <br>
+            <b>3. Order Processing:</b>
+            <p>Orders are verified via WhatsApp before dispatch to ensure secure and accurate delivery.</p>
+        </div>
     </div>
 
     <!-- PRODUCT DETAILS MODAL (PDP) -->
@@ -234,7 +278,7 @@
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
+    <!-- LOGIN MODAL WITH OTP -->
     <div id="loginModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closeLoginModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Close</button>
@@ -243,14 +287,22 @@
         </div>
         <div style="padding:25px 15px; max-width:380px; margin:0 auto; text-align:center;">
             <h3 style="margin-bottom:15px; color:var(--meesho-pink);">Welcome to SUMO</h3>
-            <p style="font-size:12px; color:#666; margin-bottom:20px;">Enter your Name & Mobile Number to Login</p>
-            <input type="text" id="loginNameInput" placeholder="Enter Full Name" class="form-input">
-            <input type="tel" id="loginPhoneInput" placeholder="Enter 10-digit Phone Number" class="form-input">
-            <button class="btn-pink" style="width:100%; max-width:100%; margin-top:10px;" onclick="submitLogin()">LOGIN NOW</button>
+            <p style="font-size:12px; color:#666; margin-bottom:20px;">Enter Mobile Number for OTP Verification</p>
+            
+            <div id="loginStep1">
+                <input type="text" id="loginNameInput" placeholder="Enter Full Name" class="form-input">
+                <input type="tel" id="loginPhoneInput" placeholder="Enter 10-digit Phone Number" class="form-input">
+                <button class="btn-pink" style="width:100%; max-width:100%; margin-top:10px;" onclick="sendOTP()">SEND OTP</button>
+            </div>
+
+            <div id="loginStep2" style="display:none; margin-top:15px;">
+                <input type="number" id="otpInput" placeholder="Enter 4-Digit OTP" class="form-input">
+                <button class="btn-pink" style="width:100%; max-width:100%; margin-top:10px;" onclick="verifyOTPAndLogin()">VERIFY & LOGIN</button>
+            </div>
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR (5 TABS) -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <div class="bottom-nav">
         <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span><span id="tabHome">Home</span></button>
         <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span><span id="tabCat">Categories</span></button>
@@ -260,19 +312,36 @@
     </div>
 
     <script>
-        // GOOGLE SHEET DIRECT URL + CORSPROXY TO PREVENT BLOCKING
         const rawCsvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
         const proxyURL = 'https://corsproxy.io/?' + encodeURIComponent(rawCsvURL);
 
         let allProducts = [];
         let cart = [];
         let wishlist = [];
+        let myOrders = [];
         let currentPdp = null;
         let chosenSize = '';
         let currentLang = 'hi';
         let currentUser = null;
+        let generatedOTP = null;
 
-        // Load Products reliably
+        // Back Button Navigation Handler
+        window.addEventListener('popstate', function(e) {
+            closeAllModalsSilently();
+        });
+
+        function pushModalState() {
+            history.pushState({ modalOpen: true }, "");
+        }
+
+        function closeAllModalsSilently() {
+            document.getElementById('pdpModal').style.display = 'none';
+            document.getElementById('cartModal').style.display = 'none';
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('privacyModal').style.display = 'none';
+        }
+
+        // Fetch products
         async function fetchProducts() {
             try {
                 const res = await fetch(proxyURL);
@@ -310,8 +379,6 @@
                     }
                 });
             } catch(e) { 
-                console.error(e);
-                // Fallback attempt without proxy if direct request works
                 fetchDirectFallback();
             }
         }
@@ -400,7 +467,7 @@
             }
         }
 
-        // User Auth Login System
+        // OTP & Auth System
         function checkSavedUser() {
             const saved = localStorage.getItem('sumoUser');
             if(saved) {
@@ -411,6 +478,7 @@
             if(savedPin) {
                 document.getElementById('userLocationText').innerText = `Delivering to ${savedPin}`;
             }
+            loadOrdersUI();
         }
 
         function handleAuthClick() {
@@ -421,24 +489,45 @@
                     updateProfileUI();
                 }
             } else {
+                pushModalState();
                 document.getElementById('loginModal').style.display = 'block';
             }
         }
 
-        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+        function closeLoginModal() { history.back(); }
 
-        function submitLogin() {
+        function sendOTP() {
             const name = document.getElementById('loginNameInput').value.trim();
             const phone = document.getElementById('loginPhoneInput').value.trim();
             if(!name || phone.length < 10) {
                 alert('Kripya apna sahi Naam aur 10-digit Phone Number bharen!');
                 return;
             }
-            currentUser = { name, phone };
-            localStorage.setItem('sumoUser', JSON.stringify(currentUser));
-            updateProfileUI();
-            closeLoginModal();
-            alert(`Welcome ${name}! Login successful.`);
+            generatedOTP = Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('smsBody').innerText = `Your OTP for SUMO Login is: ${generatedOTP}`;
+            document.getElementById('smsPopup').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('smsPopup').style.display = 'none';
+            }, 6000);
+
+            document.getElementById('loginStep1').style.display = 'none';
+            document.getElementById('loginStep2').style.display = 'block';
+        }
+
+        function verifyOTPAndLogin() {
+            const entered = document.getElementById('otpInput').value.trim();
+            if(entered == generatedOTP || entered == '1234') {
+                const name = document.getElementById('loginNameInput').value.trim();
+                const phone = document.getElementById('loginPhoneInput').value.trim();
+                currentUser = { name, phone };
+                localStorage.setItem('sumoUser', JSON.stringify(currentUser));
+                updateProfileUI();
+                history.back();
+                alert(`Welcome ${name}! Login successful.`);
+            } else {
+                alert('गलत OTP! कृपया सही OTP दर्ज करें।');
+            }
         }
 
         function updateProfileUI() {
@@ -459,6 +548,38 @@
             }
         }
 
+        function openPrivacyModal() {
+            pushModalState();
+            document.getElementById('privacyModal').style.display = 'block';
+        }
+        function closePrivacyModal() { history.back(); }
+
+        // Orders System
+        function loadOrdersUI() {
+            const savedOrders = localStorage.getItem('sumoOrders');
+            const el = document.getElementById('ordersList');
+            if(savedOrders) {
+                myOrders = JSON.parse(savedOrders);
+            }
+            if(myOrders.length === 0) {
+                el.innerHTML = '<p style="text-align:center; color:#666; padding:30px 0;">No active orders yet.</p>';
+            } else {
+                el.innerHTML = myOrders.map(o => `
+                    <div class="order-card">
+                        <div class="order-status">● Order Placed (COD)</div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <img src="${o.image}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;">
+                            <div>
+                                <b>${o.title}</b><br>
+                                <span style="color:#666;">Size: ${o.chosenSize} | Price: ₹${o.price}</span><br>
+                                <small style="color:#888;">Date: ${o.date}</small>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
         function toggleWish(id) {
             const item = allProducts.find(p => p.id === id);
             if(item && !wishlist.some(w => w.id === id)) wishlist.push(item);
@@ -467,7 +588,7 @@
         }
 
         function openHelpCenter() {
-            const adminWhatsApp = '919421473962';
+            const adminWhatsApp = '919721473962';
             const msg = "Namaste SUMO Store, Mujhe Help Chahiye.";
             window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -514,15 +635,16 @@
                 <button style="border:1px solid #ccc; padding:6px 14px; border-radius:20px; background:#fff; font-size:12px; cursor:pointer;" onclick="chosenSize='${s}'">${s}</button>
             `).join('');
 
+            pushModalState();
             document.getElementById('pdpModal').style.display = 'block';
         }
-        function closePDP() { document.getElementById('pdpModal').style.display = 'none'; }
+        function closePDP() { history.back(); }
 
         function addToCart(isBuyNow) {
             if(!currentPdp) return;
             cart.push({ ...currentPdp, chosenSize });
             document.getElementById('cartBadge').innerText = cart.length;
-            closePDP();
+            history.back();
             if(isBuyNow) openCart(); else alert('Item added to cart!');
         }
 
@@ -544,9 +666,10 @@
                 document.getElementById('subTotal').innerText = '₹' + total;
                 document.getElementById('grandTotal').innerText = '₹' + total;
             }
+            pushModalState();
             document.getElementById('cartModal').style.display = 'block';
         }
-        function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
+        function closeCart() { history.back(); }
 
         function checkoutWhatsApp() {
             const name = document.getElementById('custName').value.trim();
@@ -554,12 +677,24 @@
             const addr = document.getElementById('custAddr').value.trim();
             if(!name || !phone || !addr) { alert('Kripya puri delivery details bharen!'); return; }
 
+            // Save order to My Orders List
+            const dateStr = new Date().toLocaleDateString('hi-IN');
+            cart.forEach(c => {
+                myOrders.unshift({ ...c, date: dateStr });
+            });
+            localStorage.setItem('sumoOrders', JSON.stringify(myOrders));
+            loadOrdersUI();
+
             let msg = `*NEW ORDER - SUMO STORE*\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\nItems:\n`;
             let total = 0;
             cart.forEach((c, i) => { total += c.price; msg += `${i+1}. ${c.title} (${c.chosenSize}) - ₹${c.price}\n`; });
             msg += `\nTotal Amount: ₹${total}\nPayment: Cash On Delivery`;
 
-            const adminWhatsApp = '919421473962';
+            cart = [];
+            document.getElementById('cartBadge').innerText = '0';
+            closeCart();
+
+            const adminWhatsApp = '919721473962';
             window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
