@@ -2,1073 +2,570 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
-    <title>SUMO — Premium Fashion Store</title>
-    <!-- Google Sheet CSV पढ़ने के लिए PapaParse Library -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SUMO — Premium Store</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-        body { background-color: #f8f9fa; color: #111; padding-bottom: 90px; touch-action: manipulation; }
+        :root { --meesho-pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: var(--bg-gray); color: var(--text-dark); padding-bottom: 65px; }
 
-        .announcement { background: linear-gradient(90deg, #e63946, #b01424); color: #fff; text-align: center; padding: 8px 10px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* App Header */
+        header { background: #fff; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e0e0e0; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 900; color: var(--meesho-pink); letter-spacing: 1px; text-decoration: none; }
+        .header-actions { display: flex; gap: 14px; align-items: center; }
+        .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; position: relative; }
+        .badge { position: absolute; top: -5px; right: -8px; background: var(--meesho-pink); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; padding: 2px 5px; }
 
-        /* Navbar Header */
-        header { background: #fff; position: sticky; top: 0; z-index: 900; border-bottom: 1px solid #eaeaea; display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
-        .nav-left { display: flex; align-items: center; gap: 14px; }
-        .menu-btn { font-size: 22px; cursor: pointer; background: none; border: none; }
-        .logo { font-size: 22px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: #111; text-decoration: none; }
+        /* Search & Location Bar */
+        .search-container { background: #fff; padding: 0 14px 10px; border-bottom: 1px solid #eee; }
+        .loc-bar { font-size: 11px; color: #555; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; font-weight: 600; cursor: pointer; }
+        .search-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 6px; padding: 8px 12px; border: 1px solid #e0e0e0; }
+        .search-box input { border: none; background: transparent; width: 100%; margin-left: 8px; font-size: 13px; outline: none; }
+
+        /* Tab Screens */
+        .tab-screen { display: none; }
+        .tab-screen.active { display: block; }
+
+        /* Categories Circles */
+        .circle-cats { display: flex; gap: 12px; padding: 12px 14px; background: #fff; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #eee; }
+        .circle-cats::-webkit-scrollbar { display: none; }
+        .cat-item { text-align: center; flex-shrink: 0; width: 62px; cursor: pointer; }
+        .cat-img { width: 48px; height: 48px; border-radius: 50%; background: #eee; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #ddd; }
+        .cat-title { font-size: 10px; font-weight: 600; color: #444; }
+
+        /* Product Grid */
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        @media (min-width: 768px) { .products-grid { grid-template-columns: repeat(4, 1fr); gap: 15px; } }
+
+        .p-card { background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; position: relative; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between; }
+        .p-img-box { width: 100%; height: 200px; background: #fafafa; position: relative; }
+        .p-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .wish-heart { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.9); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; border: none; cursor: pointer; }
         
-        .nav-right { display: flex; align-items: center; gap: 16px; }
-        .icon-btn { font-size: 19px; cursor: pointer; background: none; border: none; position: relative; }
-        .badge-count { position: absolute; top: -6px; right: -8px; background: #e63946; color: white; font-size: 9px; font-weight: bold; padding: 2px 5px; border-radius: 10px; }
+        .p-info { padding: 10px; }
+        .p-name { font-size: 12px; font-weight: 600; color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .p-price-row { display: flex; align-items: baseline; gap: 6px; }
+        .p-price { font-size: 15px; font-weight: 900; color: #111; }
+        .p-off { font-size: 10px; color: #2e7d32; font-weight: bold; }
+        .p-rate { background: #238029; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 6px; }
 
-        /* Search Bar Section */
-        .search-container { padding: 12px 15px 5px; background: #fff; border-bottom: 1px solid #eee; }
-        .search-box { display: flex; align-items: center; background: #f1f3f5; border-radius: 8px; padding: 9px 14px; border: 1px solid #e9ecef; }
-        .search-box input { border: none; background: transparent; width: 100%; font-size: 13px; outline: none; margin-left: 8px; font-weight: 500; }
+        /* Categories Tab Sidebar */
+        .cat-layout { display: flex; height: calc(100vh - 120px); background: #fff; }
+        .cat-left-sidebar { width: 95px; background: #f8f8f8; border-right: 1px solid #eee; overflow-y: auto; }
+        .sidebar-item { padding: 14px 8px; text-align: center; font-size: 11px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; cursor: pointer; }
+        .sidebar-item.active { background: #fff; color: var(--meesho-pink); border-left: 3px solid var(--meesho-pink); }
+        .cat-right-content { flex: 1; padding: 15px; overflow-y: auto; }
 
-        /* Category Filter Chips Below Search Bar */
-        .category-chips { display: flex; gap: 8px; padding: 12px 15px; background: #fff; overflow-x: auto; border-bottom: 1px solid #eee; scrollbar-width: none; }
-        .category-chips::-webkit-scrollbar { display: none; }
-        .chip-btn { background: #f1f3f5; color: #495057; border: 1px solid #dee2e6; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; white-space: nowrap; cursor: pointer; transition: 0.2s ease; }
-        .chip-btn.active { background: #111; color: #fff; border-color: #111; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+        /* Account Profile Area */
+        .profile-header { background: #fff; padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; }
+        .profile-avatar { width: 55px; height: 55px; border-radius: 50%; background: var(--meesho-pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; text-transform: uppercase; }
+        .profile-menu { background: #fff; margin-top: 10px; list-style: none; }
+        .profile-menu li { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* Sidebar Drawer */
-        .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #fff; z-index: 1000; transition: 0.3s ease; box-shadow: 4px 0 15px rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; }
-        .sidebar.active { left: 0; }
-        .sidebar-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
-        .sidebar-title { font-weight: 900; letter-spacing: 2px; }
-        .close-sidebar { font-size: 24px; border: none; background: none; cursor: pointer; }
-        .menu-list { list-style: none; }
-        .menu-list li { border-bottom: 1px solid #f8f9fa; }
-        .menu-list a { display: block; padding: 14px 0; color: #222; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; cursor: pointer; }
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
+        .nav-tab { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #777; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-tab.active { color: var(--meesho-pink); }
+        .nav-tab-icon { font-size: 18px; margin-bottom: 2px; }
 
-        /* Container & Grid */
-        .container { max-width: 1100px; margin: 15px auto; padding: 0 10px; }
-        .section-title { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; padding-left: 4px; color: #212529; }
+        /* Modal Pages */
+        .modal-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; overflow-y: auto; padding-bottom: 70px; }
+        .modal-head { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; align-items: center; }
 
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        @media (min-width: 768px) {
-            .products-grid { grid-template-columns: repeat(4, 1fr); gap: 18px; }
-        }
+        .btn-bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 10px 15px; display: flex; gap: 10px; z-index: 2100; justify-content: center; }
+        .btn-pink { background: var(--meesho-pink); color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
+        .btn-outline { background: #fff; color: var(--meesho-pink); border: 1px solid var(--meesho-pink); padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
 
-        /* PREMIUM PRODUCT CARD */
-        .product-card { background: #fff; border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; position: relative; border: 1px solid #eaeaea; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
-        
-        .card-actions { position: absolute; top: 8px; right: 8px; display: flex; flex-direction: column; gap: 6px; z-index: 2; }
-        .action-circle-btn { background: rgba(255,255,255,0.95); border: 1px solid #eee; font-size: 13px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-
-        .img-container { width: 100%; height: 220px; background: #f8f9fa; overflow: hidden; position: relative; }
-        .main-img { width: 100%; height: 100%; object-fit: cover; }
-
-        .card-body { padding: 12px; text-align: left; }
-        .rating-box { font-size: 10px; color: #ffa41c; font-weight: bold; margin-bottom: 5px; background: #fff8e1; display: inline-block; padding: 2px 6px; border-radius: 4px; }
-        .product-title { font-size: 12px; font-weight: 700; color: #212529; text-transform: uppercase; margin-bottom: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
-        
-        .price-badge-row { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
-        .product-price { font-size: 15px; font-weight: 900; color: #111; }
-        .delivery-charge-tag { font-size: 10px; font-weight: 700; color: #2b8a3e; background: #e6fcf5; padding: 2px 6px; border-radius: 4px; border: 1px solid #b2f2bb; }
-        .delivery-charge-tag.paid { color: #d9480f; background: #fff0f6; border-color: #ffdeeb; }
-
-        /* FULL PRODUCT DETAILS PAGE */
-        .pdp-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 70px; }
-        .pdp-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
-        .pdp-back { font-size: 22px; border: none; background: none; cursor: pointer; }
-
-        .pdp-container { max-width: 800px; margin: 0 auto; padding: 15px; }
-        
-        .pdp-img-wrapper { width: 100%; max-height: 420px; overflow: hidden; border-radius: 10px; position: relative; cursor: pointer; border: 1px solid #eee; }
-        .pdp-main-img { width: 100%; height: 100%; max-height: 420px; object-fit: cover; }
-
-        .pdp-thumbs { display: flex; gap: 8px; justify-content: center; margin: 12px 0 15px; }
-        .pdp-thumb-img { width: 55px; height: 55px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; }
-        
-        .pdp-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-        .pdp-title { font-size: 19px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; }
-        .share-pdp-btn { background: #25D366; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(37,211,102,0.3); }
-
-        .pdp-price-card { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 14px; margin-bottom: 18px; }
-        .pdp-price { font-size: 24px; font-weight: 900; color: #111; }
-        .pdp-delivery-breakdown { font-size: 12px; color: #495057; margin-top: 6px; font-weight: 600; display: flex; gap: 12px; }
-
-        .pdp-section-label { font-size: 12px; font-weight: 800; text-transform: uppercase; margin: 16px 0 8px; color: #495057; letter-spacing: 1px; }
-        
-        .pdp-options { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .pdp-opt-btn { border: 1px solid #ced4da; background: #fff; font-size: 13px; padding: 9px 16px; font-weight: 700; cursor: pointer; border-radius: 6px; transition: 0.2s; }
-        .pdp-opt-btn.selected { background: #111; color: #fff; border-color: #111; }
-
-        .pdp-pincode-box { display: flex; gap: 8px; margin-bottom: 20px; }
-        .pdp-pincode-box input { flex: 1; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 13px; outline: none; }
-        .pdp-pincode-box button { background: #111; color: white; border: none; padding: 10px 18px; font-weight: bold; font-size: 12px; border-radius: 6px; cursor: pointer; }
-
-        .pdp-info-card { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.6; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-        .pdp-info-card h4 { font-weight: 800; margin-bottom: 6px; text-transform: uppercase; font-size: 12px; }
-
-        /* REAL REVIEWS SECTION */
-        .reviews-section { border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px; margin-bottom: 30px; }
-        .add-review-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px; border: 1px solid #e9ecef; }
-        .star-select { font-size: 20px; color: #ccc; cursor: pointer; margin-bottom: 10px; }
-        .star-select span.selected { color: #ffa41c; }
-        .review-input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 12px; margin-bottom: 8px; outline: none; }
-        .submit-review-btn { background: #111; color: #fff; border: none; padding: 10px 16px; font-size: 12px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-
-        .pdp-bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 12px; z-index: 1600; display: flex; justify-content: center; }
-        .pdp-add-bag-btn { background: #25D366; color: #fff; border: none; width: 90%; max-width: 500px; padding: 14px; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; border-radius: 8px; cursor: pointer; text-align: center; box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
-
-        /* DEDICATED CART PAGE MODAL */
-        .cart-page { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 1500; overflow-y: auto; padding-bottom: 70px; }
-        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; }
-        .cart-back { font-size: 22px; border: none; background: none; cursor: pointer; }
-        .cart-container { max-width: 800px; margin: 0 auto; padding: 15px; }
-        
-        .cart-item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #eee; font-size: 13px; }
-        .cart-item-title { font-weight: 800; color: #212529; text-transform: uppercase; margin-bottom: 4px; }
-        .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-        .qty-btn { background: #e9ecef; border: none; width: 26px; height: 26px; font-weight: bold; cursor: pointer; border-radius: 4px; font-size: 14px; }
-        .cart-item-price { font-weight: 900; font-size: 15px; text-align: right; }
-        .delete-btn { color: #e63946; border: none; background: none; font-size: 17px; cursor: pointer; margin-left: 12px; }
-
-        .cart-bill-summary { background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 15px; margin-top: 20px; font-size: 13px; }
-        .bill-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: #495057; font-weight: 600; }
-        .bill-row.total-row { font-size: 16px; font-weight: 900; color: #111; border-top: 1px dashed #ced4da; padding-top: 10px; margin-top: 10px; margin-bottom: 0; }
-
-        .checkout-btn { background: #25D366; color: white; margin-top: 20px; font-weight: 900; font-size: 15px; text-align: center; text-decoration: none; padding: 15px; border-radius: 8px; border: none; width: 100%; cursor: pointer; display: block; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 12px rgba(37,211,102,0.3); }
-
-        /* BRAND FOOTER STYLE */
-        footer { background: #0b1325; color: #ffffff; padding: 40px 20px 20px; margin-top: 40px; }
-        .footer-logo { font-size: 28px; font-weight: 900; letter-spacing: 4px; border: 2px solid #e63946; padding: 10px 18px; display: inline-block; margin-bottom: 30px; color: #fff; text-decoration: none; text-transform: uppercase; }
-        
-        .footer-section { margin-bottom: 25px; border-bottom: 1px solid #1e293b; padding-bottom: 15px; }
-        .footer-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 1px; }
-        .footer-links { list-style: none; }
-        .footer-links li { margin-bottom: 8px; }
-        .footer-links a { color: #94a3b8; text-decoration: none; font-size: 13px; transition: 0.2s; cursor: pointer; }
-        .footer-links a:hover { color: #fff; }
-
-        .social-btns { display: flex; gap: 10px; margin-top: 15px; }
-        .social-btn { border: 1px solid #334155; color: #fff; padding: 10px 16px; font-size: 12px; font-weight: 600; text-decoration: none; border-radius: 6px; background: #1e293b; cursor: pointer; }
-
-        .footer-bottom { text-align: center; margin-top: 30px; font-size: 11px; color: #64748b; border-top: 1px solid #1e293b; padding-top: 20px; }
-
-        /* FULLSCREEN LIGHTBOX IMAGE MODAL */
-        .fullscreen-lightbox { display: none; position: fixed; z-index: 2500; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center; overflow: hidden; }
-        .fullscreen-lightbox img { max-width: 95%; max-height: 90vh; object-fit: contain; }
-        .close-lightbox { position: absolute; top: 20px; right: 25px; color: #fff; font-size: 32px; font-weight: bold; cursor: pointer; z-index: 2600; background: none; border: none; }
-
-        /* Modals & Popups */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; padding: 15px; }
-        .info-popup-box { background: #fff; width: 100%; max-width: 450px; padding: 25px; border-radius: 10px; text-align: left; position: relative; max-height: 80vh; overflow-y: auto; }
-        .info-popup-box h3 { margin-bottom: 12px; font-size: 16px; text-transform: uppercase; font-weight: 800; }
-        .info-popup-box p { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 10px; }
-        
-        .login-box { background: #fff; width: 100%; max-width: 380px; padding: 24px; border-radius: 10px; text-align: center; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .login-box input, .login-box textarea { width: 100%; padding: 11px; margin: 6px 0 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 13px; outline: none; }
-        .login-box button { width: 100%; padding: 13px; background: #111; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 8px; font-size: 13px; letter-spacing: 0.5px; }
-        .close-modal { position: absolute; top: 12px; right: 16px; font-size: 20px; border: none; background: none; cursor: pointer; }
-        
-        /* OTP SMS NOTIFICATION POPUP */
-        .sms-popup { display: none; position: fixed; top: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 360px; background: #0b1325; color: #fff; padding: 14px 18px; border-radius: 8px; z-index: 3000; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border-left: 4px solid #e63946; }
-        .sms-title { font-size: 12px; font-weight: 800; color: #d4af37; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; }
-        .sms-body { font-size: 13px; margin-top: 5px; color: #f1f1f1; }
-
-        .loading-box { text-align: center; grid-column: 1/-1; padding: 40px 0; }
-        .spinner { border: 3px solid #eee; border-top: 3px solid #111; border-radius: 50%; width: 35px; height: 35px; animation: spin 0.8s linear infinite; margin: 0 auto 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .form-input { width: 100%; padding: 10px; margin-bottom: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
     </style>
 </head>
 <body>
 
-    <!-- SMS Notification Popup -->
-    <div id="smsPopup" class="sms-popup">
-        <div class="sms-title">💬 SUMO STORE OFFICIAL <span style="font-size:10px; color:#aaa;">Just now</span></div>
-        <div class="sms-body" id="smsBody">Your OTP code is: 4829</div>
-    </div>
-
-    <!-- Fullscreen Lightbox Image Modal -->
-    <div id="fullscreenLightbox" class="fullscreen-lightbox">
-        <button class="close-lightbox" onclick="closeFullscreenImage()">✕</button>
-        <img id="lightboxImg" src="" alt="Full Product Image">
-    </div>
-
-    <div class="announcement">🚚 CASH ON DELIVERY AVAILABLE | FAST EXPRESS DELIVERY ALL OVER INDIA</div>
-
-    <!-- Header Navigation -->
+    <!-- Header -->
     <header>
-        <div class="nav-left">
-            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-            <a href="#" class="logo">SUMO</a>
-        </div>
-        <div class="nav-right">
-            <button class="icon-btn" onclick="openLoginModal()" title="Login" id="userIconBtn">👤</button>
-            <button class="icon-btn" onclick="openCartPage()" title="Cart">🛒 <span class="badge-count" id="cart-count">0</span></button>
+        <a href="#" class="logo">SUMO</a>
+        <div class="header-actions">
+            <button class="icon-btn" onclick="switchTab('wishlistScreen')">❤️</button>
+            <button class="icon-btn" onclick="openCart()">🛒 <span class="badge" id="cartBadge">0</span></button>
         </div>
     </header>
 
-    <!-- Search Bar Section -->
+    <!-- Search & Location -->
     <div class="search-container">
+        <div class="loc-bar" onclick="changePincode()">📍 <span id="userLocationText">Select Pincode / Location</span> <span>></span></div>
         <div class="search-box">
-            🔍 <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Search T-shirts, Jeans, Accessories...">
+            🔍 <input type="text" id="searchInput" onkeyup="searchFilter()" placeholder="Search Saree, Kurti, Shirt, Pants...">
         </div>
     </div>
 
-    <!-- Category Chips Below Search Bar -->
-    <div class="category-chips">
-        <button class="chip-btn active" onclick="filterByChip('all', this)">ALL</button>
-        <button class="chip-btn" onclick="filterByChip('men', this)">MEN</button>
-        <button class="chip-btn" onclick="filterByChip('women', this)">WOMEN</button>
-        <button class="chip-btn" onclick="filterByChip('shirt', this)">SHIRTS</button>
-        <button class="chip-btn" onclick="filterByChip('pant', this)">PANTS</button>
-        <button class="chip-btn" onclick="filterByChip('saree', this)">SAREE</button>
-        <button class="chip-btn" onclick="filterByChip('access', this)">ACCESSORIES</button>
+    <!-- TAB 1: HOME -->
+    <div id="homeScreen" class="tab-screen active">
+        <div class="circle-cats">
+            <div class="cat-item" onclick="filterCategory('all')"><div class="cat-img">🛍️</div><div class="cat-title">All Items</div></div>
+            <div class="cat-item" onclick="filterCategory('saree')"><div class="cat-img">🥻</div><div class="cat-title">Saree</div></div>
+            <div class="cat-item" onclick="filterCategory('men')"><div class="cat-img">👕</div><div class="cat-title">Men Wear</div></div>
+            <div class="cat-item" onclick="filterCategory('pant')"><div class="cat-img">👖</div><div class="cat-title">Bottomwear</div></div>
+            <div class="cat-item" onclick="filterCategory('women')"><div class="cat-img">👗</div><div class="cat-title">Western</div></div>
+        </div>
+
+        <div class="products-grid" id="homeProductGrid">
+            <p style="text-align:center; grid-column:1/-1; padding:40px 0;">Google Sheet se data load ho raha hai...</p>
+        </div>
     </div>
 
-    <!-- Sidebar Drawer -->
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <span class="sidebar-title">SUMO STORE</span>
-            <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
+    <!-- TAB 2: CATEGORIES -->
+    <div id="categoriesScreen" class="tab-screen">
+        <div class="cat-layout">
+            <div class="cat-left-sidebar">
+                <div class="sidebar-item active" onclick="selectCatLeft('all', this)">Popular</div>
+                <div class="sidebar-item" onclick="selectCatLeft('saree', this)">Saree & Kurti</div>
+                <div class="sidebar-item" onclick="selectCatLeft('men', this)">Men Wear</div>
+                <div class="sidebar-item" onclick="selectCatLeft('pant', this)">Jeans & Pants</div>
+            </div>
+            <div class="cat-right-content">
+                <h4 style="margin-bottom:10px; font-size:13px;" id="catRightTitle">All Collection</h4>
+                <div class="products-grid" id="catRightGrid" style="padding:0; grid-template-columns: repeat(2, 1fr);"></div>
+            </div>
         </div>
-        <ul class="menu-list">
-            <li><a onclick="filterByCategory('all')">SHOP ALL</a></li>
-            <li><a onclick="filterByCategory('men')">MEN'S COLLECTION</a></li>
-            <li><a onclick="filterByCategory('women')">WOMEN'S COLLECTION</a></li>
-            <li><a onclick="filterByCategory('shirt')">SHIRTS & TOPWEAR</a></li>
-            <li><a onclick="filterByCategory('pant')">PANTS & JEANS</a></li>
-            <li><a onclick="filterByCategory('saree')">SAREES</a></li>
-            <li><a onclick="openLoginModal()">ACCOUNT / LOGIN</a></li>
+    </div>
+
+    <!-- TAB 3: MALL -->
+    <div id="mallScreen" class="tab-screen">
+        <div style="background:#fff; padding:15px; text-align:center; border-bottom:1px solid #eee;">
+            <h3 style="color:var(--meesho-pink);">SUMO MALL 🛍️</h3>
+            <p style="font-size:11px; color:#666;">100% Verified Quality Products</p>
+        </div>
+        <div class="products-grid" id="mallGrid"></div>
+    </div>
+
+    <!-- TAB 4: MY ORDERS -->
+    <div id="ordersScreen" class="tab-screen">
+        <div style="padding:15px; background:#fff; border-bottom:1px solid #eee;">
+            <h3 style="font-size:15px;" id="txtMyOrders">My Orders</h3>
+        </div>
+        <div id="ordersList" style="padding:15px;">
+            <p style="text-align:center; color:#666; padding:30px 0;" id="txtNoOrders">No active orders yet.</p>
+        </div>
+    </div>
+
+    <!-- TAB 5: ACCOUNT -->
+    <div id="accountScreen" class="tab-screen">
+        <div class="profile-header">
+            <div class="profile-avatar" id="userAvatar">Guest</div>
+            <div>
+                <h3 style="font-size:16px;" id="userNameTitle">User Account</h3>
+                <p style="font-size:12px; color:#666;" id="userPhoneSub">Click Login to setup profile</p>
+            </div>
+            <button id="btnLoginLogout" onclick="handleAuthClick()" style="margin-left:auto; background:var(--meesho-pink); color:#fff; border:none; padding:6px 14px; border-radius:4px; font-size:12px; font-weight:bold; cursor:pointer;">Login</button>
+        </div>
+        <ul class="profile-menu">
+            <li onclick="switchTab('ordersScreen')"><span id="lblOrders">📦 My Orders</span> <span>></span></li>
+            <li onclick="switchTab('wishlistScreen')"><span id="lblWish">❤️ Wishlisted Products</span> <span>></span></li>
+            <li onclick="openHelpCenter()">🎧 Help Centre (WhatsApp Support) <span>></span></li>
+            <li onclick="toggleLanguage()">🌐 Change Language / भाषा बदलें <span id="currentLangTag" style="color:var(--meesho-pink); font-weight:bold;">Hindi</span></li>
         </ul>
     </div>
 
-    <!-- Main Content Grid -->
-    <div class="container">
-        <div class="section-title" id="categoryHeader">ALL PRODUCTS</div>
-        
-        <div class="products-grid" id="products-container">
-            <div class="loading-box">
-                <div class="spinner"></div>
-                <p style="font-size: 12px; font-weight:600;">LOADING PRODUCTS...</p>
-            </div>
+    <!-- WISHLIST SCREEN -->
+    <div id="wishlistScreen" class="tab-screen">
+        <div style="padding:15px; background:#fff; border-bottom:1px solid #eee;">
+            <h3 style="font-size:15px;">My Wishlist ❤️</h3>
         </div>
+        <div class="products-grid" id="wishlistGrid"></div>
     </div>
 
-    <!-- MAIN HOME FOOTER -->
-    <footer>
-        <a href="#" class="footer-logo">SUMO</a>
-
-        <div class="footer-section">
-            <div class="footer-title">Categories <span>+</span></div>
-            <ul class="footer-links">
-                <li><a onclick="filterByCategory('men')">Men's Collection</a></li>
-                <li><a onclick="filterByCategory('women')">Women's Collection</a></li>
-                <li><a onclick="filterByCategory('shirt')">Shirts & Topwear</a></li>
-                <li><a onclick="filterByCategory('pant')">Pants & Bottomwear</a></li>
-            </ul>
+    <!-- PRODUCT DETAILS MODAL (PDP) -->
+    <div id="pdpModal" class="modal-page">
+        <div class="modal-head">
+            <button onclick="closePDP()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
+            <span style="font-weight:bold; color:var(--meesho-pink);">SUMO STORE</span>
+            <button onclick="closePDP(); openCart();" style="border:none; background:none; font-size:18px; cursor:pointer;">🛒</button>
         </div>
-
-        <div class="footer-section">
-            <div class="footer-title">Need Help <span>+</span></div>
-            <ul class="footer-links">
-                <li><a onclick="openPolicyModal('return')">Returns & Exchange Policy</a></li>
-                <li><a onclick="openPolicyModal('shipping')">Shipping & Delivery Policy</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-section">
-            <div class="footer-title">Company <span>+</span></div>
-            <ul class="footer-links">
-                <li><a onclick="openPolicyModal('about')">About SUMO Store</a></li>
-                <li><a onclick="openPolicyModal('terms')">Terms & Conditions</a></li>
-            </ul>
-        </div>
-
-        <div style="margin-top: 20px;">
-            <div style="font-weight:700; font-size:14px; text-transform:uppercase;">Get in touch</div>
-            <div class="social-btns">
-                <a onclick="openSocial('instagram')" class="social-btn">Instagram</a>
-                <a onclick="openSocial('facebook')" class="social-btn">Facebook</a>
-                <a onclick="openSocial('whatsapp')" class="social-btn">Whatsapp</a>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <p>Email: support@sumostore.com</p>
-            <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
-            <p style="margin-top: 3px; color: #475569;">SUMO ONLINE RETAIL PRIVATE LIMITED</p>
-        </div>
-    </footer>
-
-    <!-- DEDICATED CART PAGE MODAL -->
-    <div id="cartPage" class="cart-page">
-        <div class="cart-header">
-            <button class="cart-back" onclick="closeCartPage()">←</button>
-            <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px;">YOUR CART 🛒</span>
-            <span></span>
-        </div>
-
-        <div class="cart-container">
-            <div id="cartPageItems"><p style="text-align:center; padding:30px 0; color:#666;">आपकी कार्ट अभी खाली है।</p></div>
-            
-            <div id="cartBillSummary" class="cart-bill-summary" style="display:none;">
-                <div class="bill-row"><span>Items Subtotal:</span><span id="billSubtotal">₹0</span></div>
-                <div class="bill-row"><span>Delivery Charges:</span><span id="billDelivery" style="color:#2b8a3e; font-weight:bold;">₹0</span></div>
-                <div class="bill-row total-row"><span>Grand Total:</span><span id="billGrandTotal">₹0</span></div>
-            </div>
-
-            <button class="checkout-btn" onclick="goToCheckout()">PROCEED TO CHECKOUT ➡️</button>
-        </div>
-
-        <footer>
-            <a href="#" class="footer-logo">SUMO</a>
-            <div class="footer-bottom">
-                <p>Email: support@sumostore.com</p>
-                <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
-            </div>
-        </footer>
-    </div>
-
-    <!-- PRODUCT DETAILS PAGE MODAL -->
-    <div id="pdpPage" class="pdp-page">
-        <div class="pdp-header">
-            <button class="pdp-back" onclick="closePdp()">←</button>
-            <span style="font-weight: 800; font-size: 14px; letter-spacing: 1px;">SUMO PRODUCT</span>
-            <button class="icon-btn" onclick="closePdp(); openCartPage();">🛒</button>
-        </div>
-
-        <div class="pdp-container">
-            <div class="pdp-img-wrapper" onclick="openFullscreenImage()">
-                <img id="pdpMainImg" class="pdp-main-img" src="">
-            </div>
-            <div id="pdpThumbs" class="pdp-thumbs"></div>
-
-            <div class="pdp-title-row">
-                <div id="pdpTitle" class="pdp-title">Product Name</div>
-                <button class="share-pdp-btn" id="pdpShareBtn" onclick="shareCurrentProduct()">📲 SHARE</button>
+        <div style="padding:15px; max-width:600px; margin:0 auto;">
+            <img id="pdpImg" src="" style="width:100%; height:320px; object-fit:cover; border-radius:8px;">
+            <h3 id="pdpTitle" style="font-size:15px; margin-top:10px;">Product Name</h3>
+            <div style="margin-top:6px;">
+                <span id="pdpPrice" style="font-size:22px; font-weight:900;">₹0</span>
+                <span id="pdpDelivery" style="color:#2e7d32; font-size:12px; font-weight:bold; margin-left:8px;">Free Delivery</span>
             </div>
             
-            <div class="pdp-price-card">
-                <div id="pdpPrice" class="pdp-price">₹0</div>
-                <div class="pdp-delivery-breakdown">
-                    <span id="pdpDeliveryStatus">🚚 Delivery Available</span>
-                    <span>• Cash On Delivery Available</span>
-                </div>
+            <div style="margin-top:15px;">
+                <h4 style="font-size:12px; text-transform:uppercase; color:#555;">Select Size</h4>
+                <div id="pdpSizeFlex" style="display:flex; gap:10px; margin-top:8px;"></div>
             </div>
 
-            <div class="pdp-section-label">SELECT SIZE</div>
-            <div id="pdpSizes" class="pdp-options"></div>
-
-            <div id="pdpColorLabel" class="pdp-section-label">SELECT COLOR</div>
-            <div id="pdpColors" class="pdp-options"></div>
-
-            <div class="pdp-section-label">DELIVERY DETAILS</div>
-            <div class="pdp-pincode-box">
-                <input type="number" placeholder="Enter Pincode">
-                <button onclick="alert('Delivery Available in your area!')">CHECK</button>
-            </div>
-
-            <div class="pdp-info-card">
-                <h4>Product Details</h4>
-                <p id="pdpDetailsText">100% Premium Cotton | Machine Wash</p>
-                <p style="margin-top: 4px;"><strong>Country of Origin:</strong> India 🇮🇳</p>
-                <p><strong>Policy:</strong> 7-Day Easy Exchange / Return Available</p>
-            </div>
-
-            <!-- REAL REVIEWS & RATINGS SECTION -->
-            <div class="reviews-section">
-                <h3 style="font-size: 15px; font-weight: 800;">CUSTOMER REVIEWS & RATINGS ⭐</h3>
-                <div id="reviewsList" style="margin: 10px 0; font-size: 13px;">
-                    <p style="color: #666;">Be the first to rate this product!</p>
-                </div>
-
-                <div class="add-review-box">
-                    <h4 style="font-size: 12px; font-weight: 700; margin-bottom: 6px;">WRITE A REVIEW:</h4>
-                    <div class="star-select" id="starSelector">
-                        <span onclick="setRating(1)">★</span>
-                        <span onclick="setRating(2)">★</span>
-                        <span onclick="setRating(3)">★</span>
-                        <span onclick="setRating(4)">★</span>
-                        <span onclick="setRating(5)">★</span>
-                    </div>
-                    <input type="text" id="reviewerName" class="review-input" placeholder="Your Name">
-                    <input type="text" id="reviewerComment" class="review-input" placeholder="Write your review here...">
-                    <button class="submit-review-btn" onclick="submitReview()">SUBMIT REVIEW</button>
-                </div>
+            <div style="margin-top:20px; background:#f9f9f9; padding:12px; border-radius:6px; font-size:12px; color:#444;">
+                <b>Product Details:</b>
+                <p id="pdpDetails" style="margin-top:4px;"></p>
             </div>
         </div>
 
-        <footer>
-            <a href="#" class="footer-logo">SUMO</a>
-            <div class="footer-bottom">
-                <p>Email: support@sumostore.com</p>
-                <p style="margin-top: 5px;">SUMO STORE © 2026 | All Rights Reserved</p>
-            </div>
-        </footer>
-
-        <div class="pdp-bottom-bar">
-            <button class="pdp-add-bag-btn" onclick="addCurrentPdpToBag()">ADD TO BAG 🛒</button>
+        <div class="btn-bottom-bar">
+            <button class="btn-outline" onclick="addToCart(false)">Add to Cart</button>
+            <button class="btn-pink" onclick="addToCart(true)">Buy Now</button>
         </div>
     </div>
 
-    <!-- OTP LOGIN MODAL WITH EMAIL ALERT -->
-    <div id="loginModal" class="modal">
-        <div class="login-box">
-            <button class="close-modal" onclick="closeLoginModal()">✕</button>
+    <!-- CART MODAL -->
+    <div id="cartModal" class="modal-page">
+        <div class="modal-head">
+            <button onclick="closeCart()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
+            <span style="font-weight:bold;">Shopping Cart</span>
+            <div></div>
+        </div>
+        <div style="padding:15px; max-width:500px; margin:0 auto;">
+            <div id="cartItems"></div>
             
-            <div id="phoneStep">
-                <h3 style="margin-bottom: 4px; font-weight: 800; letter-spacing: 1px;">CREATE ACCOUNT / LOGIN</h3>
-                <p style="font-size: 12px; color: #666; margin-bottom: 14px;">Enter details to get SUMO STORE OTP</p>
-                
-                <input type="text" id="userName" placeholder="Full Name (पूरा नाम)">
-                <input type="tel" id="userMobile" placeholder="10-Digit Mobile Number" maxlength="10">
-                <textarea id="userAddress" rows="2" placeholder="Full Delivery Address (पूरा पता)"></textarea>
-
-                <button onclick="sendOTP()">GET SUMO OTP 📩</button>
+            <div style="background:#f9f9f9; padding:12px; border-radius:6px; margin-top:15px; font-size:13px;" id="billSection">
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Total Price</span><span id="subTotal">₹0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Delivery</span><span style="color:#2e7d32; font-weight:bold;">FREE</span></div>
+                <hr style="margin:8px 0; border:0; border-top:1px dashed #ccc;">
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:15px;"><span>Order Total</span><span id="grandTotal">₹0</span></div>
             </div>
 
-            <div id="otpStep" style="display: none;">
-                <h3 style="margin-bottom: 4px; font-weight: 800;">ENTER OTP CODE</h3>
-                <p style="font-size: 12px; color: #666; margin-bottom: 14px;">SUMO STORE notification sent above 👆</p>
-                
-                <input type="number" id="userOtp" placeholder="Enter 4-Digit OTP" maxlength="4">
-                <button onclick="verifyOTP()">VERIFY & SAVE ACCOUNT ✅</button>
+            <div style="margin-top:20px;" id="addressForm">
+                <h4 style="font-size:13px; margin-bottom:10px;">Delivery Address</h4>
+                <input type="text" id="custName" placeholder="Full Name *" class="form-input">
+                <input type="tel" id="custPhone" placeholder="Phone Number *" class="form-input">
+                <textarea id="custAddr" placeholder="Complete Address with Pincode *" class="form-input" rows="3"></textarea>
+                <button class="btn-pink" style="width:100%; max-width:100%; margin-top:12px; background:#25D366;" onclick="checkoutWhatsApp()">PLACE ORDER VIA WHATSAPP (COD) 📲</button>
             </div>
         </div>
     </div>
 
-    <!-- POLICY POPUP MODAL -->
-    <div id="policyModal" class="modal">
-        <div class="info-popup-box">
-            <button class="close-modal" onclick="closePolicyModal()">✕</button>
-            <h3 id="policyTitle">Policy Title</h3>
-            <div id="policyContent">Policy Content Goes Here...</div>
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal-page">
+        <div class="modal-head">
+            <button onclick="closeLoginModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Close</button>
+            <span style="font-weight:bold;">User Login</span>
+            <div></div>
         </div>
+        <div style="padding:25px 15px; max-width:380px; margin:0 auto; text-align:center;">
+            <h3 style="margin-bottom:15px; color:var(--meesho-pink);">Welcome to SUMO</h3>
+            <p style="font-size:12px; color:#666; margin-bottom:20px;">Enter your Name & Mobile Number to Login</p>
+            <input type="text" id="loginNameInput" placeholder="Enter Full Name" class="form-input">
+            <input type="tel" id="loginPhoneInput" placeholder="Enter 10-digit Phone Number" class="form-input">
+            <button class="btn-pink" style="width:100%; max-width:100%; margin-top:10px;" onclick="submitLogin()">LOGIN NOW</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR (5 TABS) -->
+    <div class="bottom-nav">
+        <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span><span id="tabHome">Home</span></button>
+        <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span><span id="tabCat">Categories</span></button>
+        <button class="nav-tab" onclick="switchTab('mallScreen', this)"><span class="nav-tab-icon">🛍️</span><span>Mall</span></button>
+        <button class="nav-tab" onclick="switchTab('ordersScreen', this)"><span class="nav-tab-icon">📦</span><span id="tabOrders">Orders</span></button>
+        <button class="nav-tab" onclick="switchTab('accountScreen', this)"><span class="nav-tab-icon">👤</span><span id="tabAcc">Account</span></button>
     </div>
 
     <script>
-        const sheetCsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
+        // GOOGLE SHEET DIRECT URL + CORSPROXY TO PREVENT BLOCKING
+        const rawCsvURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vThrlGrx6ZmotFLV7UhtCupWp0chlqiQgZSSVq01eqmIlg6m83-p6_Bz7UvY1DfGs6AvB1HZbexhexo/pub?output=csv';
+        const proxyURL = 'https://corsproxy.io/?' + encodeURIComponent(rawCsvURL);
 
-        let allProductsData = [];
-        let cart = JSON.parse(localStorage.getItem('sumoCart')) || [];
-        let wishlist = JSON.parse(localStorage.getItem('sumoWishlist')) || [];
-        let productReviewsData = JSON.parse(localStorage.getItem('sumoReviews')) || {};
-        
-        let currentPdpProduct = null;
-        let currentSelectedSize = '';
-        let currentSelectedColor = '';
-        let selectedStarRating = 5;
-        let generatedOtp = '';
+        let allProducts = [];
+        let cart = [];
+        let wishlist = [];
+        let currentPdp = null;
+        let chosenSize = '';
+        let currentLang = 'hi';
+        let currentUser = null;
 
-        updateCartUI();
-        checkUserLoginStatus();
-
-        window.onpopstate = function() {
-            if (document.getElementById('fullscreenLightbox').style.display === 'flex') {
-                closeFullscreenImage();
-                return;
-            }
-            if (document.getElementById('cartPage').style.display === 'block') {
-                closeCartPage();
-                return;
-            }
-            if (document.getElementById('pdpPage').style.display === 'block') {
-                closePdp();
-                return;
-            }
-            if (document.getElementById('loginModal').style.display === 'flex') {
-                closeLoginModal();
-                return;
-            }
-        };
-
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
-        function openLoginModal() { history.pushState({ modal: true }, ""); document.getElementById('loginModal').style.display = 'flex'; }
-        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
-
-        /* PRODUCT SHARE FUNCTION (WHATSAPP SHARE) */
-        function shareProduct(index, event) {
-            if (event) event.stopPropagation();
-            const product = allProductsData[index];
-            const name = product.Name || product.name || product.NAME;
-            const price = product.Price || product.price || product.PRICE;
-            const siteUrl = window.location.href.split('#')[0];
-
-            const text = `🔥 *Check out this product on SUMO STORE!* 🔥\n\n🛍️ *Product:* ${name}\n💰 *Price:* ₹${price}\n\n👉 *Order Now:* ${siteUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-        }
-
-        function shareCurrentProduct() {
-            if (!currentPdpProduct) return;
-            const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
-            const price = currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE;
-            const siteUrl = window.location.href.split('#')[0];
-
-            const text = `🔥 *Check out this product on SUMO STORE!* 🔥\n\n🛍️ *Product:* ${name}\n💰 *Price:* ₹${price}\n\n👉 *Order Now:* ${siteUrl}`;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-        }
-
-        /* DEDICATED CART PAGE LOGIC */
-        function openCartPage() {
-            history.pushState({ cart: true }, "");
-            renderCartPage();
-            document.getElementById('cartPage').style.display = 'block';
-        }
-
-        function closeCartPage() { document.getElementById('cartPage').style.display = 'none'; }
-
-        function renderCartPage() {
-            const itemsDiv = document.getElementById('cartPageItems');
-            const summaryDiv = document.getElementById('cartBillSummary');
-
-            if (cart.length === 0) {
-                itemsDiv.innerHTML = '<p style="text-align:center; padding:40px 0; color:#666;">आपकी कार्ट अभी खाली है।</p>';
-                summaryDiv.style.display = 'none';
-                return;
-            }
-
-            let html = '';
-            let subtotal = 0;
-            let totalDelivery = 0;
-
-            cart.forEach((item, index) => {
-                const itemTotal = item.price * (item.qty || 1);
-                subtotal += itemTotal;
+        // Load Products reliably
+        async function fetchProducts() {
+            try {
+                const res = await fetch(proxyURL);
+                if(!res.ok) throw new Error("Fetch Failed");
+                const csvText = await res.text();
                 
-                // Read delivery charge per product item
-                if (item.deliveryCharge && item.deliveryCharge > 0) {
-                    totalDelivery += item.deliveryCharge * (item.qty || 1);
-                }
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(r) {
+                        if(r.data && r.data.length > 0) {
+                            allProducts = r.data.map((item, idx) => {
+                                let imgStr = item['Image'] || item['image'] || item['IMAGE'] || '';
+                                let imgs = String(imgStr).split(',').map(s => s.trim()).filter(s => s.length > 5);
+                                let priceVal = parseInt(String(item['Price'] || item['price'] || 299).replace(/[^0-9]/g, '')) || 299;
 
-                html += `
-                    <div class="cart-item-row">
-                        <div>
-                            <div class="cart-item-title">${item.name}</div>
-                            <div class="cart-item-qty">
-                                Quantity: 
-                                <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
-                                <span>${item.qty || 1}</span>
-                                <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
-                            </div>
-                        </div>
-                        <div style="display:flex; align-items:center;">
-                            <span class="cart-item-price">₹${itemTotal}</span>
-                            <button class="delete-btn" onclick="removeCartItem(${index})">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            });
+                                return {
+                                    id: idx + 1,
+                                    title: item['Name'] || item['name'] || item['Title'] || 'Fashion Item',
+                                    price: priceVal,
+                                    image: imgs[0] || 'https://via.placeholder.com/300',
+                                    size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
+                                    details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
+                                    delivery: item['Delivery'] || item['delivery'] || 'FREE Delivery',
+                                    category: item['Category'] || item['category'] || ''
+                                };
+                            }).filter(p => p.title && p.title !== '');
 
-            const grandTotal = subtotal + totalDelivery;
-
-            itemsDiv.innerHTML = html;
-            summaryDiv.style.display = 'block';
-            document.getElementById('billSubtotal').innerText = `₹${subtotal}`;
-            document.getElementById('billDelivery').innerText = totalDelivery === 0 ? 'FREE (₹0)' : `+₹${totalDelivery}`;
-            document.getElementById('billGrandTotal').innerText = `₹${grandTotal}`;
-        }
-
-        function changeQty(index, delta) {
-            if (!cart[index].qty) cart[index].qty = 1;
-            cart[index].qty += delta;
-            if (cart[index].qty <= 0) {
-                cart.splice(index, 1);
-            }
-            localStorage.setItem('sumoCart', JSON.stringify(cart));
-            updateCartUI();
-            renderCartPage();
-        }
-
-        function removeCartItem(index) {
-            cart.splice(index, 1);
-            localStorage.setItem('sumoCart', JSON.stringify(cart));
-            updateCartUI();
-            renderCartPage();
-        }
-
-        function updateCartUI() {
-            let totalCount = cart.reduce((acc, item) => acc + (item.qty || 1), 0);
-            document.getElementById('cart-count').innerText = totalCount;
-        }
-
-        /* CATEGORY FILTER CHIPS BELOW SEARCH */
-        function filterByChip(key, btn) {
-            document.querySelectorAll('.chip-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filterByCategory(key);
-        }
-
-      function filterByCategory(categoryKey) {
-  if (document.getElementById('sidebar').classList.contains('active')) {
-    toggleSidebar();
-  }
-  window.scrollTo({ top: 100, behavior: 'smooth' });
-
-  if (categoryKey === 'all') {
-    document.getElementById('categoryHeader').innerText = 'ALL PRODUCTS';
-    renderProducts(allProductsData);
-    return;
-  }
-
-  const filteredData = allProductsData.filter(p => {
-    const cat = (p.category || p.Category || '').toLowerCase();
-    return cat.includes(categoryKey.toLowerCase());
-  });
-
-  document.getElementById('categoryHeader').innerText = categoryKey.toUpperCase() + ' COLLECTION';
-  renderProducts(filteredData);
-}
-
-    
-            function filterProducts() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = allProductsData.filter(p => {
-                const name = (p.Name || p.name || p.NAME || '').toLowerCase();
-                return name.includes(query);
-            });
-            renderProducts(filtered);
-        }
-
-        function openFullscreenImage() {
-            history.pushState({ lightbox: true }, "");
-            const currentImgSrc = document.getElementById('pdpMainImg').src;
-            document.getElementById('lightboxImg').src = currentImgSrc;
-            document.getElementById('fullscreenLightbox').style.display = 'flex';
-        }
-
-        function closeFullscreenImage() {
-            document.getElementById('fullscreenLightbox').style.display = 'none';
-        }
-
-        function sendOTP() {
-            const name = document.getElementById('userName').value.trim();
-            const mobile = document.getElementById('userMobile').value.trim();
-            const address = document.getElementById('userAddress').value.trim();
-
-            if (!name || mobile.length !== 10 || !address) {
-                alert('कृपया नाम, 10-अंकों का मोबाइल नंबर और पूरा पता दर्ज करें!');
-                return;
-            }
-
-            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
-
-            const smsPopup = document.getElementById('smsPopup');
-            document.getElementById('smsBody').innerText = `SUMO STORE: Your Login verification OTP code is ${generatedOtp}. Do not share with anyone.`;
-            smsPopup.style.display = 'block';
-
-            setTimeout(() => { smsPopup.style.display = 'none'; }, 8000);
-
-            document.getElementById('phoneStep').style.display = 'none';
-            document.getElementById('otpStep').style.display = 'block';
-        }
-
-        function verifyOTP() {
-            const inputOtp = document.getElementById('userOtp').value.trim();
-            if (inputOtp === generatedOtp) {
-                const name = document.getElementById('userName').value.trim();
-                const mobile = document.getElementById('userMobile').value.trim();
-                const address = document.getElementById('userAddress').value.trim();
-
-                const userData = { name: name, mobile: mobile, address: address };
-                localStorage.setItem('sumoUserData', JSON.stringify(userData));
-
-                fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        access_key: 'ee56d6f9-7f32-4b20-94d7-e070d64db2a8',
-                        subject: '🔔 NEW USER LOGIN ALERT - SUMO STORE',
-                        name: name,
-                        phone: mobile,
-                        address: address,
-                        message: `New Login on SUMO Store!\n\nName: ${name}\nMobile: ${mobile}\nAddress: ${address}`
-                    })
-                });
-
-                alert(`अभिनंदन ${name}! आपका अकाउंट SUMO STORE पर सेव हो गया है।`);
-                checkUserLoginStatus();
-                closeLoginModal();
-            } else {
-                alert('गलत OTP! कृपया ऊपर आए मैसेज में देखकर सही OTP डालें।');
-            }
-        }
-
-        function checkUserLoginStatus() {
-            const savedUser = JSON.parse(localStorage.getItem('sumoUserData'));
-            if (savedUser && savedUser.name) {
-                document.getElementById('userIconBtn').innerText = '👤✅';
-                document.getElementById('userName').value = savedUser.name;
-                document.getElementById('userMobile').value = savedUser.mobile;
-                document.getElementById('userAddress').value = savedUser.address;
-            }
-        }
-
-        function loadProductsFromSheet() {
-            Papa.parse(sheetCsvUrl, {
-                download: true,
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    allProductsData = results.data;
-                    renderProducts(allProductsData);
-                }
-            });
-        }
-
-        function renderProducts(products) {
-            const container = document.getElementById('products-container');
-            container.innerHTML = '';
-            let count = 0;
-
-            products.forEach((product, index) => {
-                const name = product.Name || product.name || product.NAME;
-                const price = Number(product.Price || product.price || product.PRICE);
-                const imageStr = product.Image || product.image || product.IMAGE;
-                
-                // Read Delivery Column from Sheet
-                const deliveryVal = (product.Delivery || product.delivery || product.DELIVERY || '').toString().trim();
-
-                if (name && price && imageStr) {
-                    count++;
-                    const images = imageStr.split(',').map(img => img.trim());
-                    const mainImgUrl = images[0];
-
-                    const reviews = productReviewsData[name] || [];
-                    let avgRatingStr = '★ 4.5 (12)';
-                    if (reviews.length > 0) {
-                        const sum = reviews.reduce((acc, r) => acc + r.stars, 0);
-                        avgRatingStr = `★ ${(sum / reviews.length).toFixed(1)} (${reviews.length})`;
-                    }
-
-                    // Dynamic Tag based ONLY on Sheet Value
-                    let deliveryTagHtml = '';
-                    if (deliveryVal !== '') {
-                        const numDel = parseFloat(deliveryVal);
-                        if (!isNaN(numDel) && numDel > 0) {
-                            deliveryTagHtml = `<span class="delivery-charge-tag paid">+🚚 ₹${numDel} Delivery</span>`;
-                        } else if (deliveryVal.toLowerCase() === 'free' || numDel === 0) {
-                            deliveryTagHtml = `<span class="delivery-charge-tag">FREE DELIVERY</span>`;
+                            renderGrid('homeProductGrid', allProducts);
+                            renderGrid('catRightGrid', allProducts);
+                            renderGrid('mallGrid', allProducts);
                         } else {
-                            deliveryTagHtml = `<span class="delivery-charge-tag paid">${deliveryVal}</span>`;
+                            document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0;">Google Sheet me koi data nahi milaa.</p>';
                         }
                     }
-
-                    const card = `
-                        <div class="product-card" onclick="openPdp(${index})">
-                            <div class="card-actions">
-                                <button class="action-circle-btn" title="Share Product" onclick="shareProduct(${index}, event)">🔗</button>
-                            </div>
-                            <div class="img-container">
-                                <img src="${mainImgUrl}" class="main-img" alt="${name}">
-                            </div>
-                            <div class="card-body">
-                                <div class="rating-box">${avgRatingStr}</div>
-                                <div class="product-title">${name}</div>
-                                <div class="price-badge-row">
-                                    <span class="product-price">₹${price}</span>
-                                    ${deliveryTagHtml}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    container.innerHTML += card;
-                }
-            });
-
-            if (count === 0) {
-                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding:40px 0;">कोई प्रोडक्ट नहीं मिला।</p>';
-            }
-        }
-
-        function openPdp(index) {
-            history.pushState({ pdp: true }, "");
-            const product = allProductsData[index];
-            currentPdpProduct = product;
-
-            const name = product.Name || product.name || product.NAME;
-            const price = Number(product.Price || product.price || product.PRICE);
-            const imageStr = product.Image || product.image || product.IMAGE;
-            const sizeStr = product.Size || product.size || product.SIZE;
-            const colorStr = product.Color || product.color || product.COLOR;
-            const details = product.Details || product.details || product.DETAILS || '100% Premium Quality Fabric | Comfortable Fit';
-            const deliveryVal = (product.Delivery || product.delivery || product.DELIVERY || '').toString().trim();
-
-            const images = imageStr.split(',').map(img => img.trim());
-
-            document.getElementById('pdpMainImg').src = images[0];
-            document.getElementById('pdpTitle').innerText = name;
-            document.getElementById('pdpPrice').innerText = `₹${price}`;
-            document.getElementById('pdpDetailsText').innerText = details;
-
-            // PDP Delivery Text logic based on Sheet
-            const deliveryStatus = document.getElementById('pdpDeliveryStatus');
-            const numDel = parseFloat(deliveryVal);
-            if (!isNaN(numDel) && numDel > 0) {
-                deliveryStatus.innerText = `🚚 Delivery Charge: ₹${numDel} (Extra)`;
-                deliveryStatus.style.color = '#d9480f';
-            } else if (deliveryVal.toLowerCase() === 'free' || numDel === 0) {
-                deliveryStatus.innerText = '🚚 FREE Delivery';
-                deliveryStatus.style.color = '#2b8a3e';
-            } else if (deliveryVal !== '') {
-                deliveryStatus.innerText = `🚚 Delivery: ${deliveryVal}`;
-                deliveryStatus.style.color = '#212529';
-            } else {
-                deliveryStatus.innerText = '🚚 Standard Delivery Available';
-                deliveryStatus.style.color = '#495057';
-            }
-
-            const thumbsContainer = document.getElementById('pdpThumbs');
-            thumbsContainer.innerHTML = '';
-            if (images.length > 1) {
-                images.forEach(img => {
-                    thumbsContainer.innerHTML += `<img src="${img}" class="pdp-thumb-img" onclick="document.getElementById('pdpMainImg').src='${img}'">`;
                 });
+            } catch(e) { 
+                console.error(e);
+                // Fallback attempt without proxy if direct request works
+                fetchDirectFallback();
             }
+        }
 
-            const sizesContainer = document.getElementById('pdpSizes');
-            sizesContainer.innerHTML = '';
-            if (sizeStr && sizeStr.trim() !== '') {
-                const sizes = sizeStr.split(',');
-                currentSelectedSize = sizes[0].trim();
-                sizes.forEach((s, sIdx) => {
-                    const sz = s.trim();
-                    sizesContainer.innerHTML += `<button class="pdp-opt-btn ${sIdx === 0 ? 'selected' : ''}" onclick="selectPdpSize('${sz}', this)">${sz}</button>`;
+        async function fetchDirectFallback() {
+            try {
+                const res = await fetch(rawCsvURL);
+                const csvText = await res.text();
+                Papa.parse(csvText, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(r) {
+                        allProducts = r.data.map((item, idx) => ({
+                            id: idx + 1,
+                            title: item['Name'] || item['name'] || 'Item',
+                            price: parseInt(String(item['Price'] || 299).replace(/[^0-9]/g, '')) || 299,
+                            image: (item['Image'] || '').split(',')[0] || 'https://via.placeholder.com/300',
+                            size: item['Size'] || 'Free Size, S, M, L',
+                            details: item['Details'] || 'Quality item',
+                            delivery: item['Delivery'] || 'FREE Delivery',
+                            category: item['Category'] || ''
+                        })).filter(p => p.title);
+                        renderGrid('homeProductGrid', allProducts);
+                        renderGrid('catRightGrid', allProducts);
+                        renderGrid('mallGrid', allProducts);
+                    }
                 });
-            } else { currentSelectedSize = ''; }
-
-            const colorsContainer = document.getElementById('pdpColors');
-            const colorLabel = document.getElementById('pdpColorLabel');
-            colorsContainer.innerHTML = '';
-            if (colorStr && colorStr.trim() !== '') {
-                colorLabel.style.display = 'block';
-                colorsContainer.style.display = 'flex';
-                const colors = colorStr.split(',');
-                currentSelectedColor = colors[0].trim();
-                colors.forEach((c, cIdx) => {
-                    const clr = c.trim();
-                    colorsContainer.innerHTML += `<button class="pdp-opt-btn ${cIdx === 0 ? 'selected' : ''}" onclick="selectPdpColor('${clr}', this)">${clr}</button>`;
-                });
-            } else {
-                colorLabel.style.display = 'none';
-                colorsContainer.style.display = 'none';
-                currentSelectedColor = '';
+            } catch(err) {
+                document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0; color:red;">Data load karne me problem aai. Kripya page refresh karein.</p>';
             }
-
-            renderReviews(name);
-            document.getElementById('pdpPage').scrollTop = 0;
-            document.getElementById('pdpPage').style.display = 'block';
         }
 
-        function closePdp() { document.getElementById('pdpPage').style.display = 'none'; }
-
-        function selectPdpSize(sz, btn) {
-            currentSelectedSize = sz;
-            document.querySelectorAll('#pdpSizes .pdp-opt-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-        }
-
-        function selectPdpColor(clr, btn) {
-            currentSelectedColor = clr;
-            document.querySelectorAll('#pdpColors .pdp-opt-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-        }
-
-        function addCurrentPdpToBag() {
-            if (!currentPdpProduct) return;
-            const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
-            const price = Number(currentPdpProduct.Price || currentPdpProduct.price || currentPdpProduct.PRICE);
-            const deliveryVal = (currentPdpProduct.Delivery || currentPdpProduct.delivery || currentPdpProduct.DELIVERY || '').toString().trim();
-
-            let variantInfo = [];
-            if (currentSelectedSize) variantInfo.push(`Size: ${currentSelectedSize}`);
-            if (currentSelectedColor) variantInfo.push(`Color: ${currentSelectedColor}`);
-
-            const fullTitle = variantInfo.length > 0 ? `${name} (${variantInfo.join(', ')})` : name;
-            
-            const numDel = parseFloat(deliveryVal);
-            const deliveryCharge = (!isNaN(numDel) && numDel > 0) ? numDel : 0;
-
-            const existingIndex = cart.findIndex(item => item.name === fullTitle);
-            if (existingIndex > -1) {
-                cart[existingIndex].qty = (cart[existingIndex].qty || 1) + 1;
-            } else {
-                cart.push({ name: fullTitle, price: Number(price), deliveryCharge: deliveryCharge, qty: 1 });
-            }
-
-            localStorage.setItem('sumoCart', JSON.stringify(cart));
-            updateCartUI();
-            closePdp();
-            openCartPage();
-        }
-
-        function setRating(stars) {
-            selectedStarRating = stars;
-            const spans = document.querySelectorAll('#starSelector span');
-            spans.forEach((span, idx) => {
-                if (idx < stars) span.classList.add('selected');
-                else span.classList.remove('selected');
-            });
-        }
-
-        function submitReview() {
-            if (!currentPdpProduct) return;
-            const name = currentPdpProduct.Name || currentPdpProduct.name || currentPdpProduct.NAME;
-            const reviewer = document.getElementById('reviewerName').value.trim() || 'SUMO Customer';
-            const comment = document.getElementById('reviewerComment').value.trim();
-
-            if (!comment) {
-                alert('कृपया अपना रिव्यू लिखें!');
-                return;
-            }
-
-            if (!productReviewsData[name]) productReviewsData[name] = [];
-            productReviewsData[name].push({ stars: selectedStarRating, user: reviewer, text: comment });
-
-            localStorage.setItem('sumoReviews', JSON.stringify(productReviewsData));
-
-            document.getElementById('reviewerComment').value = '';
-            renderReviews(name);
-            renderProducts(allProductsData);
-            alert('रिव्यू सबमिट हो गया है और अब हमेशा दिखेगा!');
-        }
-
-        function renderReviews(productName) {
-            const listDiv = document.getElementById('reviewsList');
-            const reviews = productReviewsData[productName] || [];
-
-            if (reviews.length === 0) {
-                listDiv.innerHTML = '<p style="color: #666;">अभी तक कोई रिव्यू नहीं है। पहले समीक्षक बनें!</p>';
-                return;
-            }
-
-            let html = '';
-            reviews.forEach(r => {
-                let starsStr = '★'.repeat(r.stars);
-                html += `
-                    <div style="background: #fff; border: 1px solid #eee; padding: 10px; border-radius: 6px; margin-bottom: 8px;">
-                        <div style="font-weight: bold; font-size: 12px;">${r.user} <span style="color: #ffa41c;">${starsStr}</span></div>
-                        <div style="font-size: 12px; color: #444; margin-top: 3px;">"${r.text}"</div>
+        function renderGrid(containerId, list) {
+            const el = document.getElementById(containerId);
+            if(!el) return;
+            if(list.length === 0) { el.innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0;">Koi product nahi milaa.</p>'; return; }
+            el.innerHTML = list.map(p => `
+                <div class="p-card" onclick="openPDP(${p.id})">
+                    <div class="p-img-box">
+                        <img src="${p.image}" onerror="this.src='https://via.placeholder.com/300'">
+                        <button class="wish-heart" onclick="event.stopPropagation(); toggleWish(${p.id})">❤️</button>
                     </div>
-                `;
-            });
-            listDiv.innerHTML = html;
+                    <div class="p-info">
+                        <div class="p-name">${p.title}</div>
+                        <div class="p-price-row"><span class="p-price">₹${p.price}</span><span class="p-off">Special Offer</span></div>
+                        <div class="p-rate">★ 4.2</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function openPolicyModal(type) {
-            const modal = document.getElementById('policyModal');
-            const title = document.getElementById('policyTitle');
-            const content = document.getElementById('policyContent');
-
-            if (type === 'return') {
-                title.innerText = 'Returns & Exchange Policy';
-                content.innerHTML = '<p>हम 7 दिनों की आसान रिटर्न और एक्सचेंज पॉलिसी देते हैं। अगर कपड़ा सही साइज़ का नहीं आता या डैमेज है, तो आप 7 दिनों के अंदर एक्सचेंज कर सकते हैं।</p>';
-            } else if (type === 'shipping') {
-                title.innerText = 'Shipping & Delivery';
-                content.innerHTML = '<p>सभी ऑर्डर्स 3 से 6 दिनों के भीतर डिलीवर कर दिए जाते हैं।</p>';
-            } else if (type === 'about') {
-                title.innerText = 'About SUMO Store';
-                content.innerHTML = '<p>SUMO Store आपका अपना भरोसेमंद ऑनलाइन फैशन स्टोर है, जहाँ बेहतरीन क्वालिटी के ट्रेंडिंग कपड़े सबसे किफायती दामों में मिलते हैं।</p>';
-            } else if (type === 'terms') {
-                title.innerText = 'Terms & Conditions';
-                content.innerHTML = '<p>SUMO Store पर Cash on Delivery (COD) उपलब्ध है। ऑर्डर कन्फर्म होने के बाद डिलीवरी बॉय आपको कॉल करके सामान दे जाएगा।</p>';
-            }
-            modal.style.display = 'flex';
-        }
-
-        function closePolicyModal() { document.getElementById('policyModal').style.display = 'none'; }
-
-        function openSocial(platform) {
-            if (platform === 'whatsapp') {
-                window.open('https://api.whatsapp.com/send?phone=910000000000&text=Hi%20SUMO%20Store,%20I%20have%20a%20query', '_blank');
-            } else if (platform === 'instagram') {
-                window.open('https://instagram.com', '_blank');
-            } else if (platform === 'facebook') {
-                window.open('https://facebook.com', '_blank');
+        // Tab Navigation
+        function switchTab(screenId, btn) {
+            document.querySelectorAll('.tab-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            if(btn) {
+                document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
             }
         }
 
-        function goToCheckout() {
-            if (cart.length === 0) {
-                alert('कृपया पहले कोई प्रोडक्ट चुनें!');
+        function selectCatLeft(key, el) {
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            filterCategory(key, 'catRightGrid');
+        }
+
+        function filterCategory(key, gridId = 'homeProductGrid') {
+            if(key === 'all') { renderGrid(gridId, allProducts); return; }
+            const filtered = allProducts.filter(p => p.title.toLowerCase().includes(key) || p.category.toLowerCase().includes(key));
+            renderGrid(gridId, filtered);
+        }
+
+        function searchFilter() {
+            const q = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allProducts.filter(p => p.title.toLowerCase().includes(q));
+            renderGrid('homeProductGrid', filtered);
+        }
+
+        function changePincode() {
+            let pin = prompt("Apna 6-digit Pincode bharen:");
+            if(pin && pin.length === 6) {
+                document.getElementById('userLocationText').innerText = `Delivering to ${pin}`;
+                localStorage.setItem('userPin', pin);
+            }
+        }
+
+        // User Auth Login System
+        function checkSavedUser() {
+            const saved = localStorage.getItem('sumoUser');
+            if(saved) {
+                currentUser = JSON.parse(saved);
+                updateProfileUI();
+            }
+            const savedPin = localStorage.getItem('userPin');
+            if(savedPin) {
+                document.getElementById('userLocationText').innerText = `Delivering to ${savedPin}`;
+            }
+        }
+
+        function handleAuthClick() {
+            if(currentUser) {
+                if(confirm("Logout karna chahte hain?")) {
+                    currentUser = null;
+                    localStorage.removeItem('sumoUser');
+                    updateProfileUI();
+                }
+            } else {
+                document.getElementById('loginModal').style.display = 'block';
+            }
+        }
+
+        function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+
+        function submitLogin() {
+            const name = document.getElementById('loginNameInput').value.trim();
+            const phone = document.getElementById('loginPhoneInput').value.trim();
+            if(!name || phone.length < 10) {
+                alert('Kripya apna sahi Naam aur 10-digit Phone Number bharen!');
                 return;
             }
-            window.location.href = 'checkout.html';
+            currentUser = { name, phone };
+            localStorage.setItem('sumoUser', JSON.stringify(currentUser));
+            updateProfileUI();
+            closeLoginModal();
+            alert(`Welcome ${name}! Login successful.`);
         }
 
-        loadProductsFromSheet();
+        function updateProfileUI() {
+            if(currentUser) {
+                document.getElementById('userNameTitle').innerText = currentUser.name;
+                document.getElementById('userPhoneSub').innerText = `+91 ${currentUser.phone}`;
+                document.getElementById('userAvatar').innerText = currentUser.name.substring(0,2);
+                document.getElementById('btnLoginLogout').innerText = 'Logout';
+                document.getElementById('custName').value = currentUser.name;
+                document.getElementById('custPhone').value = currentUser.phone;
+            } else {
+                document.getElementById('userNameTitle').innerText = 'User Account';
+                document.getElementById('userPhoneSub').innerText = 'Click Login to setup profile';
+                document.getElementById('userAvatar').innerText = 'Guest';
+                document.getElementById('btnLoginLogout').innerText = 'Login';
+                document.getElementById('custName').value = '';
+                document.getElementById('custPhone').value = '';
+            }
+        }
+
+        function toggleWish(id) {
+            const item = allProducts.find(p => p.id === id);
+            if(item && !wishlist.some(w => w.id === id)) wishlist.push(item);
+            alert('Wishlist me joda gaya!');
+            renderGrid('wishlistGrid', wishlist);
+        }
+
+        function openHelpCenter() {
+            const adminWhatsApp = '919421473962';
+            const msg = "Namaste SUMO Store, Mujhe Help Chahiye.";
+            window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function toggleLanguage() {
+            if(currentLang === 'hi') {
+                currentLang = 'en';
+                document.getElementById('currentLangTag').innerText = 'English';
+                document.getElementById('tabHome').innerText = 'Home';
+                document.getElementById('tabCat').innerText = 'Categories';
+                document.getElementById('tabOrders').innerText = 'Orders';
+                document.getElementById('tabAcc').innerText = 'Account';
+                document.getElementById('lblOrders').innerText = '📦 My Orders';
+                document.getElementById('lblWish').innerText = '❤️ Wishlisted Products';
+                document.getElementById('txtMyOrders').innerText = 'My Orders';
+                document.getElementById('txtNoOrders').innerText = 'No active orders yet.';
+            } else {
+                currentLang = 'hi';
+                document.getElementById('currentLangTag').innerText = 'Hindi';
+                document.getElementById('tabHome').innerText = 'होम';
+                document.getElementById('tabCat').innerText = 'कैटेगरी';
+                document.getElementById('tabOrders').innerText = 'ऑर्डर';
+                document.getElementById('tabAcc').innerText = 'अकाउंट';
+                document.getElementById('lblOrders').innerText = '📦 मेरे ऑर्डर';
+                document.getElementById('lblWish').innerText = '❤️ विशलिस्ट सामान';
+                document.getElementById('txtMyOrders').innerText = 'मेरे ऑर्डर';
+                document.getElementById('txtNoOrders').innerText = 'कोई एक्टिव ऑर्डर नहीं है।';
+            }
+        }
+
+        // PDP & Cart
+        function openPDP(id) {
+            currentPdp = allProducts.find(p => p.id === id);
+            if(!currentPdp) return;
+            document.getElementById('pdpImg').src = currentPdp.image;
+            document.getElementById('pdpTitle').innerText = currentPdp.title;
+            document.getElementById('pdpPrice').innerText = '₹' + currentPdp.price;
+            document.getElementById('pdpDelivery').innerText = currentPdp.delivery;
+            document.getElementById('pdpDetails').innerText = currentPdp.details;
+
+            const sizes = String(currentPdp.size).split(',').map(s => s.trim());
+            chosenSize = sizes[0] || 'Free Size';
+            document.getElementById('pdpSizeFlex').innerHTML = sizes.map(s => `
+                <button style="border:1px solid #ccc; padding:6px 14px; border-radius:20px; background:#fff; font-size:12px; cursor:pointer;" onclick="chosenSize='${s}'">${s}</button>
+            `).join('');
+
+            document.getElementById('pdpModal').style.display = 'block';
+        }
+        function closePDP() { document.getElementById('pdpModal').style.display = 'none'; }
+
+        function addToCart(isBuyNow) {
+            if(!currentPdp) return;
+            cart.push({ ...currentPdp, chosenSize });
+            document.getElementById('cartBadge').innerText = cart.length;
+            closePDP();
+            if(isBuyNow) openCart(); else alert('Item added to cart!');
+        }
+
+        function openCart() {
+            const el = document.getElementById('cartItems');
+            if(cart.length === 0) {
+                el.innerHTML = '<p style="text-align:center; padding:30px 0;">Cart is Empty</p>';
+                document.getElementById('subTotal').innerText = '₹0';
+                document.getElementById('grandTotal').innerText = '₹0';
+            } else {
+                let total = 0;
+                el.innerHTML = cart.map((c, i) => {
+                    total += c.price;
+                    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
+                        <div><b>${c.title}</b><br><small>Size: ${c.chosenSize} | ₹${c.price}</small></div>
+                        <button onclick="cart.splice(${i},1); openCart();" style="color:red; border:none; background:none; cursor:pointer;">🗑️</button>
+                    </div>`;
+                }).join('');
+                document.getElementById('subTotal').innerText = '₹' + total;
+                document.getElementById('grandTotal').innerText = '₹' + total;
+            }
+            document.getElementById('cartModal').style.display = 'block';
+        }
+        function closeCart() { document.getElementById('cartModal').style.display = 'none'; }
+
+        function checkoutWhatsApp() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const addr = document.getElementById('custAddr').value.trim();
+            if(!name || !phone || !addr) { alert('Kripya puri delivery details bharen!'); return; }
+
+            let msg = `*NEW ORDER - SUMO STORE*\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\nItems:\n`;
+            let total = 0;
+            cart.forEach((c, i) => { total += c.price; msg += `${i+1}. ${c.title} (${c.chosenSize}) - ₹${c.price}\n`; });
+            msg += `\nTotal Amount: ₹${total}\nPayment: Cash On Delivery`;
+
+            const adminWhatsApp = '919421473962';
+            window.open(`https://wa.me/${adminWhatsApp}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        // Init
+        checkSavedUser();
+        fetchProducts();
     </script>
-    <!-- Footer Links & Popups -->
-<footer style="background-color: #1a1a1a; color: #ffffff; padding: 35px 15px; text-align: center;">
-  <div style="margin-bottom: 15px;">
-    <a href="javascript:void(0)" onclick="openModal('blogModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Fashion Blog</a> |
-    <a href="javascript:void(0)" onclick="openModal('privacyModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Privacy Policy</a> |
-    <a href="javascript:void(0)" onclick="openModal('termsModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Terms & Conditions</a> |
-    <a href="javascript:void(0)" onclick="openModal('contactModal')" style="color: #cccccc; margin: 0 12px; text-decoration: none;">Contact Us</a>
-  </div>
-  <p style="font-size: 13px; color: #888888;">© 2026 SUMO STORE. All Rights Reserved.</p>
-</footer>
-    <!-- Blog Modal -->
-<div id="blogModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; overflow:auto;">
-  <div style="background:#fff; color:#333; margin:4% auto; padding:25px; width:92%; max-width:800px; border-radius:8px; line-height:1.7;">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #eee; padding-bottom:10px; margin-bottom:20px;">
-      <h2 style="margin:0;">SUMO STORE - Style & Fashion Guide</h2>
-      <button onclick="closeModal('blogModal')" style="background:#ff4d4d; color:#fff; border:none; padding:8px 15px; cursor:pointer; border-radius:4px; font-weight:bold;">✕ Close</button>
-    </div>
-    
-    <article style="margin-bottom:30px; border-bottom:1px solid #ddd; padding-bottom:20px;">
-      <h3 style="color:#2c3e50; margin-bottom:8px;">1. Perfect Oversized T-Shirt Styling Tips for Men & Women</h3>
-      <p style="color:#666; font-size:14px;"><i>Published on SUMO Blog | Category: Fashion & Trends</i></p>
-      <p>Oversized t-shirts have become a staple in modern streetwear culture. Pair your oversized tee with fitted jeans or cargo trousers to balance the silhouette. Tuck it slightly into high-waisted denim for an effortless everyday vibe.</p>
-    </article>
-
-    <article style="margin-bottom:30px; border-bottom:1px solid #ddd; padding-bottom:20px;">
-      <h3 style="color:#2c3e50; margin-bottom:8px;">2. How to Care for 100% Cotton Printed T-Shirts</h3>
-      <p style="color:#666; font-size:14px;"><i>Published on SUMO Blog | Category: Fabric Care</i></p>
-      <p>Always wash your printed cotton t-shirts inside-out with cold water to avoid print cracking. Avoid high-heat machine drying and air-dry in shade. Never iron directly on graphic prints.</p>
-    </article>
-
-    <article style="margin-bottom:10px; padding-bottom:10px;">
-      <h3 style="color:#2c3e50; margin-bottom:8px;">3. Building a Capsule Wardrobe with Essential Basics</h3>
-      <p style="color:#666; font-size:14px;"><i>Published on SUMO Blog | Category: Wardrobe Essentials</i></p>
-      <p>A capsule wardrobe consists of timeless clothing items that mix and match effortlessly. Focus on neutral-colored plain t-shirts and classic denim jeans to look stylish with minimal effort.</p>
-    </article>
-
-    <div style="text-align:center; margin-top:20px;">
-      <button onclick="closeModal('blogModal')" style="background:#556ee6; color:#fff; border:none; padding:10px 25px; cursor:pointer; border-radius:4px; font-weight:bold;">Close Blog</button>
-    </div>
-  </div>
-</div>
-<div id="privacyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; overflow:auto;">
-  <div style="background:#fff; color:#333; margin:5% auto; padding:25px; width:90%; max-width:650px; border-radius:8px; line-height:1.6;">
-    <h2>Privacy Policy</h2>
-    <p>At SUMO STORE (accessible from sumocompany.shop), one of our main priorities is the privacy of our visitors.</p>
-    
-    <h3>1. Information We Collect</h3>
-    <p>We collect essential information such as name, contact details, shipping address, and order history strictly for processing transactions and providing customer service.</p>
-    
-    <h3>2. Log Files & Analytics</h3>
-    <p>SUMO STORE follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date/time stamp, and referring/exit pages.</p>
-    
-    <h3>3. Google DoubleClick DART Cookie & Third-Party Ads</h3>
-    <p>Google is one of the third-party vendors on our site. It also uses cookies, known as DART cookies, to serve ads to our site visitors based upon their visit to our site and other sites on the internet. Visitors may choose to decline the use of DART cookies by visiting the Google Ad and Content Network Privacy Policy.</p>
-    
-    <h3>4. Third Party Privacy Policies</h3>
-    <p>SUMO STORE's Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information.</p>
-    
-    <button onclick="closeModal('privacyModal')" style="background:#556ee6; color:#fff; border:none; padding:10px 20px; cursor:pointer; border-radius:4px; margin-top:15px;">Close</button>
-  </div>
-</div>
-    
-
-<div id="contactModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; overflow:auto;">
-  <div style="background:#fff; color:#333; margin:8% auto; padding:25px; width:90%; max-width:600px; border-radius:8px;">
-    <h2>Contact Us</h2>
-    <p><b>Store Name:</b> SUMO STORE</p>
-    <p><b>Support Email:</b> support@sumocompany.store</p>
-    <p><b>Business Hours:</b> Mon – Sat (10:00 AM - 7:00 PM IST)</p>
-    <button onclick="closeModal('contactModal')" style="background:#556ee6; color:#fff; border:none; padding:10px 20px; cursor:pointer; border-radius:4px; margin-top:15px;">Close</button>
-  </div>
-    <script>
-  function openModal(id) { document.getElementById(id).style.display = 'block'; }
-  function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-</script>
 </body>
 </html>
