@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SUMO — Premium Store</title>
+    <title>SUMO — Premium Fashion Store</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
         :root { --meesho-pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-gray); color: var(--text-dark); padding-bottom: 65px; }
 
-        /* App Header */
+        /* Header */
         header { background: #fff; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e0e0e0; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 20px; font-weight: 900; color: var(--meesho-pink); letter-spacing: 1px; text-decoration: none; }
         .header-actions { display: flex; gap: 14px; align-items: center; }
         .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; position: relative; }
         .badge { position: absolute; top: -5px; right: -8px; background: var(--meesho-pink); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; padding: 2px 5px; }
 
-        /* Search & Location Bar */
+        /* Search & Location */
         .search-container { background: #fff; padding: 0 14px 10px; border-bottom: 1px solid #eee; }
         .loc-bar { font-size: 11px; color: #555; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; font-weight: 600; cursor: pointer; }
         .search-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 6px; padding: 8px 12px; border: 1px solid #e0e0e0; }
@@ -182,8 +182,9 @@
         <ul class="profile-menu">
             <li onclick="switchTab('ordersScreen')"><span id="lblOrders">📦 My Orders</span> <span>></span></li>
             <li onclick="switchTab('wishlistScreen')"><span id="lblWish">❤️ Wishlisted Products</span> <span>></span></li>
-            <li onclick="openHelpCenter()">🎧 Help Centre (WhatsApp Support) <span>></span></li>
-            <li onclick="openPrivacyModal()">📜 Privacy Policy & Terms <span>></span></li>
+            <li onclick="openContactModal()">📞 Contact Us & Customer Support <span>></span></li>
+            <li onclick="openPrivacyModal()">📜 Privacy Policy & Terms of Service <span>></span></li>
+            <li onclick="openReturnModal()">🔄 7 Days Return & Refund Policy <span>></span></li>
             <li onclick="toggleLanguage()">🌐 Change Language / भाषा बदलें <span id="currentLangTag" style="color:var(--meesho-pink); font-weight:bold;">Hindi</span></li>
         </ul>
     </div>
@@ -196,6 +197,27 @@
         <div class="products-grid" id="wishlistGrid"></div>
     </div>
 
+    <!-- CONTACT US MODAL -->
+    <div id="contactModal" class="modal-page">
+        <div class="modal-head">
+            <button onclick="closeContactModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
+            <span style="font-weight:bold;">Contact Us</span>
+            <div></div>
+        </div>
+        <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.7; color:#333;">
+            <h3 style="color:var(--meesho-pink); margin-bottom:10px;">SUMO Store Support</h3>
+            <p>We are here to help you with your shopping, order status, or returns.</p>
+            <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
+            <p><b>📍 Store Name:</b> SUMO Clothing & Fashion Store</p>
+            <p><b>📞 Phone / WhatsApp:</b> +91 9721473962</p>
+            <p><b>✉️ Email Support:</b> brandsumo34@gmail.com</p>
+            <p><b>🌐 Official Domain:</b> https://sumocompany.shop</p>
+            <p><b>🕒 Support Hours:</b> Mon - Sat (9:00 AM - 8:00 PM)</p>
+            <br>
+            <button class="btn-pink" style="width:100%; background:#25D366;" onclick="openHelpCenter()">CHAT ON WHATSAPP 📲</button>
+        </div>
+    </div>
+
     <!-- PRIVACY POLICY MODAL -->
     <div id="privacyModal" class="modal-page">
         <div class="modal-head">
@@ -204,18 +226,41 @@
             <div></div>
         </div>
         <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.6; color:#444;">
-            <h3>SUMO STORE Privacy & Security Policy</h3>
+            <h3 style="color:var(--meesho-pink);">SUMO STORE Privacy Policy</h3>
             <br>
-            <p>Welcome to SUMO STORE (sumocompany.shop). We value your privacy and trust.</p>
+            <p>At <b>SUMO STORE (sumocompany.shop)</b>, accessible from https://sumocompany.shop, one of our main priorities is the privacy of our visitors.</p>
             <br>
             <b>1. Information Collection:</b>
-            <p>We collect essential details such as Name, Phone Number, and Delivery Address solely for fulfilling your orders via Cash on Delivery (COD).</p>
+            <p>We collect essential user information like Name, Phone Number, and Delivery Address solely to process your orders and facilitate Cash on Delivery (COD) services.</p>
             <br>
             <b>2. Data Protection:</b>
-            <p>Your details are protected and never shared with third parties for commercial advertising.</p>
+            <p>Your personal data is encrypted and secure. We do not sell, trade, or transfer your personally identifiable information to outside parties.</p>
             <br>
-            <b>3. Order Processing:</b>
-            <p>Orders are verified via WhatsApp before dispatch to ensure secure and accurate delivery.</p>
+            <b>3. Google Ads Compliance:</b>
+            <p>We comply with standard web privacy practices and do not request sensitive financial details directly on site. Payments are strictly Cash on Delivery.</p>
+        </div>
+    </div>
+
+    <!-- RETURN & REFUND POLICY MODAL -->
+    <div id="returnModal" class="modal-page">
+        <div class="modal-head">
+            <button onclick="closeReturnModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
+            <span style="font-weight:bold;">Return & Refund Policy</span>
+            <div></div>
+        </div>
+        <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.6; color:#444;">
+            <h3 style="color:var(--meesho-pink);">7 Days Easy Return & Refund Policy</h3>
+            <br>
+            <p>We offer a hassle-free <b>7-day return policy</b> for all our customers.</p>
+            <br>
+            <b>1. Return Window:</b>
+            <p>You can request a return or exchange within <b>7 days</b> of delivery if the item is damaged, defective, or incorrect size.</p>
+            <br>
+            <b>2. Refund Process:</b>
+            <p>Since orders are Cash on Delivery (COD), returned items will be picked up, and refunds will be transferred directly to your Google Pay, PhonePe, UPI, or Bank Account within 2-4 working days after quality check.</p>
+            <br>
+            <b>3. How to Request Return:</b>
+            <p>Simply message us on WhatsApp (+91 9721473962) with your Order ID and photo of the product.</p>
         </div>
     </div>
 
@@ -339,6 +384,8 @@
             document.getElementById('cartModal').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
             document.getElementById('privacyModal').style.display = 'none';
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('returnModal').style.display = 'none';
         }
 
         // Fetch products
@@ -467,7 +514,7 @@
             }
         }
 
-        // OTP & Auth System
+        // Auth & Modals
         function checkSavedUser() {
             const saved = localStorage.getItem('sumoUser');
             if(saved) {
@@ -548,11 +595,14 @@
             }
         }
 
-        function openPrivacyModal() {
-            pushModalState();
-            document.getElementById('privacyModal').style.display = 'block';
-        }
+        function openContactModal() { pushModalState(); document.getElementById('contactModal').style.display = 'block'; }
+        function closeContactModal() { history.back(); }
+
+        function openPrivacyModal() { pushModalState(); document.getElementById('privacyModal').style.display = 'block'; }
         function closePrivacyModal() { history.back(); }
+
+        function openReturnModal() { pushModalState(); document.getElementById('returnModal').style.display = 'block'; }
+        function closeReturnModal() { history.back(); }
 
         // Orders System
         function loadOrdersUI() {
@@ -677,7 +727,6 @@
             const addr = document.getElementById('custAddr').value.trim();
             if(!name || !phone || !addr) { alert('Kripya puri delivery details bharen!'); return; }
 
-            // Save order to My Orders List
             const dateStr = new Date().toLocaleDateString('hi-IN');
             cart.forEach(c => {
                 myOrders.unshift({ ...c, date: dateStr });
