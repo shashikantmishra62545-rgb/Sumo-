@@ -6,7 +6,7 @@
     <title>SUMO — Premium Fashion Store</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        :root { --pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
+        :root { --meesho-pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-gray); color: var(--text-dark); padding-bottom: 65px; }
 
@@ -62,9 +62,12 @@
         .sidebar-item.active { background: #fff; color: var(--meesho-pink); border-left: 3px solid var(--meesho-pink); }
         .cat-right-content { flex: 1; padding: 15px; overflow-y: auto; }
 
-        /* Account Area */
-        .profile-header { background: #fff; padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #eee; }
-        .profile-avatar { width: 55px; height: 55px; border-radius: 50%; background: var(--meesho-pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; text-transform: uppercase; }
+        /* Account Area & Visible Login Button */
+        .profile-header { background: #fff; padding: 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
+        .profile-info-box { display: flex; align-items: center; gap: 12px; }
+        .profile-avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--meesho-pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; text-transform: uppercase; }
+        .btn-login-header { background: var(--meesho-pink); color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(159,32,66,0.3); }
+
         .profile-menu { background: #fff; margin-top: 10px; list-style: none; }
         .profile-menu li { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
@@ -77,7 +80,7 @@
         .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 10px; font-size: 12px; }
         .order-status { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; margin-bottom: 8px; }
 
-        /* Bottom Nav */
+        /* Bottom Nav (4 Tabs - Mall Removed) */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #777; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-tab.active { color: var(--meesho-pink); }
@@ -100,11 +103,14 @@
 
         .review-box { background: #f9f9f9; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #eee; font-size: 12px; }
 
-        /* Image Thumbnails for PDP */
+        /* Thumbnails & Image Zoom Container */
         .thumb-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
         .thumb-gallery::-webkit-scrollbar { display: none; }
         .thumb-img { width: 55px; height: 55px; border-radius: 6px; object-fit: cover; border: 2px solid #ddd; cursor: pointer; flex-shrink: 0; }
         .thumb-img.active { border-color: var(--meesho-pink); }
+
+        .zoom-img-wrapper { overflow: hidden; position: relative; width: 100%; height: 320px; border-radius: 8px; background: #fafafa; touch-action: none; cursor: zoom-in; }
+        .zoom-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease; transform-origin: center center; }
     </style>
 </head>
 <body>
@@ -163,7 +169,6 @@
         </div>
     </div>
 
-
     <!-- TAB 3: MY ORDERS -->
     <div id="ordersScreen" class="tab-screen">
         <div style="padding:15px; background:#fff; border-bottom:1px solid #eee;">
@@ -174,15 +179,17 @@
         </div>
     </div>
 
-    <!-- TAB 4: ACCOUNT -->
+    <!-- TAB 4: ACCOUNT (With Clear Login Button) -->
     <div id="accountScreen" class="tab-screen">
         <div class="profile-header">
-            <div class="profile-avatar" id="userAvatar">Guest</div>
-            <div>
-                <h3 style="font-size:16px;" id="userNameTitle">User Account</h3>
-                <p style="font-size:12px; color:#666;" id="userPhoneSub">Click Login to setup profile</p>
+            <div class="profile-info-box">
+                <div class="profile-avatar" id="userAvatar">🔑</div>
+                <div>
+                    <h3 style="font-size:15px;" id="userNameTitle">User Account</h3>
+                    <p style="font-size:11px; color:#666;" id="userPhoneSub">Click Login to setup profile</p>
+                </div>
             </div>
-            <button id="btnLoginLogout" onclick="handleAuthClick()" style="margin-left:auto; background:var(--meesho-pink); color:#fff; border:none; padding:6px 14px; border-radius:4px; font-size:12px; font-weight:bold; cursor:pointer;">Login</button>
+            <button class="btn-login-header" id="btnLoginLogout" onclick="handleAuthClick()">LOGIN</button>
         </div>
         <ul class="profile-menu">
             <li onclick="switchTab('ordersScreen')"><span id="lblOrders">📦 My Orders</span> <span>></span></li>
@@ -280,7 +287,7 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAILS MODAL (PDP) -->
+    <!-- PRODUCT DETAILS MODAL (PDP WITH IMAGE ZOOM) -->
     <div id="pdpModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closePDP()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
@@ -288,7 +295,11 @@
             <button onclick="closePDP(); openCart();" style="border:none; background:none; font-size:18px; cursor:pointer;">🛒</button>
         </div>
         <div style="padding:15px; max-width:600px; margin:0 auto;">
-            <img id="pdpImg" src="" style="width:100%; height:320px; object-fit:cover; border-radius:8px;">
+            <!-- Zoomable Image Wrapper -->
+            <div class="zoom-img-wrapper" id="zoomWrapper">
+                <img id="pdpImg" src="" alt="Product Image">
+            </div>
+            <p style="font-size:10px; color:#888; text-align:center; margin-top:4px;">🔍 Double-tap or Pinch to Zoom Image</p>
             
             <!-- Multiple Images Thumbnail Gallery -->
             <div id="pdpGallery" class="thumb-gallery"></div>
@@ -388,7 +399,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR -->
+    <!-- BOTTOM NAVIGATION BAR (MALL REMOVED) -->
     <div class="bottom-nav">
         <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span><span id="tabHome">Home</span></button>
         <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span><span id="tabCat">Categories</span></button>
@@ -411,6 +422,54 @@
         let currentUser = null;
         let generatedOTP = null;
 
+        // Image Zoom Logic
+        let currentZoom = 1;
+        let isZoomed = false;
+
+        function setupImageZoom() {
+            const wrapper = document.getElementById('zoomWrapper');
+            const img = document.getElementById('pdpImg');
+            
+            if(!wrapper || !img) return;
+
+            // Double Tap to Zoom
+            let lastTap = 0;
+            wrapper.addEventListener('touchend', function(e) {
+                let currentTime = new Date().getTime();
+                let tapLength = currentTime - lastTap;
+                if (tapLength < 300 && tapLength > 0) {
+                    toggleZoom(img);
+                    e.preventDefault();
+                }
+                lastTap = currentTime;
+            });
+
+            // Click Zoom on Laptop/Desktop
+            wrapper.addEventListener('click', function() {
+                toggleZoom(img);
+            });
+        }
+
+        function toggleZoom(img) {
+            if (!isZoomed) {
+                img.style.transform = "scale(2.2)";
+                img.style.cursor = "zoom-out";
+                isZoomed = true;
+            } else {
+                img.style.transform = "scale(1)";
+                img.style.cursor = "zoom-in";
+                isZoomed = false;
+            }
+        }
+
+        function resetZoom() {
+            const img = document.getElementById('pdpImg');
+            if(img) {
+                img.style.transform = "scale(1)";
+                isZoomed = false;
+            }
+        }
+
         // Back Button Navigation Handler
         window.addEventListener('popstate', function(e) {
             closeAllModalsSilently();
@@ -421,6 +480,7 @@
         }
 
         function closeAllModalsSilently() {
+            resetZoom();
             document.getElementById('pdpModal').style.display = 'none';
             document.getElementById('cartModal').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
@@ -429,7 +489,7 @@
             document.getElementById('returnModal').style.display = 'none';
         }
 
-        // Fetch products with Multiple Images Support
+        // Fetch products
         async function fetchProducts() {
             try {
                 const res = await fetch(proxyURL);
@@ -443,7 +503,6 @@
                         if(r.data && r.data.length > 0) {
                             allProducts = r.data.map((item, idx) => {
                                 let imgStr = item['Image'] || item['image'] || item['IMAGE'] || '';
-                                // Comma-separated multiple images array
                                 let imgs = String(imgStr).split(',').map(s => s.trim()).filter(s => s.length > 5);
                                 let priceVal = parseInt(String(item['Price'] || item['price'] || 299).replace(/[^0-9]/g, '')) || 299;
 
@@ -462,7 +521,6 @@
 
                             renderGrid('homeProductGrid', allProducts);
                             renderGrid('catRightGrid', allProducts);
-                            renderGrid('mallGrid', allProducts);
                         } else {
                             document.getElementById('homeProductGrid').innerHTML = '<p style="text-align:center; grid-column:1/-1; padding:30px 0;">Google Sheet me koi data nahi milaa.</p>';
                         }
@@ -497,7 +555,6 @@
                         }).filter(p => p.title);
                         renderGrid('homeProductGrid', allProducts);
                         renderGrid('catRightGrid', allProducts);
-                        renderGrid('mallGrid', allProducts);
                     }
                 });
             } catch(err) {
@@ -577,6 +634,8 @@
             if(saved) {
                 currentUser = JSON.parse(saved);
                 updateProfileUI();
+            } else {
+                updateProfileUI();
             }
             const savedPin = localStorage.getItem('userPin');
             if(savedPin) {
@@ -587,6 +646,7 @@
                 productReviews = JSON.parse(savedReviews);
             }
             loadOrdersUI();
+            setupImageZoom();
         }
 
         function handleAuthClick() {
@@ -639,18 +699,25 @@
         }
 
         function updateProfileUI() {
+            const titleEl = document.getElementById('userNameTitle');
+            const subEl = document.getElementById('userPhoneSub');
+            const avatarEl = document.getElementById('userAvatar');
+            const btnEl = document.getElementById('btnLoginLogout');
+
             if(currentUser) {
-                document.getElementById('userNameTitle').innerText = currentUser.name;
-                document.getElementById('userPhoneSub').innerText = `+91 ${currentUser.phone}`;
-                document.getElementById('userAvatar').innerText = currentUser.name.substring(0,2);
-                document.getElementById('btnLoginLogout').innerText = 'Logout';
+                titleEl.innerText = currentUser.name;
+                subEl.innerText = `+91 ${currentUser.phone}`;
+                avatarEl.innerText = currentUser.name.substring(0,2);
+                btnEl.innerText = 'LOGOUT';
+                btnEl.style.background = '#d32f2f';
                 document.getElementById('custName').value = currentUser.name;
                 document.getElementById('custPhone').value = currentUser.phone;
             } else {
-                document.getElementById('userNameTitle').innerText = 'User Account';
-                document.getElementById('userPhoneSub').innerText = 'Click Login to setup profile';
-                document.getElementById('userAvatar').innerText = 'Guest';
-                document.getElementById('btnLoginLogout').innerText = 'Login';
+                titleEl.innerText = 'User Account';
+                subEl.innerText = 'Click Login to setup profile';
+                avatarEl.innerText = '🔑';
+                btnEl.innerText = 'LOGIN';
+                btnEl.style.background = 'var(--meesho-pink)';
                 document.getElementById('custName').value = '';
                 document.getElementById('custPhone').value = '';
             }
@@ -730,11 +797,12 @@
             }
         }
 
-        // PDP with Multiple Image Gallery
+        // PDP with Multiple Image Gallery & Zoom
         function openPDP(id) {
             currentPdp = allProducts.find(p => p.id === id);
             if(!currentPdp) return;
             
+            resetZoom();
             const mainImg = document.getElementById('pdpImg');
             mainImg.src = currentPdp.image;
             document.getElementById('pdpTitle').innerText = currentPdp.title;
@@ -742,7 +810,6 @@
             document.getElementById('pdpDelivery').innerText = currentPdp.delivery;
             document.getElementById('pdpDetails').innerText = currentPdp.details;
 
-            // Render Thumbnails Gallery if multiple images exist
             const galContainer = document.getElementById('pdpGallery');
             if(currentPdp.images && currentPdp.images.length > 1) {
                 galContainer.style.display = 'flex';
@@ -766,6 +833,7 @@
         }
 
         function changePDPMainImage(imgUrl, el) {
+            resetZoom();
             document.getElementById('pdpImg').src = imgUrl;
             document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
             if(el) el.classList.add('active');
