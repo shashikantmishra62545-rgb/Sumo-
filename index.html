@@ -6,7 +6,7 @@
     <title>SUMO — Premium Fashion Store</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        :root { --meesho-pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
+        :root { --pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-gray); color: var(--text-dark); padding-bottom: 65px; }
 
@@ -163,16 +163,8 @@
         </div>
     </div>
 
-    <!-- TAB 3: MALL -->
-    <div id="mallScreen" class="tab-screen">
-        <div style="background:#fff; padding:15px; text-align:center; border-bottom:1px solid #eee;">
-            <h3 style="color:var(--meesho-pink);">SUMO MALL 🛍️</h3>
-            <p style="font-size:11px; color:#666;">100% Verified Quality Products</p>
-        </div>
-        <div class="products-grid" id="mallGrid"></div>
-    </div>
 
-    <!-- TAB 4: MY ORDERS -->
+    <!-- TAB 3: MY ORDERS -->
     <div id="ordersScreen" class="tab-screen">
         <div style="padding:15px; background:#fff; border-bottom:1px solid #eee;">
             <h3 style="font-size:15px;" id="txtMyOrders">My Orders</h3>
@@ -182,7 +174,7 @@
         </div>
     </div>
 
-    <!-- TAB 5: ACCOUNT -->
+    <!-- TAB 4: ACCOUNT -->
     <div id="accountScreen" class="tab-screen">
         <div class="profile-header">
             <div class="profile-avatar" id="userAvatar">Guest</div>
@@ -400,7 +392,6 @@
     <div class="bottom-nav">
         <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span><span id="tabHome">Home</span></button>
         <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span><span id="tabCat">Categories</span></button>
-        <button class="nav-tab" onclick="switchTab('mallScreen', this)"><span class="nav-tab-icon">🛍️</span><span>Mall</span></button>
         <button class="nav-tab" onclick="switchTab('ordersScreen', this)"><span class="nav-tab-icon">📦</span><span id="tabOrders">Orders</span></button>
         <button class="nav-tab" onclick="switchTab('accountScreen', this)"><span class="nav-tab-icon">👤</span><span id="tabAcc">Account</span></button>
     </div>
