@@ -27,12 +27,14 @@
         .tab-screen { display: none; }
         .tab-screen.active { display: block; }
 
-        /* Categories Circles */
+        /* Categories Circles with Active Color Effect */
         .circle-cats { display: flex; gap: 12px; padding: 12px 14px; background: #fff; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #eee; }
         .circle-cats::-webkit-scrollbar { display: none; }
         .cat-item { text-align: center; flex-shrink: 0; width: 62px; cursor: pointer; }
-        .cat-img { width: 48px; height: 48px; border-radius: 50%; background: #eee; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #ddd; }
+        .cat-img { width: 48px; height: 48px; border-radius: 50%; background: #eee; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid #ddd; transition: all 0.2s ease; }
+        .cat-item.active .cat-img { border-color: var(--meesho-pink); background: #fce4ec; transform: scale(1.05); }
         .cat-title { font-size: 10px; font-weight: 600; color: #444; }
+        .cat-item.active .cat-title { color: var(--meesho-pink); font-weight: bold; }
 
         /* Spinner Loader */
         .loader-container { grid-column: 1/-1; text-align: center; padding: 50px 0; }
@@ -80,7 +82,7 @@
         .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 10px; font-size: 12px; }
         .order-status { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; margin-bottom: 8px; }
 
-        /* Bottom Nav (4 Tabs - Mall Removed) */
+        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #777; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-tab.active { color: var(--meesho-pink); }
@@ -109,8 +111,12 @@
         .thumb-img { width: 55px; height: 55px; border-radius: 6px; object-fit: cover; border: 2px solid #ddd; cursor: pointer; flex-shrink: 0; }
         .thumb-img.active { border-color: var(--meesho-pink); }
 
-        .zoom-img-wrapper { overflow: hidden; position: relative; width: 100%; height: 320px; border-radius: 8px; background: #fafafa; touch-action: none; cursor: zoom-in; }
-        .zoom-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease; transform-origin: center center; }
+        .zoom-img-wrapper { overflow: hidden; position: relative; width: 100%; height: 320px; border-radius: 8px; background: #fafafa; touch-action: pan-x pan-y; }
+        .zoom-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease-out; transform-origin: center center; }
+
+        /* Colored Selected Pills for Size & Color */
+        .select-pill { border: 1px solid #ccc; padding: 6px 14px; border-radius: 20px; background: #fff; font-size: 12px; cursor: pointer; font-weight: 600; color: #444; transition: all 0.2s ease; }
+        .select-pill.active { background: var(--meesho-pink); color: #fff; border-color: var(--meesho-pink); box-shadow: 0 2px 6px rgba(159,32,66,0.3); }
     </style>
 </head>
 <body>
@@ -141,11 +147,11 @@
     <!-- TAB 1: HOME -->
     <div id="homeScreen" class="tab-screen active">
         <div class="circle-cats">
-            <div class="cat-item" onclick="filterCategory('all')"><div class="cat-img">🛍️</div><div class="cat-title">All Items</div></div>
-            <div class="cat-item" onclick="filterCategory('saree')"><div class="cat-img">🥻</div><div class="cat-title">Saree</div></div>
-            <div class="cat-item" onclick="filterCategory('men')"><div class="cat-img">👕</div><div class="cat-title">Men Wear</div></div>
-            <div class="cat-item" onclick="filterCategory('pant')"><div class="cat-img">👖</div><div class="cat-title">Bottomwear</div></div>
-            <div class="cat-item" onclick="filterCategory('women')"><div class="cat-img">👗</div><div class="cat-title">Western</div></div>
+            <div class="cat-item active" onclick="filterCategory('all', this)"><div class="cat-img">🛍️</div><div class="cat-title">All Items</div></div>
+            <div class="cat-item" onclick="filterCategory('saree', this)"><div class="cat-img">🥻</div><div class="cat-title">Saree</div></div>
+            <div class="cat-item" onclick="filterCategory('men', this)"><div class="cat-img">👕</div><div class="cat-title">Men Wear</div></div>
+            <div class="cat-item" onclick="filterCategory('pant', this)"><div class="cat-img">👖</div><div class="cat-title">Bottomwear</div></div>
+            <div class="cat-item" onclick="filterCategory('women', this)"><div class="cat-img">👗</div><div class="cat-title">Western</div></div>
         </div>
 
         <div class="products-grid" id="homeProductGrid">
@@ -179,7 +185,7 @@
         </div>
     </div>
 
-    <!-- TAB 4: ACCOUNT (With Clear Login Button) -->
+    <!-- TAB 4: ACCOUNT -->
     <div id="accountScreen" class="tab-screen">
         <div class="profile-header">
             <div class="profile-info-box">
@@ -287,7 +293,7 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAILS MODAL (PDP WITH IMAGE ZOOM) -->
+    <!-- PRODUCT DETAILS MODAL (PDP WITH PINCH/DOUBLE-TAP ZOOM & COLOR SELECTION) -->
     <div id="pdpModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closePDP()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
@@ -299,7 +305,7 @@
             <div class="zoom-img-wrapper" id="zoomWrapper">
                 <img id="pdpImg" src="" alt="Product Image">
             </div>
-            <p style="font-size:10px; color:#888; text-align:center; margin-top:4px;">🔍 Double-tap or Pinch to Zoom Image</p>
+            <p style="font-size:10px; color:#888; text-align:center; margin-top:4px;">🔍 Double-tap or Pinch with 2 fingers to zoom</p>
             
             <!-- Multiple Images Thumbnail Gallery -->
             <div id="pdpGallery" class="thumb-gallery"></div>
@@ -312,9 +318,16 @@
 
             <div id="pdpRatingDisplay" style="margin-top:6px;"></div>
             
+            <!-- Size Selection -->
             <div style="margin-top:15px;">
                 <h4 style="font-size:12px; text-transform:uppercase; color:#555;">Select Size</h4>
-                <div id="pdpSizeFlex" style="display:flex; gap:10px; margin-top:8px;"></div>
+                <div id="pdpSizeFlex" style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;"></div>
+            </div>
+
+            <!-- Color Selection (New Feature) -->
+            <div style="margin-top:15px;" id="colorBoxContainer">
+                <h4 style="font-size:12px; text-transform:uppercase; color:#555;">Select Color 🎨</h4>
+                <div id="pdpColorFlex" style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;"></div>
             </div>
 
             <div style="margin-top:20px; background:#f9f9f9; padding:12px; border-radius:6px; font-size:12px; color:#444;">
@@ -322,7 +335,7 @@
                 <p id="pdpDetails" style="margin-top:4px;"></p>
             </div>
 
-            <!-- Customer Reviews & Rating Section -->
+            <!-- Customer Reviews Section -->
             <div style="margin-top:20px; border-top:1px solid #eee; padding-top:15px;">
                 <h4 style="font-size:13px; margin-bottom:10px;">Customer Reviews & Ratings ⭐</h4>
                 <div id="reviewsContainer"></div>
@@ -399,7 +412,7 @@
         </div>
     </div>
 
-    <!-- BOTTOM NAVIGATION BAR (MALL REMOVED) -->
+    <!-- BOTTOM NAVIGATION BAR -->
     <div class="bottom-nav">
         <button class="nav-tab active" onclick="switchTab('homeScreen', this)"><span class="nav-tab-icon">🏠</span><span id="tabHome">Home</span></button>
         <button class="nav-tab" onclick="switchTab('categoriesScreen', this)"><span class="nav-tab-icon">📋</span><span id="tabCat">Categories</span></button>
@@ -418,13 +431,14 @@
         let productReviews = {};
         let currentPdp = null;
         let chosenSize = '';
+        let chosenColor = '';
         let currentLang = 'hi';
         let currentUser = null;
         let generatedOTP = null;
 
-        // Image Zoom Logic
-        let currentZoom = 1;
-        let isZoomed = false;
+        // Smart Pinch & Double Tap Zoom Logic
+        let initialDist = 0;
+        let currentScale = 1;
 
         function setupImageZoom() {
             const wrapper = document.getElementById('zoomWrapper');
@@ -432,52 +446,59 @@
             
             if(!wrapper || !img) return;
 
-            // Double Tap to Zoom
+            // Double Tap Zoom
             let lastTap = 0;
             wrapper.addEventListener('touchend', function(e) {
-                let currentTime = new Date().getTime();
-                let tapLength = currentTime - lastTap;
-                if (tapLength < 300 && tapLength > 0) {
-                    toggleZoom(img);
+                let now = new Date().getTime();
+                if (now - lastTap < 300 && now - lastTap > 0) {
+                    if (currentScale > 1) {
+                        resetZoom();
+                    } else {
+                        currentScale = 2.2;
+                        img.style.transform = `scale(2.2)`;
+                    }
                     e.preventDefault();
                 }
-                lastTap = currentTime;
+                lastTap = now;
             });
 
-            // Click Zoom on Laptop/Desktop
-            wrapper.addEventListener('click', function() {
-                toggleZoom(img);
+            // Two-Finger Pinch Zoom
+            wrapper.addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    initialDist = Math.hypot(
+                        e.touches[0].pageX - e.touches[1].pageX,
+                        e.touches[0].pageY - e.touches[1].pageY
+                    );
+                }
             });
-        }
 
-        function toggleZoom(img) {
-            if (!isZoomed) {
-                img.style.transform = "scale(2.2)";
-                img.style.cursor = "zoom-out";
-                isZoomed = true;
-            } else {
-                img.style.transform = "scale(1)";
-                img.style.cursor = "zoom-in";
-                isZoomed = false;
-            }
+            wrapper.addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    let newDist = Math.hypot(
+                        e.touches[0].pageX - e.touches[1].pageX,
+                        e.touches[0].pageY - e.touches[1].pageY
+                    );
+                    let scale = (newDist / initialDist) * currentScale;
+                    scale = Math.min(Math.max(1, scale), 3); // Max zoom 3x
+                    img.style.transform = `scale(${scale})`;
+                }
+            });
         }
 
         function resetZoom() {
             const img = document.getElementById('pdpImg');
             if(img) {
                 img.style.transform = "scale(1)";
-                isZoomed = false;
+                currentScale = 1;
             }
         }
 
-        // Back Button Navigation Handler
+        // Back Button Navigation
         window.addEventListener('popstate', function(e) {
             closeAllModalsSilently();
         });
 
-        function pushModalState() {
-            history.pushState({ modalOpen: true }, "");
-        }
+        function pushModalState() { history.pushState({ modalOpen: true }, ""); }
 
         function closeAllModalsSilently() {
             resetZoom();
@@ -489,7 +510,7 @@
             document.getElementById('returnModal').style.display = 'none';
         }
 
-        // Fetch products
+        // Fetch products with Color Column Support
         async function fetchProducts() {
             try {
                 const res = await fetch(proxyURL);
@@ -513,6 +534,7 @@
                                     images: imgs.length > 0 ? imgs : ['https://via.placeholder.com/300'],
                                     image: imgs[0] || 'https://via.placeholder.com/300',
                                     size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
+                                    color: item['Color'] || item['color'] || 'As Shown in Image',
                                     details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
                                     delivery: item['Delivery'] || item['delivery'] || 'FREE Delivery',
                                     category: item['Category'] || item['category'] || ''
@@ -526,9 +548,7 @@
                         }
                     }
                 });
-            } catch(e) { 
-                fetchDirectFallback();
-            }
+            } catch(e) { fetchDirectFallback(); }
         }
 
         async function fetchDirectFallback() {
@@ -548,6 +568,7 @@
                                 images: imgs.length > 0 ? imgs : ['https://via.placeholder.com/300'],
                                 image: imgs[0] || 'https://via.placeholder.com/300',
                                 size: item['Size'] || 'Free Size, S, M, L',
+                                color: item['Color'] || 'As Shown',
                                 details: item['Details'] || 'Quality item',
                                 delivery: item['Delivery'] || 'FREE Delivery',
                                 category: item['Category'] || ''
@@ -591,7 +612,7 @@
             }).join('');
         }
 
-        // Tab Navigation
+        // Tab Navigation & Active Styling
         function switchTab(screenId, btn) {
             document.querySelectorAll('.tab-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -602,16 +623,20 @@
             }
         }
 
-        function selectCatLeft(key, el) {
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            el.classList.add('active');
-            filterCategory(key, 'catRightGrid');
-        }
-
-        function filterCategory(key, gridId = 'homeProductGrid') {
+        function filterCategory(key, el, gridId = 'homeProductGrid') {
+            if(el && el.classList) {
+                document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
+                el.classList.add('active');
+            }
             if(key === 'all') { renderGrid(gridId, allProducts); return; }
             const filtered = allProducts.filter(p => p.title.toLowerCase().includes(key) || p.category.toLowerCase().includes(key));
             renderGrid(gridId, filtered);
+        }
+
+        function selectCatLeft(key, el) {
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            filterCategory(key, null, 'catRightGrid');
         }
 
         function searchFilter() {
@@ -631,20 +656,11 @@
         // Auth & Storage Init
         function checkSavedUser() {
             const saved = localStorage.getItem('sumoUser');
-            if(saved) {
-                currentUser = JSON.parse(saved);
-                updateProfileUI();
-            } else {
-                updateProfileUI();
-            }
+            if(saved) { currentUser = JSON.parse(saved); updateProfileUI(); } else { updateProfileUI(); }
             const savedPin = localStorage.getItem('userPin');
-            if(savedPin) {
-                document.getElementById('userLocationText').innerText = `Delivering to ${savedPin}`;
-            }
+            if(savedPin) { document.getElementById('userLocationText').innerText = `Delivering to ${savedPin}`; }
             const savedReviews = localStorage.getItem('sumoReviews');
-            if(savedReviews) {
-                productReviews = JSON.parse(savedReviews);
-            }
+            if(savedReviews) { productReviews = JSON.parse(savedReviews); }
             loadOrdersUI();
             setupImageZoom();
         }
@@ -667,18 +683,11 @@
         function sendOTP() {
             const name = document.getElementById('loginNameInput').value.trim();
             const phone = document.getElementById('loginPhoneInput').value.trim();
-            if(!name || phone.length < 10) {
-                alert('Kripya apna sahi Naam aur 10-digit Phone Number bharen!');
-                return;
-            }
+            if(!name || phone.length < 10) { alert('Kripya apna sahi Naam aur 10-digit Phone Number bharen!'); return; }
             generatedOTP = Math.floor(1000 + Math.random() * 9000);
             document.getElementById('smsBody').innerText = `Your OTP for SUMO Login is: ${generatedOTP}`;
             document.getElementById('smsPopup').style.display = 'block';
-            
-            setTimeout(() => {
-                document.getElementById('smsPopup').style.display = 'none';
-            }, 6000);
-
+            setTimeout(() => { document.getElementById('smsPopup').style.display = 'none'; }, 6000);
             document.getElementById('loginStep1').style.display = 'none';
             document.getElementById('loginStep2').style.display = 'block';
         }
@@ -693,9 +702,7 @@
                 updateProfileUI();
                 history.back();
                 alert(`Welcome ${name}! Login successful.`);
-            } else {
-                alert('गलत OTP! कृपया सही OTP दर्ज करें।');
-            }
+            } else { alert('गलत OTP! कृपया सही OTP दर्ज करें।'); }
         }
 
         function updateProfileUI() {
@@ -725,10 +732,8 @@
 
         function openContactModal() { pushModalState(); document.getElementById('contactModal').style.display = 'block'; }
         function closeContactModal() { history.back(); }
-
         function openPrivacyModal() { pushModalState(); document.getElementById('privacyModal').style.display = 'block'; }
         function closePrivacyModal() { history.back(); }
-
         function openReturnModal() { pushModalState(); document.getElementById('returnModal').style.display = 'block'; }
         function closeReturnModal() { history.back(); }
 
@@ -736,9 +741,7 @@
         function loadOrdersUI() {
             const savedOrders = localStorage.getItem('sumoOrders');
             const el = document.getElementById('ordersList');
-            if(savedOrders) {
-                myOrders = JSON.parse(savedOrders);
-            }
+            if(savedOrders) { myOrders = JSON.parse(savedOrders); }
             if(myOrders.length === 0) {
                 el.innerHTML = '<p style="text-align:center; color:#666; padding:30px 0;">No active orders yet.</p>';
             } else {
@@ -749,7 +752,7 @@
                             <img src="${o.image}" style="width:50px; height:50px; object-fit:cover; border-radius:4px;">
                             <div>
                                 <b>${o.title}</b><br>
-                                <span style="color:#666;">Size: ${o.chosenSize} | Price: ₹${o.price}</span><br>
+                                <span style="color:#666;">Size: ${o.chosenSize} | Color: ${o.chosenColor || 'Default'} | Price: ₹${o.price}</span><br>
                                 <small style="color:#888;">Date: ${o.date}</small>
                             </div>
                         </div>
@@ -779,10 +782,6 @@
                 document.getElementById('tabCat').innerText = 'Categories';
                 document.getElementById('tabOrders').innerText = 'Orders';
                 document.getElementById('tabAcc').innerText = 'Account';
-                document.getElementById('lblOrders').innerText = '📦 My Orders';
-                document.getElementById('lblWish').innerText = '❤️ Wishlisted Products';
-                document.getElementById('txtMyOrders').innerText = 'My Orders';
-                document.getElementById('txtNoOrders').innerText = 'No active orders yet.';
             } else {
                 currentLang = 'hi';
                 document.getElementById('currentLangTag').innerText = 'Hindi';
@@ -790,14 +789,10 @@
                 document.getElementById('tabCat').innerText = 'कैटेगरी';
                 document.getElementById('tabOrders').innerText = 'ऑर्डर';
                 document.getElementById('tabAcc').innerText = 'अकाउंट';
-                document.getElementById('lblOrders').innerText = '📦 मेरे ऑर्डर';
-                document.getElementById('lblWish').innerText = '❤️ विशलिस्ट सामान';
-                document.getElementById('txtMyOrders').innerText = 'मेरे ऑर्डर';
-                document.getElementById('txtNoOrders').innerText = 'कोई एक्टिव ऑर्डर नहीं है।';
             }
         }
 
-        // PDP with Multiple Image Gallery & Zoom
+        // PDP with Color & Size Selection Highlighting
         function openPDP(id) {
             currentPdp = allProducts.find(p => p.id === id);
             if(!currentPdp) return;
@@ -820,16 +815,31 @@
                 galContainer.style.display = 'none';
             }
 
+            // Render Size Buttons
             const sizes = String(currentPdp.size).split(',').map(s => s.trim());
             chosenSize = sizes[0] || 'Free Size';
-            document.getElementById('pdpSizeFlex').innerHTML = sizes.map(s => `
-                <button style="border:1px solid #ccc; padding:6px 14px; border-radius:20px; background:#fff; font-size:12px; cursor:pointer;" onclick="chosenSize='${s}'">${s}</button>
+            document.getElementById('pdpSizeFlex').innerHTML = sizes.map((s, idx) => `
+                <button class="select-pill ${idx === 0 ? 'active' : ''}" onclick="selectPill(this, 'size', '${s}')">${s}</button>
+            `).join('');
+
+            // Render Color Buttons
+            const colors = String(currentPdp.color).split(',').map(c => c.trim());
+            chosenColor = colors[0] || 'As Shown';
+            document.getElementById('pdpColorFlex').innerHTML = colors.map((c, idx) => `
+                <button class="select-pill ${idx === 0 ? 'active' : ''}" onclick="selectPill(this, 'color', '${c}')">${c}</button>
             `).join('');
 
             renderPDPReviews();
-
             pushModalState();
             document.getElementById('pdpModal').style.display = 'block';
+        }
+
+        function selectPill(btn, type, val) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.select-pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if(type === 'size') chosenSize = val;
+            if(type === 'color') chosenColor = val;
         }
 
         function changePDPMainImage(imgUrl, el) {
@@ -894,7 +904,7 @@
 
         function addToCart(isBuyNow) {
             if(!currentPdp) return;
-            cart.push({ ...currentPdp, chosenSize });
+            cart.push({ ...currentPdp, chosenSize, chosenColor });
             document.getElementById('cartBadge').innerText = cart.length;
             history.back();
             if(isBuyNow) openCart(); else alert('Item added to cart!');
@@ -911,7 +921,7 @@
                 el.innerHTML = cart.map((c, i) => {
                     total += c.price;
                     return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;">
-                        <div><b>${c.title}</b><br><small>Size: ${c.chosenSize} | ₹${c.price}</small></div>
+                        <div><b>${c.title}</b><br><small>Size: ${c.chosenSize} | Color: ${c.chosenColor} | ₹${c.price}</small></div>
                         <button onclick="cart.splice(${i},1); openCart();" style="color:red; border:none; background:none; cursor:pointer;">🗑️</button>
                     </div>`;
                 }).join('');
@@ -938,7 +948,7 @@
 
             let msg = `*NEW ORDER - SUMO STORE*\nCustomer: ${name}\nPhone: ${phone}\nAddress: ${addr}\n\nItems:\n`;
             let total = 0;
-            cart.forEach((c, i) => { total += c.price; msg += `${i+1}. ${c.title} (${c.chosenSize}) - ₹${c.price}\n`; });
+            cart.forEach((c, i) => { total += c.price; msg += `${i+1}. ${c.title} (Size: ${c.chosenSize}, Color: ${c.chosenColor}) - ₹${c.price}\n`; });
             msg += `\nTotal Amount: ₹${total}\nPayment: Cash On Delivery`;
 
             cart = [];
