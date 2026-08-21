@@ -6,16 +6,16 @@
     <title>SUMO — Premium Fashion Store</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        :root { --meesho-pink: #9f2042; --bg-gray: #f4f4f4; --text-dark: #333; }
+        :root { --sumo-red: #e53935; --bg-gray: #f4f4f4; --text-dark: #222; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-gray); color: var(--text-dark); padding-bottom: 65px; }
 
         /* Header */
         header { background: #fff; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #e0e0e0; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 20px; font-weight: 900; color: var(--meesho-pink); letter-spacing: 1px; text-decoration: none; }
+        .logo { font-size: 20px; font-weight: 900; color: var(--sumo-red); letter-spacing: 1px; text-decoration: none; }
         .header-actions { display: flex; gap: 14px; align-items: center; }
         .icon-btn { background: none; border: none; font-size: 20px; cursor: pointer; position: relative; }
-        .badge { position: absolute; top: -5px; right: -8px; background: var(--meesho-pink); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; padding: 2px 5px; }
+        .badge { position: absolute; top: -5px; right: -8px; background: var(--sumo-red); color: #fff; font-size: 10px; font-weight: bold; border-radius: 50%; padding: 2px 5px; }
 
         /* Search & Location */
         .search-container { background: #fff; padding: 0 14px 10px; border-bottom: 1px solid #eee; }
@@ -27,18 +27,18 @@
         .tab-screen { display: none; }
         .tab-screen.active { display: block; }
 
-        /* Categories Circles with Active Color Effect */
+        /* Categories Circles */
         .circle-cats { display: flex; gap: 12px; padding: 12px 14px; background: #fff; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #eee; }
         .circle-cats::-webkit-scrollbar { display: none; }
         .cat-item { text-align: center; flex-shrink: 0; width: 62px; cursor: pointer; }
         .cat-img { width: 48px; height: 48px; border-radius: 50%; background: #eee; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid #ddd; transition: all 0.2s ease; }
-        .cat-item.active .cat-img { border-color: var(--meesho-pink); background: #fce4ec; transform: scale(1.05); }
+        .cat-item.active .cat-img { border-color: var(--sumo-red); background: #ffebee; transform: scale(1.05); }
         .cat-title { font-size: 10px; font-weight: 600; color: #444; }
-        .cat-item.active .cat-title { color: var(--meesho-pink); font-weight: bold; }
+        .cat-item.active .cat-title { color: var(--sumo-red); font-weight: bold; }
 
         /* Spinner Loader */
         .loader-container { grid-column: 1/-1; text-align: center; padding: 50px 0; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--meesho-pink); border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; margin: 0 auto; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--sumo-red); border-radius: 50%; width: 40px; height: 40px; animation: spin 0.8s linear infinite; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Product Grid */
@@ -57,35 +57,31 @@
         .p-off { font-size: 10px; color: #2e7d32; font-weight: bold; }
         .p-rate { background: #238029; color: #fff; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; display: inline-block; margin-top: 6px; }
 
-        /* Categories Tab */
+        /* Categories Tab Sidebar */
         .cat-layout { display: flex; height: calc(100vh - 120px); background: #fff; }
         .cat-left-sidebar { width: 95px; background: #f8f8f8; border-right: 1px solid #eee; overflow-y: auto; }
         .sidebar-item { padding: 14px 8px; text-align: center; font-size: 11px; font-weight: bold; color: #666; border-bottom: 1px solid #eee; cursor: pointer; }
-        .sidebar-item.active { background: #fff; color: var(--meesho-pink); border-left: 3px solid var(--meesho-pink); }
+        .sidebar-item.active { background: #fff; color: var(--sumo-red); border-left: 3px solid var(--sumo-red); }
         .cat-right-content { flex: 1; padding: 15px; overflow-y: auto; }
 
-        /* Account Area & Visible Login Button */
+        /* Account Header */
         .profile-header { background: #fff; padding: 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #eee; }
         .profile-info-box { display: flex; align-items: center; gap: 12px; }
-        .profile-avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--meesho-pink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; text-transform: uppercase; }
-        .btn-login-header { background: var(--meesho-pink); color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(159,32,66,0.3); }
+        .profile-avatar { width: 50px; height: 50px; border-radius: 50%; background: var(--sumo-red); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; text-transform: uppercase; }
+        .btn-login-header { background: var(--sumo-red); color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(229,57,53,0.3); }
 
         .profile-menu { background: #fff; margin-top: 10px; list-style: none; }
         .profile-menu li { padding: 14px 20px; border-bottom: 1px solid #f0f0f0; font-size: 13px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
 
-        /* Footer Style */
+        /* Footer */
         .site-footer { background: #fff; border-top: 1px solid #e0e0e0; margin-top: 20px; padding: 20px 15px; text-align: center; font-size: 12px; color: #666; }
         .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 12px; }
-        .footer-links a { color: var(--meesho-pink); font-weight: bold; text-decoration: none; cursor: pointer; }
-
-        /* Orders Card */
-        .order-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 10px; font-size: 12px; }
-        .order-status { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 10px; display: inline-block; margin-bottom: 8px; }
+        .footer-links a { color: var(--sumo-red); font-weight: bold; text-decoration: none; cursor: pointer; }
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #e0e0e0; display: flex; justify-content: space-around; padding: 8px 0; z-index: 1000; }
         .nav-tab { background: none; border: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #777; font-weight: 600; cursor: pointer; flex: 1; }
-        .nav-tab.active { color: var(--meesho-pink); }
+        .nav-tab.active { color: var(--sumo-red); }
         .nav-tab-icon { font-size: 18px; margin-bottom: 2px; }
 
         /* Modals */
@@ -93,30 +89,37 @@
         .modal-head { display: flex; justify-content: space-between; padding: 12px 15px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 10; align-items: center; }
 
         .btn-bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #fff; border-top: 1px solid #eee; padding: 10px 15px; display: flex; gap: 10px; z-index: 2100; justify-content: center; }
-        .btn-pink { background: var(--meesho-pink); color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
-        .btn-outline { background: #fff; color: var(--meesho-pink); border: 1px solid var(--meesho-pink); padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
+        .btn-red { background: var(--sumo-red); color: #fff; border: none; padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
+        .btn-outline-red { background: #fff; color: var(--sumo-red); border: 1px solid var(--sumo-red); padding: 12px; font-weight: bold; border-radius: 6px; flex: 1; max-width: 300px; cursor: pointer; font-size: 14px; }
 
         .form-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 13px; outline: none; }
 
-        /* SMS Notification Popup */
-        .sms-popup { display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; background: #111827; color: #fff; padding: 12px 16px; border-radius: 10px; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-left: 4px solid var(--meesho-pink); }
-        .sms-head { font-size: 11px; color: #9ca3af; display: flex; justify-content: space-between; font-weight: bold; }
-        .sms-body { font-size: 13px; font-weight: 600; margin-top: 4px; color: #f9fafb; }
-
-        .review-box { background: #f9f9f9; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #eee; font-size: 12px; }
-
-        /* Thumbnails & Image Zoom Container */
+        /* Thumbnails Gallery */
         .thumb-gallery { display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
         .thumb-gallery::-webkit-scrollbar { display: none; }
         .thumb-img { width: 55px; height: 55px; border-radius: 6px; object-fit: cover; border: 2px solid #ddd; cursor: pointer; flex-shrink: 0; }
-        .thumb-img.active { border-color: var(--meesho-pink); }
+        .thumb-img.active { border-color: var(--sumo-red); }
 
-        .zoom-img-wrapper { overflow: hidden; position: relative; width: 100%; height: 320px; border-radius: 8px; background: #fafafa; touch-action: pan-x pan-y; }
-        .zoom-img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease-out; transform-origin: center center; }
+        /* PDP Product Image Container */
+        .pdp-main-img-box { width: 100%; height: 320px; border-radius: 8px; background: #fafafa; overflow: hidden; cursor: pointer; position: relative; }
+        .pdp-main-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .zoom-hint-tag { position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 10px; padding: 3px 8px; border-radius: 12px; pointer-events: none; }
 
-        /* Colored Selected Pills for Size & Color */
+        /* FULL-SCREEN IMAGE LIGHTBOX MODAL (FOR HIGH-RES ZOOM) */
+        #fullImageModal { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999; overflow: hidden; }
+        .full-img-container { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: auto; touch-action: pan-x pan-y; }
+        .full-img-container img { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.2s ease-out; }
+        .full-close-btn { position: absolute; top: 15px; right: 20px; color: #fff; font-size: 28px; font-weight: bold; background: none; border: none; cursor: pointer; z-index: 10000; }
+
+        /* Select Pills for Size and Color (RED HIGHLIGHT) */
         .select-pill { border: 1px solid #ccc; padding: 6px 14px; border-radius: 20px; background: #fff; font-size: 12px; cursor: pointer; font-weight: 600; color: #444; transition: all 0.2s ease; }
-        .select-pill.active { background: var(--meesho-pink); color: #fff; border-color: var(--meesho-pink); box-shadow: 0 2px 6px rgba(159,32,66,0.3); }
+        .select-pill.active { background: var(--sumo-red); color: #fff; border-color: var(--sumo-red); box-shadow: 0 2px 6px rgba(229,57,53,0.3); }
+
+        /* SMS Popup */
+        .sms-popup { display: none; position: fixed; top: 15px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; background: #111827; color: #fff; padding: 12px 16px; border-radius: 10px; z-index: 3000; box-shadow: 0 10px 25px rgba(0,0,0,0.3); border-left: 4px solid var(--sumo-red); }
+        .sms-head { font-size: 11px; color: #9ca3af; display: flex; justify-content: space-between; font-weight: bold; }
+        .sms-body { font-size: 13px; font-weight: 600; margin-top: 4px; color: #f9fafb; }
+        .review-box { background: #f9f9f9; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #eee; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -203,11 +206,11 @@
             <li onclick="openContactModal()">📞 Contact Us & Customer Support <span>></span></li>
             <li onclick="openPrivacyModal()">📜 Privacy Policy & Terms of Service <span>></span></li>
             <li onclick="openReturnModal()">🔄 7 Days Return & Refund Policy <span>></span></li>
-            <li onclick="toggleLanguage()">🌐 Change Language / भाषा बदलें <span id="currentLangTag" style="color:var(--meesho-pink); font-weight:bold;">Hindi</span></li>
+            <li onclick="toggleLanguage()">🌐 Change Language / भाषा बदलें <span id="currentLangTag" style="color:var(--sumo-red); font-weight:bold;">Hindi</span></li>
         </ul>
     </div>
 
-    <!-- FOOTER LINKS FOR ALL PAGES -->
+    <!-- FOOTER LINKS -->
     <footer class="site-footer">
         <div class="footer-links">
             <a onclick="openContactModal()">Contact Us</a> | 
@@ -226,6 +229,14 @@
         <div class="products-grid" id="wishlistGrid"></div>
     </div>
 
+    <!-- FULL-SCREEN HIGH-RES IMAGE ZOOM MODAL -->
+    <div id="fullImageModal">
+        <button class="full-close-btn" onclick="closeFullImage()">✕</button>
+        <div class="full-img-container" id="fullImgContainer">
+            <img id="fullZoomImg" src="" alt="Full Screen Zoom">
+        </div>
+    </div>
+
     <!-- CONTACT US MODAL -->
     <div id="contactModal" class="modal-page">
         <div class="modal-head">
@@ -234,7 +245,7 @@
             <div></div>
         </div>
         <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.7; color:#333;">
-            <h3 style="color:var(--meesho-pink); margin-bottom:10px;">SUMO Store Support</h3>
+            <h3 style="color:var(--sumo-red); margin-bottom:10px;">SUMO Store Support</h3>
             <p>We are here to help you with your shopping, order status, or returns.</p>
             <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
             <p><b>📍 Store Name:</b> SUMO Clothing & Fashion Store</p>
@@ -243,7 +254,7 @@
             <p><b>🌐 Official Domain:</b> https://sumocompany.shop</p>
             <p><b>🕒 Support Hours:</b> Mon - Sat (9:00 AM - 8:00 PM)</p>
             <br>
-            <button class="btn-pink" style="width:100%; background:#25D366;" onclick="openHelpCenter()">CHAT ON WHATSAPP 📲</button>
+            <button class="btn-red" style="width:100%; background:#25D366;" onclick="openHelpCenter()">CHAT ON WHATSAPP 📲</button>
         </div>
     </div>
 
@@ -255,7 +266,7 @@
             <div></div>
         </div>
         <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.6; color:#444;">
-            <h3 style="color:var(--meesho-pink);">SUMO STORE Privacy Policy</h3>
+            <h3 style="color:var(--sumo-red);">SUMO STORE Privacy Policy</h3>
             <br>
             <p>At <b>SUMO STORE (sumocompany.shop)</b>, accessible from https://sumocompany.shop, one of our main priorities is the privacy of our visitors.</p>
             <br>
@@ -270,7 +281,7 @@
         </div>
     </div>
 
-    <!-- RETURN & REFUND POLICY MODAL -->
+    <!-- RETURN POLICY MODAL -->
     <div id="returnModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closeReturnModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
@@ -278,7 +289,7 @@
             <div></div>
         </div>
         <div style="padding:20px; max-width:600px; margin:0 auto; font-size:13px; line-height:1.6; color:#444;">
-            <h3 style="color:var(--meesho-pink);">7 Days Easy Return & Refund Policy</h3>
+            <h3 style="color:var(--sumo-red);">7 Days Easy Return & Refund Policy</h3>
             <br>
             <p>We offer a hassle-free <b>7-day return policy</b> for all our customers.</p>
             <br>
@@ -293,21 +304,22 @@
         </div>
     </div>
 
-    <!-- PRODUCT DETAILS MODAL (PDP WITH PINCH/DOUBLE-TAP ZOOM & COLOR SELECTION) -->
+    <!-- PRODUCT DETAILS MODAL (PDP) -->
     <div id="pdpModal" class="modal-page">
         <div class="modal-head">
             <button onclick="closePDP()" style="border:none; background:none; font-size:18px; cursor:pointer;">← Back</button>
-            <span style="font-weight:bold; color:var(--meesho-pink);">SUMO STORE</span>
+            <span style="font-weight:bold; color:var(--sumo-red);">SUMO STORE</span>
             <button onclick="closePDP(); openCart();" style="border:none; background:none; font-size:18px; cursor:pointer;">🛒</button>
         </div>
         <div style="padding:15px; max-width:600px; margin:0 auto;">
-            <!-- Zoomable Image Wrapper -->
-            <div class="zoom-img-wrapper" id="zoomWrapper">
-                <img id="pdpImg" src="" alt="Product Image">
-            </div>
-            <p style="font-size:10px; color:#888; text-align:center; margin-top:4px;">🔍 Double-tap or Pinch with 2 fingers to zoom</p>
             
-            <!-- Multiple Images Thumbnail Gallery -->
+            <!-- Click to Open Full Screen Big Image -->
+            <div class="pdp-main-img-box" onclick="openFullImage()">
+                <img id="pdpImg" src="" alt="Product Image">
+                <div class="zoom-hint-tag">🔍 Tap for Full Screen Zoom</div>
+            </div>
+            
+            <!-- Thumbnails Gallery -->
             <div id="pdpGallery" class="thumb-gallery"></div>
 
             <h3 id="pdpTitle" style="font-size:15px; margin-top:10px;">Product Name</h3>
@@ -324,7 +336,7 @@
                 <div id="pdpSizeFlex" style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;"></div>
             </div>
 
-            <!-- Color Selection (New Feature) -->
+            <!-- Color Selection (RED HIGHLIGHT) -->
             <div style="margin-top:15px;" id="colorBoxContainer">
                 <h4 style="font-size:12px; text-transform:uppercase; color:#555;">Select Color 🎨</h4>
                 <div id="pdpColorFlex" style="display:flex; gap:10px; margin-top:8px; flex-wrap:wrap;"></div>
@@ -350,14 +362,14 @@
                         <option value="1">⭐ (1/5)</option>
                     </select>
                     <textarea id="userReviewText" placeholder="Write your feedback here..." class="form-input" rows="2"></textarea>
-                    <button class="btn-pink" style="width:100%; padding:8px; font-size:12px;" onclick="addReview()">Submit Review</button>
+                    <button class="btn-red" style="width:100%; padding:8px; font-size:12px;" onclick="addReview()">Submit Review</button>
                 </div>
             </div>
         </div>
 
         <div class="btn-bottom-bar">
-            <button class="btn-outline" onclick="addToCart(false)">Add to Cart</button>
-            <button class="btn-pink" onclick="addToCart(true)">Buy Now</button>
+            <button class="btn-outline-red" onclick="addToCart(false)">Add to Cart</button>
+            <button class="btn-red" onclick="addToCart(true)">Buy Now</button>
         </div>
     </div>
 
@@ -383,7 +395,7 @@
                 <input type="text" id="custName" placeholder="Full Name *" class="form-input">
                 <input type="tel" id="custPhone" placeholder="Phone Number *" class="form-input">
                 <textarea id="custAddr" placeholder="Complete Address with Pincode *" class="form-input" rows="3"></textarea>
-                <button class="btn-pink" style="width:100%; max-width:100%; margin-top:12px; background:#25D366;" onclick="checkoutWhatsApp()">PLACE ORDER VIA WHATSAPP (COD) 📲</button>
+                <button class="btn-red" style="width:100%; max-width:100%; margin-top:12px; background:#25D366;" onclick="checkoutWhatsApp()">PLACE ORDER VIA WHATSAPP (COD) 📲</button>
             </div>
         </div>
     </div>
@@ -396,18 +408,18 @@
             <div></div>
         </div>
         <div style="padding:25px 15px; max-width:380px; margin:0 auto; text-align:center;">
-            <h3 style="margin-bottom:15px; color:var(--meesho-pink);">Welcome to SUMO</h3>
+            <h3 style="margin-bottom:15px; color:var(--sumo-red);">Welcome to SUMO</h3>
             <p style="font-size:12px; color:#666; margin-bottom:20px;">Enter Mobile Number for OTP Verification</p>
             
             <div id="loginStep1">
                 <input type="text" id="loginNameInput" placeholder="Enter Full Name" class="form-input">
                 <input type="tel" id="loginPhoneInput" placeholder="Enter 10-digit Phone Number" class="form-input">
-                <button class="btn-pink" style="width:100%; max-width:100%; margin-top:10px;" onclick="sendOTP()">SEND OTP</button>
+                <button class="btn-red" style="width:100%; max-width:100%; margin-top:10px;" onclick="sendOTP()">SEND OTP</button>
             </div>
 
             <div id="loginStep2" style="display:none; margin-top:15px;">
                 <input type="number" id="otpInput" placeholder="Enter 4-Digit OTP" class="form-input">
-                <button class="btn-pink" style="width:100%; max-width:100%; margin-top:10px;" onclick="verifyOTPAndLogin()">VERIFY & LOGIN</button>
+                <button class="btn-red" style="width:100%; max-width:100%; margin-top:10px;" onclick="verifyOTPAndLogin()">VERIFY & LOGIN</button>
             </div>
         </div>
     </div>
@@ -436,34 +448,46 @@
         let currentUser = null;
         let generatedOTP = null;
 
-        // Smart Pinch & Double Tap Zoom Logic
+        // High-Res Pinch & Double Tap Zooming in Lightbox Modal
+        let fullScale = 1;
         let initialDist = 0;
-        let currentScale = 1;
 
-        function setupImageZoom() {
-            const wrapper = document.getElementById('zoomWrapper');
-            const img = document.getElementById('pdpImg');
-            
-            if(!wrapper || !img) return;
+        function openFullImage() {
+            const currentImgSrc = document.getElementById('pdpImg').src;
+            const fullImg = document.getElementById('fullZoomImg');
+            fullImg.src = currentImgSrc;
+            fullImg.style.transform = "scale(1)";
+            fullScale = 1;
 
-            // Double Tap Zoom
+            document.getElementById('fullImageModal').style.display = 'block';
+            setupFullImagePinch();
+        }
+
+        function closeFullImage() {
+            document.getElementById('fullImageModal').style.display = 'none';
+        }
+
+        function setupFullImagePinch() {
+            const container = document.getElementById('fullImgContainer');
+            const img = document.getElementById('fullZoomImg');
+
             let lastTap = 0;
-            wrapper.addEventListener('touchend', function(e) {
+            container.addEventListener('touchend', function(e) {
                 let now = new Date().getTime();
                 if (now - lastTap < 300 && now - lastTap > 0) {
-                    if (currentScale > 1) {
-                        resetZoom();
+                    if (fullScale > 1) {
+                        fullScale = 1;
+                        img.style.transform = `scale(1)`;
                     } else {
-                        currentScale = 2.2;
-                        img.style.transform = `scale(2.2)`;
+                        fullScale = 2.5;
+                        img.style.transform = `scale(2.5)`;
                     }
                     e.preventDefault();
                 }
                 lastTap = now;
             });
 
-            // Two-Finger Pinch Zoom
-            wrapper.addEventListener('touchstart', function(e) {
+            container.addEventListener('touchstart', function(e) {
                 if (e.touches.length === 2) {
                     initialDist = Math.hypot(
                         e.touches[0].pageX - e.touches[1].pageX,
@@ -472,25 +496,17 @@
                 }
             });
 
-            wrapper.addEventListener('touchmove', function(e) {
+            container.addEventListener('touchmove', function(e) {
                 if (e.touches.length === 2) {
                     let newDist = Math.hypot(
                         e.touches[0].pageX - e.touches[1].pageX,
                         e.touches[0].pageY - e.touches[1].pageY
                     );
-                    let scale = (newDist / initialDist) * currentScale;
-                    scale = Math.min(Math.max(1, scale), 3); // Max zoom 3x
+                    let scale = (newDist / initialDist) * fullScale;
+                    scale = Math.min(Math.max(1, scale), 4);
                     img.style.transform = `scale(${scale})`;
                 }
             });
-        }
-
-        function resetZoom() {
-            const img = document.getElementById('pdpImg');
-            if(img) {
-                img.style.transform = "scale(1)";
-                currentScale = 1;
-            }
         }
 
         // Back Button Navigation
@@ -501,7 +517,7 @@
         function pushModalState() { history.pushState({ modalOpen: true }, ""); }
 
         function closeAllModalsSilently() {
-            resetZoom();
+            closeFullImage();
             document.getElementById('pdpModal').style.display = 'none';
             document.getElementById('cartModal').style.display = 'none';
             document.getElementById('loginModal').style.display = 'none';
@@ -510,7 +526,7 @@
             document.getElementById('returnModal').style.display = 'none';
         }
 
-        // Fetch products with Color Column Support
+        // Fetch products with Google Sheet 'Color' Column Support
         async function fetchProducts() {
             try {
                 const res = await fetch(proxyURL);
@@ -534,7 +550,7 @@
                                     images: imgs.length > 0 ? imgs : ['https://via.placeholder.com/300'],
                                     image: imgs[0] || 'https://via.placeholder.com/300',
                                     size: item['Size'] || item['size'] || 'Free Size, S, M, L, XL',
-                                    color: item['Color'] || item['color'] || 'As Shown in Image',
+                                    color: item['Color'] || item['color'] || 'As Shown',
                                     details: item['Details'] || item['details'] || 'High Quality Product from SUMO STORE',
                                     delivery: item['Delivery'] || item['delivery'] || 'FREE Delivery',
                                     category: item['Category'] || item['category'] || ''
@@ -612,7 +628,7 @@
             }).join('');
         }
 
-        // Tab Navigation & Active Styling
+        // Tab Navigation
         function switchTab(screenId, btn) {
             document.querySelectorAll('.tab-screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
@@ -653,7 +669,7 @@
             }
         }
 
-        // Auth & Storage Init
+        // Auth & Storage
         function checkSavedUser() {
             const saved = localStorage.getItem('sumoUser');
             if(saved) { currentUser = JSON.parse(saved); updateProfileUI(); } else { updateProfileUI(); }
@@ -662,7 +678,6 @@
             const savedReviews = localStorage.getItem('sumoReviews');
             if(savedReviews) { productReviews = JSON.parse(savedReviews); }
             loadOrdersUI();
-            setupImageZoom();
         }
 
         function handleAuthClick() {
@@ -724,7 +739,7 @@
                 subEl.innerText = 'Click Login to setup profile';
                 avatarEl.innerText = '🔑';
                 btnEl.innerText = 'LOGIN';
-                btnEl.style.background = 'var(--meesho-pink)';
+                btnEl.style.background = 'var(--sumo-red)';
                 document.getElementById('custName').value = '';
                 document.getElementById('custPhone').value = '';
             }
@@ -792,12 +807,11 @@
             }
         }
 
-        // PDP with Color & Size Selection Highlighting
+        // PDP Render & Colors Read
         function openPDP(id) {
             currentPdp = allProducts.find(p => p.id === id);
             if(!currentPdp) return;
             
-            resetZoom();
             const mainImg = document.getElementById('pdpImg');
             mainImg.src = currentPdp.image;
             document.getElementById('pdpTitle').innerText = currentPdp.title;
@@ -815,19 +829,25 @@
                 galContainer.style.display = 'none';
             }
 
-            // Render Size Buttons
+            // Size Pill Buttons
             const sizes = String(currentPdp.size).split(',').map(s => s.trim());
             chosenSize = sizes[0] || 'Free Size';
             document.getElementById('pdpSizeFlex').innerHTML = sizes.map((s, idx) => `
                 <button class="select-pill ${idx === 0 ? 'active' : ''}" onclick="selectPill(this, 'size', '${s}')">${s}</button>
             `).join('');
 
-            // Render Color Buttons
-            const colors = String(currentPdp.color).split(',').map(c => c.trim());
-            chosenColor = colors[0] || 'As Shown';
-            document.getElementById('pdpColorFlex').innerHTML = colors.map((c, idx) => `
-                <button class="select-pill ${idx === 0 ? 'active' : ''}" onclick="selectPill(this, 'color', '${c}')">${c}</button>
-            `).join('');
+            // Color Pill Buttons (Reads from Google Sheet Column 'Color')
+            const colors = String(currentPdp.color).split(',').map(c => c.trim()).filter(c => c !== '');
+            if(colors.length > 0) {
+                document.getElementById('colorBoxContainer').style.display = 'block';
+                chosenColor = colors[0];
+                document.getElementById('pdpColorFlex').innerHTML = colors.map((c, idx) => `
+                    <button class="select-pill ${idx === 0 ? 'active' : ''}" onclick="selectPill(this, 'color', '${c}')">${c}</button>
+                `).join('');
+            } else {
+                document.getElementById('colorBoxContainer').style.display = 'none';
+                chosenColor = 'As Shown';
+            }
 
             renderPDPReviews();
             pushModalState();
@@ -843,7 +863,6 @@
         }
 
         function changePDPMainImage(imgUrl, el) {
-            resetZoom();
             document.getElementById('pdpImg').src = imgUrl;
             document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
             if(el) el.classList.add('active');
